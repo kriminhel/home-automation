@@ -1,0 +1,64 @@
+# ============================================
+# PERSONNALISATION DES ENTITÉS
+# ============================================
+
+# Lumières
+light.salon_principale:
+  friendly_name: "Lumière Salon Principale"
+  icon: mdi:ceiling-light
+
+light.salon_spots:
+  friendly_name: "Spots Salon"
+  icon: mdi:track-light
+
+light.cuisine:
+  friendly_name: "Lumière Cuisine"
+  icon: mdi:ceiling-light
+
+light.chambre:
+  friendly_name: "Lumière Chambre"
+  icon: mdi:ceiling-light
+
+light.salle_de_bain:
+  friendly_name: "Lumière Salle de Bain"
+  icon: mdi:ceiling-light
+
+# Volets
+cover.volet_salon:
+  friendly_name: "Volet Salon"
+  icon: mdi:window-shutter
+  device_class: shutter
+
+cover.volet_cuisine:
+  friendly_name: "Volet Cuisine"
+  icon: mdi:window-shutter
+  device_class: shutter
+
+cover.volet_chambre:
+  friendly_name: "Volet Chambre"
+  icon: mdi:window-shutter
+  device_class: shutter
+
+cover.volet_sdb:
+  friendly_name: "Volet Salle de Bain"
+  icon: mdi:window-shutter
+  device_class: shutter
+
+# Garage
+cover.garage:
+  friendly_name: "Porte de Garage"
+  icon: mdi:garage-variant
+  device_class: garage
+
+# Scènes
+scene.tout_eteindre:
+  icon: mdi:power-off
+
+scene.mode_soiree:
+  icon: mdi:movie-open
+
+scene.mode_nuit:
+  icon: mdi:weather-night
+
+scene.depart_maison:
+  icon: mdi:home-export-outline

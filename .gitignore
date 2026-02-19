@@ -1,0 +1,57 @@
+# ============================================
+# GITIGNORE - Domotique Home Assistant
+# ============================================
+
+# Environnement
+.env
+.env.local
+.env.*.local
+
+# Secrets et mots de passe
+homeassistant-config/secrets.yaml
+homeassistant-config/.storage/
+homeassistant-config/home-assistant.log
+homeassistant-config/home-assistant_v2.db*
+homeassistant-config/.cloud/
+homeassistant-config/.google.token
+
+# Base de données
+*.db
+*.db-shm
+*.db-wal
+
+# Logs
+*.log
+logs/
+mosquitto/log/*.log
+homeassistant-config/logs/
+
+# MQTT
+mosquitto/data/
+mosquitto/log/
+
+# Certificats SSL
+*.pem
+*.key
+*.crt
+nginx/ssl/*.pem
+nginx/ssl/*.key
+
+# Backups
+backup-*.tar.gz
+*.backup
+*.bak
+
+# Docker volumes
+volumes/
+
+# OS
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Temporaire
+tmp/
+temp/
+*.tmp

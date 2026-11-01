@@ -30,13 +30,17 @@ Lien PRD complet : [`docs/PRD.md`](docs/PRD.md) · Règles UI : [`.claude/skills
 - **Tests effectués** : le script de scan s'exécute sans erreur et détecte un service simulé (port 8001 → TV Samsung)
 
 ## Changelog
+### 2026-11-01 — Niveaux et architecture
+- PRD : 2 niveaux (RDC, Étage) ; architecture « serveur + iPad simple navigateur » explicitée
+
 ### 2026-11-01 — PRD et outillage
 - Ajout du PRD/prompt de référence `docs/PRD.md`
 - Ajout du script d'inventaire réseau `scripts/scan-network.py` (SSDP, mDNS, Broadlink, Tuya, ports TCP)
 - Ajout de la skill projet `ha-tablet-dashboard` (navigation par niveau, code couleur, recettes YAML)
 
 ## Blocages / Décisions pendantes
-- Liste des niveaux et des pièces de la maison
+- ✅ Niveaux : RDC + Étage. Pièces de chaque niveau à préciser
+- ✅ Architecture : Home Assistant sur le serveur uniquement, l'iPad n'affiche que la page web (Safari)
 - Modèle de l'iPad et version d'iOS (détermine le choix entre frontend HA natif et le plan B léger)
 - Modèle du Broadlink (RF 433 MHz nécessaire pour les volets ?) et marque des moteurs de volets
 - Marques et modèles des TV et de la box / du décodeur

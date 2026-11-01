@@ -11,7 +11,8 @@ famille, sur un **vieil iPad** (performances limitées). Référence produit : `
 ## 1. Architecture de navigation
 
 - Fichier : `homeassistant-config/lovelace/tablet.yaml`, avec une vue (onglet) par niveau, plus une vue Accueil.
-- Ordre des vues : `Accueil` → niveaux du bas vers le haut → `Extérieur`.
+- Les vues sont dans cet ordre : `Accueil` → `RDC` → `Étage`. La maison n'a que 2 niveaux ; le garage et l'extérieur sont dans le RDC.
+- Le dashboard est servi par le serveur Home Assistant. L'iPad ne fait qu'ouvrir la page dans Safari, sans application.
 - Chaque vue a `path`, `icon` et `title` courts (≤ 12 caractères), sans emoji dans le titre de l'onglet. Les emojis vont dans les en-têtes de sections.
 - Type de vue : `type: sections` (grille responsive native). Repli `custom:layout-card` / `masonry` si l'iPad gère mal les sections.
 - Dans une vue de niveau, l'ordre est toujours le même :
@@ -27,10 +28,8 @@ famille, sur un **vieil iPad** (performances limitées). Référence produit : `
 | Niveau | Couleur | Variable de thème |
 |--------|---------|-------------------|
 | Accueil | `#3949AB` | `--level-home` |
-| Sous-sol | `#8E24AA` | `--level-basement` |
-| Rez-de-chaussée | `#FB8C00` | `--level-ground` |
+| RDC | `#FB8C00` | `--level-ground` |
 | Étage | `#43A047` | `--level-upstairs` |
-| Extérieur | `#00897B` | `--level-outdoor` |
 
 **Couleur de catégorie** : elle s'applique à l'icône quand l'état est actif. Un état inactif est gris neutre.
 

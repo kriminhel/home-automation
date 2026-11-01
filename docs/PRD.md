@@ -26,7 +26,19 @@ Indicateurs de réussite :
 - On sait toujours **à quel étage on se trouve** : couleur, titre et onglet actif.
 - La tablette fonctionne **24 h/24 sans intervention** (pas de mise en veille, reconnexion automatique).
 
-## 3. Contexte technique existant
+## 3. Architecture et contexte technique
+
+**Principe** : tout tourne sur le **serveur** de la maison. **Rien n'est installé sur l'iPad.**
+
+```
+[Équipements] ⇄ [Serveur : Home Assistant + Mosquitto (Docker)] ⇄ réseau Wi-Fi ⇄ [iPad : Safari, page web plein écran]
+```
+
+- L'iPad est un **simple écran** : Safari ouvre `http://<IP_SERVEUR>:8123/tablette` (raccourci sur l'écran d'accueil, mode kiosque). Pas d'application Home Assistant ni de logiciel à installer dessus.
+- Toute la logique tourne sur le serveur : intégrations, automatisations, scènes, apprentissage Broadlink. Si l'iPad s'éteint, la maison continue de fonctionner.
+- Un compte Home Assistant dédié « tablette », non administrateur, est utilisé sur l'iPad.
+
+Existant :
 
 - Home Assistant sous Docker (`docker-compose.yml`), configuration dans `homeassistant-config/`.
 - **IPX800 V3** pour les lumières : relais 1 à 8 pilotés par `rest_command` + `light` template, IP `192.168.1.250` à confirmer.
@@ -58,15 +70,15 @@ dans `docs/scan-report.md`, complété par les infos de Karim.
 
 ## 5. Niveaux de la maison et navigation
 
-⚠️ À COMPLÉTER : liste réelle des niveaux et des pièces. Proposition de départ :
+La maison a **2 niveaux : RDC et Étage** (confirmé). Il y a donc 3 onglets :
 
-| Onglet | Couleur repère | Pièces (⚠️ à confirmer) |
-|--------|----------------|--------------------------|
+| Onglet | Couleur repère | Pièces (⚠️ liste à confirmer) |
+|--------|----------------|--------------------------------|
 | 🏠 **Accueil** | Bleu nuit `#3949AB` | Vue d'ensemble, scènes, météo, alertes |
-| ⬇️ **Sous-sol** | Violet `#8E24AA` | Garage, buanderie, cave |
-| 🛋️ **Rez-de-chaussée** | Orange `#FB8C00` | Salon, cuisine, entrée, WC |
+| 🛋️ **RDC** | Orange `#FB8C00` | Salon, cuisine, entrée, garage (porte), extérieur |
 | 🛏️ **Étage** | Vert `#43A047` | Chambres, salle de bain |
-| 🌳 **Extérieur** | Turquoise `#00897B` | Portail, garage, éclairage extérieur, jardin |
+
+⚠️ À COMPLÉTER : pièces exactes de chaque niveau. Le garage et l'extérieur sont rattachés au RDC tant qu'on n'a pas décidé autrement.
 
 Exigences de navigation :
 1. **Un onglet par niveau**, plus un onglet Accueil. Les onglets restent visibles en haut, avec une icône et un libellé.
@@ -92,13 +104,14 @@ Briques HACS retenues (à valider sur l'iPad, voir §7) :
 `Mushroom`, `button-card`, `card-mod`, `layout-card`, `kiosk-mode`, `browser_mod` (popups), `mini-graph-card`.
 Option plus « app » si l'iPad le supporte : `Bubble Card`.
 
-## 7. Contraintes : vieil iPad
+## 7. Contraintes : vieil iPad (simple navigateur)
 
 ⚠️ À COMPLÉTER : **modèle exact de l'iPad et version d'iOS** (Réglages > Général > Informations).
 
+- L'iPad n'exécute **que Safari**. Mais la page web de Home Assistant est une application JavaScript moderne, et c'est **Safari** qui doit la faire tourner.
 - Le frontend Home Assistant actuel exige un Safari récent. Un iPad bloqué sous **iOS 9 ou 10** (iPad 2, 3, 4, mini 1) risque de **ne pas afficher** Home Assistant correctement. **iOS 12** (iPad Air 1, mini 2/3) : fonctionne en général, mais lentement.
 - Premier jalon obligatoire : **tester une vue simple sur l'iPad** avant de construire le dashboard complet.
-- Plan B si incompatible : un portail web léger (HTML/JS simple, compatible avec les vieux Safari) servi par Home Assistant (`/local/`) et utilisant l'API REST/WebSocket. Il ne serait décidé qu'après le test.
+- Plan B si incompatible : un **portail web léger**, toujours **hébergé sur le serveur** (HTML/JS simple compatible avec les vieux Safari, servi par Home Assistant dans `/local/`), qui pilote Home Assistant via son API REST. L'iPad reste un simple navigateur. Ce choix ne serait fait qu'après le test.
 - Performance : limiter les cartes lourdes (pas de plan 3D sur l'iPad), les animations et le nombre d'entités par vue.
 - iPad toujours allumé : Accès guidé iOS, verrouillage automatique sur « Jamais », alimentation permanente, application ajoutée à l'écran d'accueil.
 
@@ -149,7 +162,7 @@ Option plus « app » si l'iPad le supporte : `Bubble Card`.
 
 ## 12. Questions ouvertes
 
-- ⚠️ Liste des niveaux et des pièces de la maison ?
+- ✅ Niveaux : RDC et Étage. ⚠️ Pièces de chaque niveau ?
 - ⚠️ Modèle de l'iPad et version d'iOS ?
 - ⚠️ Modèle du Broadlink et marque des moteurs de volets ?
 - ⚠️ Volets : tous en RF (Broadlink) ou certains en Tuya (Loratap) ?

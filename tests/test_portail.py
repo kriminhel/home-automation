@@ -122,10 +122,12 @@ class TestPortail(unittest.TestCase):
         self.assertEqual(code, 400)
 
     def test_tout_eteindre_un_niveau(self):
+        lumieres = [e for e in server.entites_de(server.charger_maison(), "rdc") if e.startswith("light.")]
+        self.assertIn("light.cuisine", lumieres)
+        self.assertNotIn("light.salle_de_bain", lumieres)  # autre niveau
         code, r = self.post({"niveau": "rdc", "action": "tout_eteindre"})
-        self.assertEqual((code, r["cibles"]), (200, 3))
-        self.assertEqual(APPELS[0], ("/api/services/light/turn_off", {
-            "entity_id": ["light.salon_principale", "light.salon_spots", "light.cuisine"]}))
+        self.assertEqual((code, r["cibles"]), (200, len(lumieres)))
+        self.assertEqual(APPELS[0], ("/api/services/light/turn_off", {"entity_id": lumieres}))
 
     def test_niveau_sans_volet_n_appelle_rien(self):
         code, r = self.post({"niveau": "etage", "action": "tout_fermer"})

@@ -416,7 +416,8 @@
                 90
               ]
             ],
-            "espace": "sejour"
+            "espace": "sejour",
+            "mur": "#E9E5DD"
           },
           {
             "piece": "Cuisine",
@@ -428,7 +429,8 @@
                 220
               ]
             ],
-            "espace": "sejour"
+            "espace": "sejour",
+            "mur": "#2B2D32"
           },
           {
             "piece": "Salon",
@@ -440,7 +442,8 @@
                 220
               ]
             ],
-            "espace": "sejour"
+            "espace": "sejour",
+            "mur": "brique"
           },
           {
             "piece": "Salle de bain et WC enfants",
@@ -467,7 +470,8 @@
             ],
             "ouvert_vers": [
               "Salon"
-            ]
+            ],
+            "mur": "#AEB9C4"
           },
           {
             "piece": "Chambre d'Alia",
@@ -549,7 +553,8 @@
             "face": "haut",
             "w": 80,
             "d": 30,
-            "couleur": "#17181C"
+            "couleur": "#17181C",
+            "plan": "bois"
           },
           {
             "t": "armoire",
@@ -637,12 +642,13 @@
             "w": 220,
             "d": 36,
             "plaque": true,
-            "couleur": "#17181C"
+            "couleur": "#17181C",
+            "plan": "bois"
           },
           {
-            "t": "frigo",
-            "x": 252,
-            "y": 445,
+            "t": "frigous",
+            "x": 256,
+            "y": 452,
             "face": "droite"
           },
           {
@@ -652,16 +658,16 @@
             "face": "droite",
             "w": 110,
             "d": 36,
-            "couleur": "#17181C"
+            "couleur": "#17181C",
+            "plan": "bois"
           },
           {
-            "t": "ilot",
-            "x": 370,
-            "y": 515,
+            "t": "ilotbois",
+            "x": 372,
+            "y": 512,
             "face": "bas",
             "w": 120,
-            "d": 50,
-            "couleur": "#17181C"
+            "d": 60
           },
           {
             "t": "plante",
@@ -704,15 +710,6 @@
             "d": 20
           },
           {
-            "t": "tapis",
-            "x": 720,
-            "y": 290,
-            "face": "bas",
-            "w": 60,
-            "d": 180,
-            "couleur": "#7A3E3E"
-          },
-          {
             "t": "plante",
             "x": 785,
             "y": 405,
@@ -747,7 +744,7 @@
             "face": "bas",
             "w": 70,
             "d": 70,
-            "couleur": "#D9A3C7"
+            "couleur": "#D9D1C2"
           },
           {
             "t": "lit",
@@ -843,14 +840,13 @@
             "face": "bas"
           },
           {
-            "t": "table",
+            "t": "tablerustique",
             "x": 470,
             "y": 376,
             "face": "bas",
-            "w": 170,
-            "d": 46,
-            "chaises": 6,
-            "bois": "#7A4A22"
+            "w": 176,
+            "d": 50,
+            "chaises": 6
           },
           {
             "t": "tv",
@@ -858,7 +854,8 @@
             "y": 470,
             "face": "gauche",
             "w": 110,
-            "entite": "media_player.tv_salon"
+            "entite": "media_player.tv_salon",
+            "meuble": "industriel"
           },
           {
             "t": "canape",
@@ -879,12 +876,10 @@
             "couleur": "#16171B"
           },
           {
-            "t": "tablebasse",
+            "t": "tablebasseronde",
             "x": 895,
-            "y": 520,
-            "face": "droite",
-            "w": 76,
-            "d": 44
+            "y": 522,
+            "face": "bas"
           },
           {
             "t": "tapis",
@@ -893,7 +888,38 @@
             "face": "bas",
             "w": 150,
             "d": 135,
-            "couleur": "#3E3A35"
+            "couleur": "#D9D1C2"
+          },
+          {
+            "t": "plante",
+            "x": 478,
+            "y": 625,
+            "face": "bas"
+          },
+          {
+            "t": "colonne",
+            "x": 254,
+            "y": 496,
+            "face": "droite",
+            "couleur": "#17181C"
+          },
+          {
+            "t": "aquarium",
+            "x": 500,
+            "y": 626,
+            "face": "haut"
+          },
+          {
+            "t": "papasan",
+            "x": 960,
+            "y": 600,
+            "face": "gauche"
+          },
+          {
+            "t": "monstera",
+            "x": 980,
+            "y": 520,
+            "face": "gauche"
           },
           {
             "t": "plante",
@@ -902,10 +928,18 @@
             "face": "bas"
           },
           {
-            "t": "plante",
-            "x": 478,
-            "y": 625,
-            "face": "bas"
+            "t": "portemanteau",
+            "x": 648,
+            "y": 170,
+            "face": "droite",
+            "w": 80
+          },
+          {
+            "t": "banc",
+            "x": 720,
+            "y": 110,
+            "face": "bas",
+            "w": 70
           }
         ],
         "ouvertures": [
@@ -1046,23 +1080,45 @@
           {
             "type": "baie",
             "a": [
-              326,
-              330
-            ],
-            "b": [
-              614,
-              330
-            ]
-          },
-          {
-            "type": "baie",
-            "a": [
               1000,
               528
             ],
             "b": [
               1000,
               630
+            ]
+          },
+          {
+            "type": "baie",
+            "a": [
+              340,
+              330
+            ],
+            "b": [
+              452,
+              330
+            ]
+          },
+          {
+            "type": "baie",
+            "a": [
+              498,
+              330
+            ],
+            "b": [
+              612,
+              330
+            ]
+          },
+          {
+            "type": "baie",
+            "a": [
+              880,
+              640
+            ],
+            "b": [
+              988,
+              640
             ]
           }
         ]

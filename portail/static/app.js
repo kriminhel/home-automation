@@ -312,6 +312,7 @@
   function lireDateIso(s) {
     var m = /^(\d{4})-(\d\d)-(\d\d)T(\d\d):(\d\d):(\d\d)(?:\.\d+)?(Z|([+-])(\d\d):(\d\d))?$/.exec(s || '');
     if (!m) { return null; }
+    if (!m[7]) { return new Date(+m[1], +m[2] - 1, +m[3], +m[4], +m[5], +m[6]); }  // heure locale (EZVIZ)
     var t = Date.UTC(+m[1], +m[2] - 1, +m[3], +m[4], +m[5], +m[6]);
     if (m[8]) { t -= (m[8] === '-' ? -1 : 1) * (+m[9] * 60 + +m[10]) * 60000; }
     return new Date(t);

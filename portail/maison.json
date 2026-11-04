@@ -306,7 +306,7 @@
           },
           {
             "piece": "Chambre parentale",
-            "nom": "Chambre parentale",
+            "nom": "Parentale",
             "entites": [
               "light.chambre_parentale",
               "media_player.boitier_chambre_parentale"

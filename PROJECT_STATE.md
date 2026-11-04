@@ -32,7 +32,7 @@ Voir `docs/PRD.md` §10 (référence de la télécommande Came, garage, pièces,
 ### 2026-11-04 — Nouveau design du portail
 - Accueil = récapitulatif sombre (salutation, heure, résumé, dernière caméra, puces lumières/écrans/garage/internet/soleil, scènes, cartes de pièces → pièce en 1 toucher). Thème sombre « verre » sur toutes les vues ; liens directs `/#rdc`, `/#etage`, `/#cameras`.
 - Correction : la lumière de la cuisine était `light.cuisine_2` dans HA (le portail et les scènes visaient `light.cuisine`) → renommée.
-- Choisi ensuite par Karim : **plan de la maison** interactif (pièces qui s'allument, toucher = piloter) — en attente d'un plan ou croquis par niveau.
+- **Plan de la maison** interactif (RDC + étage, relevés sur les croquis de Karim) en tête des vues de niveau : zones reliées à leurs équipements, pièces allumées en ambre, toucher = fenêtre de commandes de la pièce, repère caméra garage. Géométrie dans `maison.json` → `niveaux[].plan` (rects ou poly).
 ### 2026-11-04 — Caméras
 - Portail : onglet **Caméras** (visiophone, garage, salon, salle de jeux) avec la dernière image de mouvement fournie par le cloud EZVIZ, relayée par `/api/image/<entity_id>` (liste blanche `cameras` de maison.json, cache 10 s, jeton côté serveur) ; plein écran au toucher.
 - Images chiffrées par EZVIZ (« hikencodepicture ») : déchiffrées par le portail (`portail/ezviz_image.py`, AES en Python standard, code vérifié hors ligne par son empreinte) avec `EZVIZ_CODES` dans `.env` du serveur. Codes salon / salle de jeux probablement inversés. Garage : nouveau code de chiffrement à créer dans l'appli (choix de Karim : ne pas stocker le mot de passe du compte).

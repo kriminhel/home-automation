@@ -18,7 +18,7 @@ léger servi par le serveur. Détails : [`docs/PRD.md`](docs/PRD.md).
 | J2 — Dépôt unique + config nettoyée | ✅ | betanalyst-pro n'héberge plus la domotique |
 | J2 — Portail tablette (lumières, scènes, TV) | ✅ | Jeton en place, à tester sur l'iPad |
 | J3 — Broadlink / volets Came | 📋 | Test RF avec `scripts/broadlink-rf.py`, télécommande en main |
-| J4 — TV Xiaomi/Philips, Freebox, Tuya, garage | 🔄 | Broadlink, Freebox, TV salon, Philips (chambre de Naïm) intégrés ; reste chambre (boîtier Xiaomi, Apple TV), Tuya, garage |
+| J4 — TV Xiaomi/Philips, Freebox, Tuya, garage | 🔄 | Broadlink, Freebox, toutes les TV intégrées et renommées ; reste Tuya, garage |
 | J5 — Scènes/automatisations réelles, test 7 jours | 📋 | |
 
 ## Blocages / décisions pendantes
@@ -27,7 +27,8 @@ Voir `docs/PRD.md` §10 (référence de la télécommande Came, garage, pièces,
 ## Changelog
 ### 2026-11-04 — Intégrations
 - HA : Broadlink, Freebox, TV Xiaomi salon, TV Philips (+ Ambilight) intégrés ; 8 entités fantômes et floor3d supprimés.
-- Portail : TV salon, chambre de Naïm (TV Philips, Ambilight).
+- HA : boîtier Xiaomi (chambre parentale) et Apple TV (Amel) intégrés ; entités TV renommées (tv_salon, tv_naim, ambilight_naim…).
+- Portail : TV salon, chambre de Naïm (TV Philips, Ambilight), boîtier chambre parentale, chambre d'Amel (Apple TV).
 
 ### 2026-11-04 — Ménage et portail iOS 9
 - Dépôt unique `home-automation` ; suppression des guides et scripts obsolètes (Windows, Mosquitto, nginx, Cloudflare, Watchtower, Lovelace et plan 3D).

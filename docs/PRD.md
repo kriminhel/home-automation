@@ -44,10 +44,10 @@ Scan réseau du 04/11/2026 : [`docs/scan-report.md`](scan-report.md).
 | 🎛️ Télécommande universelle | Broadlink **RM4 Pro** (IR + RF 433 MHz) | 192.168.1.64 | `broadlink` → `remote.broadlink` | ✅ intégré 04/11, codes à apprendre |
 | 🪟 Volets | Moteurs **Came**, télécommandes RF | via Broadlink | `remote.send_command` + `cover.template` | 📋 test d'apprentissage à faire (§6) |
 | 🚪 Garage | Porte de garage, marque inconnue | ⚠️ | ⚠️ | 📋 à identifier |
-| 📺 TV salon | **Xiaomi** MiTV (Google TV) | 192.168.1.45 | `androidtv_remote` → `media_player.salon` | ✅ intégrée 04/11, sur la tablette |
-| 📺 TV chambre de Naïm | **Philips** 43PUS7608/12 (filaire) | 192.168.1.144 | `philips_js` → `media_player.43pus7608_12` + Ambilight | ✅ intégrée 04/11, sur la tablette |
-| 📺 Chambre | **Xiaomi** TV Box (Android TV 12) | 192.168.1.59 | `androidtv_remote` | 📋 association (code à l'écran) |
-| 📺 Chambre | **Apple TV 4** « Chambre » (filaire) | 192.168.1.136 ? | `apple_tv` | 📋 association (code à l'écran) |
+| 📺 TV salon | **Xiaomi** MiTV (Google TV) | 192.168.1.45 | `androidtv_remote` → `media_player.tv_salon` | ✅ intégrée 04/11, sur la tablette |
+| 📺 TV chambre de Naïm | **Philips** 43PUS7608/12 (filaire) | 192.168.1.144 | `philips_js` → `media_player.tv_naim` + `light.ambilight_naim` | ✅ intégrée 04/11, sur la tablette |
+| 📺 Chambre parentale | **Xiaomi** TV Box (Android TV 12) | 192.168.1.59 | `androidtv_remote` → `media_player.boitier_chambre_parentale` | ✅ intégré 04/11 · ⚠️ en veille il coupe son Wi-Fi : allumage à distance via CEC ou IR Broadlink à prévoir |
+| 📺 Chambre d'Amel | **Apple TV 4** (filaire) | 192.168.1.136 ? | `apple_tv` → `media_player.apple_tv_amel` | ✅ intégrée 04/11 |
 | 📡 Box | **Freebox** v8 | 192.168.1.254 | `freebox` (débits, appels, Wi-Fi) | ✅ intégrée 04/11 (Wi-Fi et redémarrage volontairement absents de la tablette) |
 | 🔌 Tuya / Smart Life | « Passerelle ZigBee » (Tuya + HomeKit « Gateway-type c ») + 1 autre appareil Tuya | 192.168.1.145 / .155 | `homekit_controller` (local) ou `tuya` (cloud) | ⚠️ cloud déconnecté ; appairage HomeKit possible avec le code à 8 chiffres de la passerelle |
 | 🔊 Audio | Enceinte Spotify Connect | 192.168.1.157 | `spotify` | hors V1 |
@@ -136,6 +136,5 @@ caméras, suivi d'énergie, NAS.
 - ⚠️ Référence de la télécommande Came des volets ; nombre de volets et pièces.
 - ⚠️ Porte de garage : marque du moteur et de la télécommande ?
 - ⚠️ Relais 4 « Chambre » = chambre parentale ? Relais 5 « Salle de bain » = étage ou RDC ? À quoi servent les relais 6 à 8 ?
-- ⚠️ Boîtier Xiaomi et Apple TV : dans quelle chambre, sur quelle TV ?
 - ⚠️ Commune de la maison (pour les heures de lever et de coucher du soleil ; HA est réglé par défaut sur Amsterdam).
 - ⚠️ Faut-il un code PIN pour le garage ?

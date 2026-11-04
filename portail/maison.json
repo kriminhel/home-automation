@@ -38,7 +38,7 @@
               "icone": "💡"
             },
             {
-              "entity_id": "media_player.salon",
+              "entity_id": "media_player.tv_salon",
               "nom": "TV Xiaomi",
               "icone": "📺"
             }
@@ -61,6 +61,11 @@
               "entity_id": "light.chambre",
               "nom": "Plafonnier",
               "icone": "💡"
+            },
+            {
+              "entity_id": "media_player.boitier_chambre_parentale",
+              "nom": "Boîtier TV",
+              "icone": "📺"
             }
           ]
         },
@@ -68,14 +73,24 @@
           "nom": "Chambre de Naïm",
           "equipements": [
             {
-              "entity_id": "media_player.43pus7608_12",
+              "entity_id": "media_player.tv_naim",
               "nom": "TV Philips",
               "icone": "📺"
             },
             {
-              "entity_id": "light.43pus7608_12_ambilight",
+              "entity_id": "light.ambilight_naim",
               "nom": "Ambilight",
               "icone": "🌈"
+            }
+          ]
+        },
+        {
+          "nom": "Chambre d'Amel",
+          "equipements": [
+            {
+              "entity_id": "media_player.apple_tv_amel",
+              "nom": "Apple TV",
+              "icone": "📺"
             }
           ]
         }

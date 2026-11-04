@@ -29,6 +29,11 @@ Liste cumulative : [`docs/ACHATS.md`](docs/ACHATS.md) — Karim achète tout qua
 Voir `docs/PRD.md` §10 (référence de la télécommande Came, garage, pièces, Philips, commune).
 
 ## Changelog
+### 2026-11-04 (nuit) — Portail noir et or
+- HA localisé à Saint-Aubin-lès-Elbeuf (Europe/Paris) ; météo met.no → `weather.forecast_maison`.
+- Accueil type tableau de bord (illustration maison toit terrasse en attendant une vraie photo, heure, météo, courbes lumières / internet, famille Karim · Samia · Alia · Naïm · Amel, scènes, cartes de pièces avec marche/arrêt), navigation latérale, vue Famille.
+- 3D : portes, baies vitrées (salle à manger côté terrasse, salon à côté de la TV), volet roulant noir du garage côté caméra qui suit `cover.garage`, entrée ouverte sur le salon, plus de noms de pièces, icônes ampoule / TV dessinées, palette sobre, cuisine noire, canapé en L dos à la cuisine face à la TV ; « Plan » = vue de dessus de la 3D.
+- À faire : **Wi-Fi par pièce** (app Freebox à autoriser + appareils par pièce), **photos** (maison et pièces : `portail/static/photos/`, clés `photo` dans maison.json), téléphones (appli HA → batterie).
 ### 2026-11-04 — Nouveau design du portail
 - Accueil = récapitulatif sombre (salutation, heure, résumé, dernière caméra, puces lumières/écrans/garage/internet/soleil, scènes, cartes de pièces → pièce en 1 toucher). Thème sombre « verre » sur toutes les vues ; liens directs `/#rdc`, `/#etage`, `/#cameras`.
 - Correction : la lumière de la cuisine était `light.cuisine_2` dans HA (le portail et les scènes visaient `light.cuisine`) → renommée.

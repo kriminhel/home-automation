@@ -1,11 +1,43 @@
-# Icônes des entités (les noms sont dans configuration.yaml)
-light.salon_principale:
-  icon: mdi:ceiling-light
-light.salon_spots:
-  icon: mdi:track-light
+# Icônes des lumières IPX800 (les noms sont dans configuration.yaml)
+light.salon:
+  icon: mdi:sofa
+light.salle_a_manger:
+  icon: mdi:silverware-fork-knife
 light.cuisine:
-  icon: mdi:ceiling-light
-light.chambre:
+  icon: mdi:countertop
+light.chambre_amel:
   icon: mdi:bed
-light.salle_de_bain:
+light.chambre_naim:
+  icon: mdi:bed
+light.salle_de_jeux:
+  icon: mdi:gamepad-variant
+light.jardin_1:
+  icon: mdi:outdoor-lamp
+light.dressing:
+  icon: mdi:hanger
+light.sdb_parentale:
   icon: mdi:shower
+light.chambre_parentale:
+  icon: mdi:bed-king
+light.couloir_buanderie:
+  icon: mdi:ceiling-light
+light.entree:
+  icon: mdi:door
+light.chambre_alia:
+  icon: mdi:bed
+light.wc_enfants:
+  icon: mdi:toilet
+light.sdb_enfants:
+  icon: mdi:shower
+light.jardin_2:
+  icon: mdi:outdoor-lamp
+light.jardin_3:
+  icon: mdi:outdoor-lamp
+light.facade_rue:
+  icon: mdi:outdoor-lamp
+light.jardin_4:
+  icon: mdi:outdoor-lamp
+light.garage:
+  icon: mdi:garage
+light.buanderie:
+  icon: mdi:washing-machine

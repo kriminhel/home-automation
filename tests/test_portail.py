@@ -19,7 +19,7 @@ import server  # noqa: E402
 
 APPELS = []
 ETATS = [
-    {"entity_id": "light.salon_principale", "state": "on", "attributes": {"friendly_name": "Salon"}},
+    {"entity_id": "light.salon", "state": "on", "attributes": {"friendly_name": "Salon"}},
     {"entity_id": "light.cuisine", "state": "off", "attributes": {}},
     {"entity_id": "light.non_declaree", "state": "on", "attributes": {}},
 ]
@@ -99,8 +99,8 @@ class TestPortail(unittest.TestCase):
 
     def test_etats_filtres_sur_maison_json(self):
         etats = json.loads(self.get("/api/etats")[1])
-        self.assertEqual(etats["light.salon_principale"]["state"], "on")
-        self.assertEqual(etats["light.chambre"]["state"], "absent")
+        self.assertEqual(etats["light.salon"]["state"], "on")
+        self.assertEqual(etats["light.chambre_alia"]["state"], "absent")
         self.assertNotIn("light.non_declaree", etats)
 
     def test_basculer_une_lumiere(self):
@@ -124,7 +124,7 @@ class TestPortail(unittest.TestCase):
     def test_tout_eteindre_un_niveau(self):
         lumieres = [e for e in server.entites_de(server.charger_maison(), "rdc") if e.startswith("light.")]
         self.assertIn("light.cuisine", lumieres)
-        self.assertNotIn("light.salle_de_bain", lumieres)  # autre niveau
+        self.assertNotIn("light.salle_de_jeux", lumieres)  # autre niveau
         code, r = self.post({"niveau": "rdc", "action": "tout_eteindre"})
         self.assertEqual((code, r["cibles"]), (200, len(lumieres)))
         self.assertEqual(APPELS[0], ("/api/services/light/turn_off", {"entity_id": lumieres}))

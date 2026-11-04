@@ -28,19 +28,24 @@
           "nom": "Salon",
           "equipements": [
             {
-              "entity_id": "light.salon_principale",
+              "entity_id": "light.salon",
               "nom": "Plafonnier",
-              "icone": "💡"
-            },
-            {
-              "entity_id": "light.salon_spots",
-              "nom": "Spots",
               "icone": "💡"
             },
             {
               "entity_id": "media_player.tv_salon",
               "nom": "TV Xiaomi",
               "icone": "📺"
+            }
+          ]
+        },
+        {
+          "nom": "Salle à manger",
+          "equipements": [
+            {
+              "entity_id": "light.salle_a_manger",
+              "nom": "Plafonnier",
+              "icone": "💡"
             }
           ]
         },
@@ -55,11 +60,51 @@
           ]
         },
         {
+          "nom": "Entrée et couloir",
+          "equipements": [
+            {
+              "entity_id": "light.entree",
+              "nom": "Entrée",
+              "icone": "💡"
+            },
+            {
+              "entity_id": "light.couloir_buanderie",
+              "nom": "Couloir buanderie",
+              "icone": "💡"
+            }
+          ]
+        },
+        {
+          "nom": "Buanderie et garage",
+          "equipements": [
+            {
+              "entity_id": "light.buanderie",
+              "nom": "Buanderie",
+              "icone": "💡"
+            },
+            {
+              "entity_id": "light.garage",
+              "nom": "Garage",
+              "icone": "💡"
+            }
+          ]
+        },
+        {
           "nom": "Chambre parentale",
           "equipements": [
             {
-              "entity_id": "light.chambre",
+              "entity_id": "light.chambre_parentale",
               "nom": "Plafonnier",
+              "icone": "💡"
+            },
+            {
+              "entity_id": "light.dressing",
+              "nom": "Dressing",
+              "icone": "💡"
+            },
+            {
+              "entity_id": "light.sdb_parentale",
+              "nom": "Salle de bain",
               "icone": "💡"
             },
             {
@@ -70,8 +115,23 @@
           ]
         },
         {
+          "nom": "Chambre d'Alia",
+          "equipements": [
+            {
+              "entity_id": "light.chambre_alia",
+              "nom": "Plafonnier",
+              "icone": "💡"
+            }
+          ]
+        },
+        {
           "nom": "Chambre de Naïm",
           "equipements": [
+            {
+              "entity_id": "light.chambre_naim",
+              "nom": "Plafonnier",
+              "icone": "💡"
+            },
             {
               "entity_id": "media_player.tv_naim",
               "nom": "TV Philips",
@@ -88,9 +148,64 @@
           "nom": "Chambre d'Amel",
           "equipements": [
             {
+              "entity_id": "light.chambre_amel",
+              "nom": "Plafonnier",
+              "icone": "💡"
+            },
+            {
               "entity_id": "media_player.apple_tv_amel",
               "nom": "Apple TV",
               "icone": "📺"
+            }
+          ]
+        },
+        {
+          "nom": "Salle de bain et WC enfants",
+          "equipements": [
+            {
+              "entity_id": "light.sdb_enfants",
+              "nom": "Salle de bain",
+              "icone": "💡"
+            },
+            {
+              "entity_id": "light.wc_enfants",
+              "nom": "WC",
+              "icone": "💡"
+            }
+          ]
+        },
+        {
+          "nom": "Extérieur",
+          "equipements": [
+            {
+              "entity_id": "light.facade_jardin",
+              "nom": "Toute la façade jardin",
+              "icone": "🌳"
+            },
+            {
+              "entity_id": "light.jardin_1",
+              "nom": "Jardin 1",
+              "icone": "🏮"
+            },
+            {
+              "entity_id": "light.jardin_2",
+              "nom": "Jardin 2",
+              "icone": "🏮"
+            },
+            {
+              "entity_id": "light.jardin_3",
+              "nom": "Jardin 3",
+              "icone": "🏮"
+            },
+            {
+              "entity_id": "light.jardin_4",
+              "nom": "Jardin 4",
+              "icone": "🏮"
+            },
+            {
+              "entity_id": "light.facade_rue",
+              "nom": "Côté rue",
+              "icone": "🏮"
             }
           ]
         }
@@ -103,10 +218,10 @@
       "couleur": "#43A047",
       "pieces": [
         {
-          "nom": "Salle de bain",
+          "nom": "Salle de jeux",
           "equipements": [
             {
-              "entity_id": "light.salle_de_bain",
+              "entity_id": "light.salle_de_jeux",
               "nom": "Plafonnier",
               "icone": "💡"
             }

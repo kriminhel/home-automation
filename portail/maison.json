@@ -1,6 +1,7 @@
 {
   "nom": "Maison",
   "lieu": "Saint-Aubin-lès-Elbeuf",
+  "photo": "maison.jpg",
   "scenes": [
     {
       "entity_id": "scene.tout_eteindre",

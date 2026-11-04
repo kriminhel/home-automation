@@ -48,29 +48,44 @@
     return res;
   }
 
-  // Murs du plan : bords des zones, sauf entre deux zones d'un même « espace » (pièce ouverte)
+  function dans(liste, v) { return !!liste && v !== undefined && liste.indexOf(v) >= 0; }
+
+  // Deux zones sans cloison entre elles : même « espace » ouvert, ou ouverture déclarée (ouvert_vers)
+  function sansCloison(za, zb) {
+    if (za.espace && za.espace === zb.espace) { return true; }
+    return dans(za.ouvert_vers, zb.piece) || dans(zb.ouvert_vers, za.piece);
+  }
+
+  // Ouvertures (portes, baies, porte de garage) posées sur un mur : intervalle à retirer
+  function surLigne(o, horiz, ligne) {
+    if (horiz) { return o.a[1] === o.b[1] && o.a[1] === ligne ? [Math.min(o.a[0], o.b[0]), Math.max(o.a[0], o.b[0])] : null; }
+    return o.a[0] === o.b[0] && o.a[0] === ligne ? [Math.min(o.a[1], o.b[1]), Math.max(o.a[1], o.b[1])] : null;
+  }
+
+  // Murs du plan : bords des zones, sauf entre zones sans cloison ; les ouvertures sont percées
   function segments(plan) {
     var bords = [], res = [], i, j, k;
+    var ouvertures = plan.ouvertures || [];
     for (i = 0; i < plan.zones.length; i++) {
       var z = plan.zones[i];
       if (z.type === 'exterieur') { continue; }
       var polys = contours(z);
       for (k = 0; k < polys.length; k++) {
         for (j = 0; j < polys[k].length; j++) {
-          bords.push({ a: polys[k][j], b: polys[k][(j + 1) % polys[k].length], i: i, esp: z.espace });
+          bords.push({ a: polys[k][j], b: polys[k][(j + 1) % polys[k].length], i: i, z: z });
         }
       }
     }
     for (i = 0; i < bords.length; i++) {
       var e = bords[i];
       var horiz = e.a[1] === e.b[1], vert = e.a[0] === e.b[0];
-      if (!e.esp || !(horiz || vert)) { res.push({ a: e.a, b: e.b, ouvert: false }); continue; }
+      if (!(horiz || vert)) { res.push({ a: e.a, b: e.b, ouvert: false }); continue; }
       var ax = horiz ? 0 : 1, ligne = horiz ? e.a[1] : e.a[0];
       var lo = Math.min(e.a[ax], e.b[ax]), hi = Math.max(e.a[ax], e.b[ax]);
       var restes = [[lo, hi]], ouverts = [];
       for (j = 0; j < bords.length; j++) {
         var f = bords[j];
-        if (f.i === e.i || f.esp !== e.esp) { continue; }
+        if (f.i === e.i || !sansCloison(e.z, f.z)) { continue; }
         var fh = f.a[1] === f.b[1], fv = f.a[0] === f.b[0];
         if ((horiz && fh && f.a[1] === ligne) || (vert && fv && f.a[0] === ligne)) {
           var c = [Math.min(f.a[ax], f.b[ax]), Math.max(f.a[ax], f.b[ax])];
@@ -78,6 +93,10 @@
           var o1 = Math.max(lo, c[0]), o2 = Math.min(hi, c[1]);
           if (o2 - o1 > 0.5) { ouverts.push([o1, o2]); }
         }
+      }
+      for (j = 0; j < ouvertures.length; j++) {
+        var trou = surLigne(ouvertures[j], horiz, ligne);
+        if (trou) { restes = soustraire(restes, trou); }
       }
       var listes = [[restes, false], [ouverts, true]];
       for (k = 0; k < 2; k++) {
@@ -102,7 +121,7 @@
 
   var MUR_HAUT = 100, MUR_BAS = 40, EP = 7;
   var C = {
-    mur: 0xC9C4BC, hautMur: 0x2B2F3A, dalle: 0x15171D,
+    mur: 0xA8A39B, hautMur: 0x23252B, hautMurDessus: 0xD6D0C6, dalle: 0x111215, or: 0xC9A45C,
     blanc: 0xF1EFEA, noir: 0x1B1C21, metal: 0xA7ADB8, chene: 0x9A7148, noyer: 0x5E3D24
   };
 
@@ -111,7 +130,7 @@
     if (!moteur) {
       // Fond opaque : sur tablette, un canvas transparent se mélange à la page.
       var r = new THREE.WebGLRenderer({ antialias: true, alpha: false });
-      r.setClearColor(0x12141B, 1);
+      r.setClearColor(0x0E0E10, 1);
       r.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
       moteur = { renderer: r };
     }
@@ -139,7 +158,7 @@
         var x = -alea(s++) * 200;
         while (x < n) {
           var l = 160 + alea(s++) * 180, v = alea(s++);
-          g.fillStyle = 'rgb(' + Math.round(150 + v * 40) + ',' + Math.round(108 + v * 30) + ',' + Math.round(70 + v * 22) + ')';
+          g.fillStyle = 'rgb(' + Math.round(118 + v * 26) + ',' + Math.round(96 + v * 20) + ',' + Math.round(76 + v * 16) + ')';
           g.fillRect(x, r * h, l, h);
           g.strokeStyle = 'rgba(60,35,15,0.35)';
           for (var k = 0; k < 5; k++) {
@@ -192,7 +211,7 @@
       var l = n / 8;
       for (var i = 0; i < 8; i++) {
         var v = alea(i + 40);
-        g.fillStyle = 'rgb(' + Math.round(132 + v * 30) + ',' + Math.round(96 + v * 20) + ',' + Math.round(66 + v * 14) + ')';
+        g.fillStyle = 'rgb(' + Math.round(104 + v * 22) + ',' + Math.round(84 + v * 16) + ',' + Math.round(66 + v * 12) + ')';
         g.fillRect(i * l, 0, l - 3, n);
         g.fillStyle = 'rgba(30,20,10,0.8)';
         g.fillRect(i * l + l - 3, 0, 3, n);
@@ -255,33 +274,55 @@
     return s;
   }
 
-  function spriteIcone(symbole) {
+  // Pictogrammes vectoriels (traits) : ampoule, téléviseur, caméra
+  function pictogramme(g, type, couleur) {
+    g.strokeStyle = couleur; g.fillStyle = couleur;
+    g.lineWidth = 6; g.lineCap = 'round'; g.lineJoin = 'round';
+    g.beginPath();
+    if (type === 'ampoule') {
+      g.arc(64, 54, 22, Math.PI * 0.8, Math.PI * 2.2);
+      g.lineTo(76, 82); g.lineTo(52, 82); g.closePath(); g.stroke();
+      g.beginPath(); g.moveTo(54, 92); g.lineTo(74, 92); g.moveTo(57, 101); g.lineTo(71, 101); g.stroke();
+      g.beginPath(); g.moveTo(58, 62); g.lineTo(64, 54); g.lineTo(70, 62); g.lineWidth = 4; g.stroke();
+    } else if (type === 'tv') {
+      g.moveTo(34, 38); g.lineTo(94, 38); g.quadraticCurveTo(100, 38, 100, 44); g.lineTo(100, 80);
+      g.quadraticCurveTo(100, 86, 94, 86); g.lineTo(34, 86); g.quadraticCurveTo(28, 86, 28, 80); g.lineTo(28, 44);
+      g.quadraticCurveTo(28, 38, 34, 38); g.stroke();
+      g.beginPath(); g.moveTo(50, 98); g.lineTo(78, 98); g.moveTo(64, 86); g.lineTo(64, 98); g.stroke();
+    } else {
+      g.moveTo(30, 48); g.lineTo(84, 48); g.lineTo(84, 84); g.lineTo(30, 84); g.closePath(); g.stroke();
+      g.beginPath(); g.moveTo(84, 60); g.lineTo(100, 50); g.lineTo(100, 82); g.lineTo(84, 72); g.stroke();
+      g.beginPath(); g.arc(50, 66, 7, 0, Math.PI * 2); g.stroke();
+    }
+  }
+
+  function spriteIcone(type) {
     var c = document.createElement('canvas');
     c.width = c.height = 128;
     var tex = new THREE.CanvasTexture(c);
     var s = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, depthTest: PROFONDEUR, transparent: true }));
-    s.scale.set(32, 32, 1);
+    s.scale.set(30, 30, 1);
     s.renderOrder = 11;
     var dernier = null;
-    s.userData.dessiner = function (actif, couleur) {
-      var cle = actif + couleur;
-      if (cle === dernier) { return; }
-      dernier = cle;
+    s.userData.dessiner = function (actif) {
+      if (actif === dernier) { return; }
+      dernier = actif;
       var g = c.getContext('2d');
       g.clearRect(0, 0, 128, 128);
       g.beginPath();
-      g.arc(64, 64, 56, 0, Math.PI * 2);
-      g.fillStyle = actif ? couleur : 'rgba(30,33,42,0.9)';
+      g.arc(64, 64, 58, 0, Math.PI * 2);
+      if (actif) {
+        var d = g.createLinearGradient(0, 0, 128, 128);
+        d.addColorStop(0, '#E6C67E'); d.addColorStop(1, '#A8823E');
+        g.fillStyle = d;
+      } else {
+        g.fillStyle = 'rgba(12,12,14,0.92)';
+      }
       g.fill();
-      g.lineWidth = 5;
-      g.strokeStyle = actif ? 'rgba(255,255,255,0.95)' : 'rgba(200,205,220,0.55)';
+      g.lineWidth = 3;
+      g.strokeStyle = actif ? 'rgba(255,240,205,0.9)' : 'rgba(201,164,92,0.85)';
       g.stroke();
-      g.font = '60px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif';
-      g.textAlign = 'center';
-      g.textBaseline = 'middle';
-      g.globalAlpha = actif ? 1 : 0.7;
-      g.fillText(symbole, 64, 70);
-      g.globalAlpha = 1;
+      pictogramme(g, type, actif ? '#141416' : '#D9C49A');
       tex.needsUpdate = true;
     };
     return s;
@@ -851,7 +892,7 @@
       texParquet: texParquet(), texBeton: texBeton(), texTerrasse: texTerrasse(),
       texBain: texCarrelage([196, 200, 206], 'rgba(120,124,132,0.9)', 8),
       texCuisine: texCarrelage([92, 94, 100], 'rgba(40,42,48,0.9)', 4),
-      texLueur: texRadial([[0, 'rgba(255,200,110,0.9)'], [0.45, 'rgba(255,160,60,0.32)'], [1, 'rgba(255,140,40,0)']]),
+      texLueur: texRadial([[0, 'rgba(236,200,130,0.75)'], [0.45, 'rgba(214,170,96,0.26)'], [1, 'rgba(200,150,80,0)']]),
       texOmbre: texRadial([[0, 'rgba(0,0,0,0.75)'], [0.55, 'rgba(0,0,0,0.35)'], [1, 'rgba(0,0,0,0)']])
     };
     var ressources = R;
@@ -868,7 +909,9 @@
     var soleil = new THREE.DirectionalLight(0xFFF1DE, 0.55);
     soleil.position.set(-500, 900, 650);
     scene.add(soleil);
-    var matMur = mat(C.mur), matHautMur = lumineux(C.hautMur);
+    var dessus = !!options.dessus;
+    var matMur = mat(C.mur), matHautMur = lumineux(dessus ? C.hautMurDessus : C.hautMur);
+    var portesGarage = [];
 
     function construireNiveau(nv) {
       var pl = nv.plan, alt = nv.alt || 0, i, j;
@@ -930,21 +973,21 @@
         lueur.visible = false;
         groupe.add(lueur);
 
-        var lab = spriteTexte(petit ? 115 : 180, petit);
-        lab.position.set(cx, MUR_HAUT + (petit ? 8 : 20), cy);
-        groupe.add(lab);
 
         var lums = info.piece ? options.lumieres(info.eids) : [];
         for (j = 0; j < lums.length; j++) {
-          var ic = spriteIcone('💡');
+          var ic = spriteIcone('ampoule');
           ic.position.set(cx + (j - (lums.length - 1) / 2) * 36, MUR_BAS + 34, cy + (petit ? 0 : 24));
           ic.userData.basculer = lums[j];
           groupe.add(ic);
           cliquables.push(ic);
-          icones.push({ sprite: ic, eid: lums[j], couleur: '#FFB547' });
+          icones.push({ sprite: ic, eid: lums[j] });
         }
-        zones3d.push({ info: info, type: type, matSol: matSol, lueur: lueur, lab: lab });
+        zones3d.push({ info: info, type: type, matSol: matSol, lueur: lueur });
       }
+
+      var ouv = pl.ouvertures || [];
+      for (i = 0; i < ouv.length; i++) { ouverture(groupe, pl, ouv[i]); }
 
       var meubles = pl.meubles || [];
       for (i = 0; i < meubles.length; i++) {
@@ -959,22 +1002,65 @@
       for (i = 0; i < ctx.tvs.length; i++) {
         var tv = ctx.tvs[i];
         if (tv.icone) { continue; }
-        tv.icone = spriteIcone('📺');
+        tv.icone = spriteIcone('tv');
         tv.icone.position.set(0, tv.hauteur, 6);
         tv.icone.userData.basculer = tv.entite;
         tv.groupe.add(tv.icone);
         tv.ecran.userData.basculer = tv.entite;
         cliquables.push(tv.icone, tv.ecran);
-        icones.push({ sprite: tv.icone, eid: tv.entite, couleur: '#A77BFF' });
+        icones.push({ sprite: tv.icone, eid: tv.entite });
       }
       var cams = pl.cameras || [];
       for (i = 0; i < cams.length; i++) {
-        var rep = spriteIcone('📷');
-        rep.userData.dessiner(true, '#7C5CFF');
+        var rep = spriteIcone('camera');
+        rep.userData.dessiner(true);
         rep.position.set(cams[i].pos[0], MUR_HAUT + 18, cams[i].pos[1]);
         rep.userData.camera = cams[i].entity_id;
         groupe.add(rep);
         cliquables.push(rep);
+      }
+    }
+
+    // Portes, baies vitrées et porte de garage (volet roulant noir, suit l'état du garage)
+    function ouverture(groupe, pl, o) {
+      var dx = o.b[0] - o.a[0], dy = o.b[1] - o.a[1], L = Math.sqrt(dx * dx + dy * dy);
+      var fond = (o.a[1] === 0 && o.b[1] === 0) || (o.a[0] === pl.largeur && o.b[0] === pl.largeur);
+      var hMur = fond ? MUR_HAUT : MUR_BAS, hOuv = fond ? 84 : MUR_BAS;
+      var g = new THREE.Group();
+      g.position.set((o.a[0] + o.b[0]) / 2, 0, (o.a[1] + o.b[1]) / 2);
+      g.rotation.y = -Math.atan2(dy, dx);
+      groupe.add(g);
+      if (fond) {   // linteau au-dessus de l'ouverture
+        var lin = new THREE.Mesh(new THREE.BoxGeometry(L, hMur - hOuv, EP), [matMur, matMur, matHautMur, matMur, matMur, matMur]);
+        lin.position.y = hOuv + (hMur - hOuv) / 2;
+        g.add(lin);
+      }
+      var noir = mat(0x101113), i;
+      if (o.type === 'baie') {
+        rb(g, L, 2, EP + 1, 0, noir, 0, 0, 0);
+        rb(g, L, 2.5, EP + 1, 0, noir, 0, hOuv - 2.5, 0);
+        var n = Math.max(2, Math.round(L / 55));
+        for (i = 0; i <= n; i++) { rb(g, 2, hOuv, EP + 1, 0, noir, -L / 2 + i * L / n, 0, 0); }
+        plan(g, L, hOuv - 3, verre(0x9FB6C8, 0.22), 0, hOuv / 2, 0);
+      } else if (o.type === 'garage') {
+        rb(g, L + 4, 8, 12, 1, noir, 0, hOuv - 8, 0);
+        var tablier = new THREE.Group();
+        tablier.position.y = hOuv - 8;
+        g.add(tablier);
+        var lames = new THREE.Group();
+        tablier.add(lames);
+        for (i = 0; i < 14; i++) { rb(lames, L, 5.6, 3.5, 0.8, matBrillant(0x16171A), 0, -(i + 1) * 5.6, 0); }
+        portesGarage.push({ lames: lames, entite: o.entite, hauteur: hOuv - 8 });
+      } else {
+        var cadre = matBois('#3A2E24');
+        rb(g, 2, hOuv, EP + 1.5, 0, cadre, -L / 2 + 1, 0, 0);
+        rb(g, 2, hOuv, EP + 1.5, 0, cadre, L / 2 - 1, 0, 0);
+        var battant = new THREE.Group();
+        battant.position.set(-L / 2 + 2, 0, 0);
+        battant.rotation.y = o.exterieure ? 0.25 : -1.15;
+        g.add(battant);
+        rb(battant, L - 4, hOuv - 1, 2.6, 0.6, o.exterieure ? matBrillant(0x1B1C20) : matBois('#B39A7C'), (L - 4) / 2, 0, 0);
+        sphere(battant, 1.2, matBrillant(0xC9A45C), L - 9, Math.min(36, hOuv - 6), 2);
       }
     }
 
@@ -983,9 +1069,12 @@
     var cxg = (global.x1 + global.x2) / 2, czg = (global.z1 + global.z2) / 2;
     for (n = 0; n < groupes.length; n++) { groupes[n].position.x -= cxg; groupes[n].position.z -= czg; }
 
-    var cam = new THREE.PerspectiveCamera(36, 1, 10, 6000);
-    var dist = Math.max(global.x2 - global.x1, global.z2 - global.z1) + global.h * 1.1;
-    if (niveaux.length > 1) {   // vue globale : plus basse, de face, pour voir sous l'étage
+    var largeurG = global.x2 - global.x1, profG = global.z2 - global.z1;
+    var cam = dessus ? new THREE.OrthographicCamera(-1, 1, 1, -1, 1, 5000) : new THREE.PerspectiveCamera(36, 1, 10, 6000);
+    var dist = Math.max(largeurG, profG) + global.h * 1.1;
+    if (dessus) {
+      cam.position.set(0, 1500, 0.01);
+    } else if (niveaux.length > 1) {   // vue globale : plus basse, de face, pour voir sous l'étage
       cam.position.set(-dist * 0.42, dist * 0.5 + global.h, dist * 0.88);
     } else {
       cam.position.set(-dist * 0.36, dist * 0.8 + global.h * 0.3, dist * 0.72);
@@ -1004,6 +1093,7 @@
     controles.maxAzimuthAngle = 0.55;
     controles.minDistance = dist * 0.25;
     controles.maxDistance = dist * 1.7;
+    if (dessus) { controles.enableRotate = false; controles.enableZoom = false; controles.target.set(0, 0, 0); }
     controles.update();
 
     var enAttente = false, actif = true;
@@ -1023,7 +1113,12 @@
     function taille() {
       var l = conteneur.clientWidth || 800, h = conteneur.clientHeight || 520;
       renderer.setSize(l, h);
-      cam.aspect = l / h;
+      if (dessus) {
+        var demi = Math.max(largeurG / 2, (profG / 2) * l / h) * 1.04;
+        cam.left = -demi; cam.right = demi; cam.top = demi * h / l; cam.bottom = -demi * h / l;
+      } else {
+        cam.aspect = l / h;
+      }
       cam.updateProjectionMatrix();
       rendu();
     }
@@ -1068,10 +1163,16 @@
         var q = zones3d[i];
         var res = q.info.piece ? options.resume(q.info.eids) : { actif: false, texte: '' };
         q.lueur.visible = res.actif;
-        q.matSol.emissive.setHex(res.actif ? 0x3A2208 : 0x000000);
-        q.lab.userData.ecrire(q.info.zone.nom || q.info.zone.piece, res.actif ? res.texte : '');
+        q.matSol.emissive.setHex(res.actif ? 0x2A1E0C : 0x000000);
       }
-      for (i = 0; i < icones.length; i++) { icones[i].sprite.userData.dessiner(options.actif(icones[i].eid), icones[i].couleur); }
+      for (i = 0; i < icones.length; i++) { icones[i].sprite.userData.dessiner(options.actif(icones[i].eid)); }
+      for (i = 0; i < portesGarage.length; i++) {
+        var pg = portesGarage[i];
+        var ouvert = options.position ? options.position(pg.entite) : 0;   // 0 fermé … 100 ouvert
+        var visible = 1 - Math.max(0, Math.min(100, ouvert)) / 100;
+        pg.lames.scale.y = Math.max(0.02, visible);
+        pg.lames.visible = visible > 0.02;
+      }
       for (i = 0; i < ctx.tvs.length; i++) {
         var tv = ctx.tvs[i], on = options.actif(tv.entite);
         tv.ecran.material.color.setHex(on ? (tv.ambilight && options.actif(tv.ambilight) ? 0x8A5CFF : 0x3E7BFF) : 0x0B0D12);

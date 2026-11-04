@@ -57,7 +57,7 @@ ACTIONS_NIVEAU = {
     "tout_fermer": ("cover", "close_cover"),
 }
 ATTRS_UTILES = ("friendly_name", "current_position", "volume_level", "source", "media_title",
-                "unit_of_measurement", "next_rising", "next_setting")
+                "unit_of_measurement", "next_rising", "next_setting", "temperature", "humidity")
 
 
 def charger_maison():

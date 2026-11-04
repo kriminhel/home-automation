@@ -1,5 +1,6 @@
 {
   "nom": "Maison",
+  "lieu": "Saint-Aubin-lès-Elbeuf",
   "scenes": [
     {
       "entity_id": "scene.tout_eteindre",
@@ -19,8 +20,41 @@
   ],
   "infos": {
     "internet": "sensor.freebox_download_speed",
-    "soleil": "sun.sun"
+    "soleil": "sun.sun",
+    "meteo": "weather.forecast_maison"
   },
+  "habitants": [
+    {
+      "nom": "Karim",
+      "pieces": [
+        "Chambre parentale"
+      ]
+    },
+    {
+      "nom": "Samia",
+      "pieces": [
+        "Chambre parentale"
+      ]
+    },
+    {
+      "nom": "Alia",
+      "pieces": [
+        "Chambre d'Alia"
+      ]
+    },
+    {
+      "nom": "Naïm",
+      "pieces": [
+        "Chambre de Naïm"
+      ]
+    },
+    {
+      "nom": "Amel",
+      "pieces": [
+        "Chambre d'Amel"
+      ]
+    }
+  ],
   "cameras": [
     {
       "entity_id": "image.visiophone_entree_derniere_image_du_mouvement",
@@ -404,7 +438,7 @@
                 640,
                 0,
                 160,
-                140
+                100
               ]
             ]
           },
@@ -414,10 +448,13 @@
             "rects": [
               [
                 640,
-                140,
+                100,
                 160,
-                280
+                320
               ]
+            ],
+            "ouvert_vers": [
+              "Salon"
             ]
           },
           {
@@ -470,10 +507,10 @@
           {
             "t": "voiture",
             "x": 150,
-            "y": 95,
-            "face": "droite",
-            "w": 100,
-            "d": 230
+            "y": 100,
+            "face": "haut",
+            "w": 88,
+            "d": 176
           },
           {
             "t": "plante",
@@ -499,7 +536,8 @@
             "y": 222,
             "face": "haut",
             "w": 80,
-            "d": 30
+            "d": 30,
+            "couleur": "#17181C"
           },
           {
             "t": "armoire",
@@ -586,7 +624,8 @@
             "face": "haut",
             "w": 220,
             "d": 36,
-            "plaque": true
+            "plaque": true,
+            "couleur": "#17181C"
           },
           {
             "t": "frigo",
@@ -600,7 +639,8 @@
             "y": 530,
             "face": "droite",
             "w": 110,
-            "d": 36
+            "d": 36,
+            "couleur": "#17181C"
           },
           {
             "t": "ilot",
@@ -608,7 +648,8 @@
             "y": 515,
             "face": "bas",
             "w": 120,
-            "d": 50
+            "d": 50,
+            "couleur": "#17181C"
           },
           {
             "t": "plante",
@@ -620,61 +661,6 @@
             "t": "plante",
             "x": 625,
             "y": 405,
-            "face": "bas"
-          },
-          {
-            "t": "canape",
-            "x": 880,
-            "y": 617,
-            "face": "haut",
-            "w": 200,
-            "d": 44,
-            "couleur": "#16171B"
-          },
-          {
-            "t": "canape",
-            "x": 977,
-            "y": 520,
-            "face": "gauche",
-            "w": 150,
-            "d": 44,
-            "couleur": "#16171B"
-          },
-          {
-            "t": "tablebasse",
-            "x": 870,
-            "y": 540,
-            "face": "bas",
-            "w": 80,
-            "d": 44
-          },
-          {
-            "t": "tapis",
-            "x": 870,
-            "y": 545,
-            "face": "bas",
-            "w": 200,
-            "d": 120,
-            "couleur": "#5C5348"
-          },
-          {
-            "t": "tv",
-            "x": 860,
-            "y": 428,
-            "face": "bas",
-            "w": 110,
-            "entite": "media_player.tv_salon"
-          },
-          {
-            "t": "plante",
-            "x": 985,
-            "y": 435,
-            "face": "bas"
-          },
-          {
-            "t": "plante",
-            "x": 478,
-            "y": 625,
             "face": "bas"
           },
           {
@@ -700,7 +686,7 @@
           {
             "t": "console",
             "x": 655,
-            "y": 280,
+            "y": 290,
             "face": "droite",
             "w": 60,
             "d": 20
@@ -855,19 +841,217 @@
             "bois": "#7A4A22"
           },
           {
+            "t": "tv",
+            "x": 991,
+            "y": 470,
+            "face": "gauche",
+            "w": 110,
+            "entite": "media_player.tv_salon"
+          },
+          {
+            "t": "canape",
+            "x": 800,
+            "y": 532,
+            "face": "droite",
+            "w": 160,
+            "d": 46,
+            "couleur": "#16171B"
+          },
+          {
+            "t": "canape",
+            "x": 868,
+            "y": 617,
+            "face": "haut",
+            "w": 118,
+            "d": 44,
+            "couleur": "#16171B"
+          },
+          {
+            "t": "tablebasse",
+            "x": 895,
+            "y": 520,
+            "face": "droite",
+            "w": 76,
+            "d": 44
+          },
+          {
             "t": "tapis",
-            "x": 590,
-            "y": 530,
+            "x": 895,
+            "y": 525,
             "face": "bas",
-            "w": 120,
-            "d": 70,
-            "couleur": "#4A4038"
+            "w": 150,
+            "d": 135,
+            "couleur": "#3E3A35"
           },
           {
             "t": "plante",
-            "x": 600,
-            "y": 440,
+            "x": 984,
+            "y": 436,
             "face": "bas"
+          },
+          {
+            "t": "plante",
+            "x": 478,
+            "y": 625,
+            "face": "bas"
+          }
+        ],
+        "ouvertures": [
+          {
+            "type": "garage",
+            "a": [
+              40,
+              0
+            ],
+            "b": [
+              260,
+              0
+            ],
+            "entite": "cover.garage"
+          },
+          {
+            "type": "porte",
+            "a": [
+              200,
+              190
+            ],
+            "b": [
+              232,
+              190
+            ]
+          },
+          {
+            "type": "porte",
+            "a": [
+              248,
+              240
+            ],
+            "b": [
+              280,
+              240
+            ]
+          },
+          {
+            "type": "porte",
+            "a": [
+              230,
+              276
+            ],
+            "b": [
+              230,
+              308
+            ]
+          },
+          {
+            "type": "porte",
+            "a": [
+              118,
+              350
+            ],
+            "b": [
+              150,
+              350
+            ]
+          },
+          {
+            "type": "porte",
+            "a": [
+              175,
+              380
+            ],
+            "b": [
+              175,
+              406
+            ]
+          },
+          {
+            "type": "porte",
+            "a": [
+              300,
+              356
+            ],
+            "b": [
+              300,
+              400
+            ]
+          },
+          {
+            "type": "porte",
+            "a": [
+              700,
+              100
+            ],
+            "b": [
+              730,
+              100
+            ]
+          },
+          {
+            "type": "porte",
+            "a": [
+              800,
+              104
+            ],
+            "b": [
+              800,
+              136
+            ]
+          },
+          {
+            "type": "porte",
+            "a": [
+              800,
+              190
+            ],
+            "b": [
+              800,
+              222
+            ]
+          },
+          {
+            "type": "porte",
+            "a": [
+              800,
+              328
+            ],
+            "b": [
+              800,
+              360
+            ]
+          },
+          {
+            "type": "porte",
+            "a": [
+              640,
+              214
+            ],
+            "b": [
+              640,
+              262
+            ],
+            "exterieure": true
+          },
+          {
+            "type": "baie",
+            "a": [
+              326,
+              330
+            ],
+            "b": [
+              614,
+              330
+            ]
+          },
+          {
+            "type": "baie",
+            "a": [
+              1000,
+              528
+            ],
+            "b": [
+              1000,
+              630
+            ]
           }
         ]
       }
@@ -1087,6 +1271,41 @@
             "face": "bas",
             "w": 110,
             "d": 26
+          }
+        ],
+        "ouvertures": [
+          {
+            "type": "porte",
+            "a": [
+              150,
+              56
+            ],
+            "b": [
+              150,
+              100
+            ]
+          },
+          {
+            "type": "porte",
+            "a": [
+              56,
+              220
+            ],
+            "b": [
+              88,
+              220
+            ]
+          },
+          {
+            "type": "porte",
+            "a": [
+              378,
+              190
+            ],
+            "b": [
+              410,
+              190
+            ]
           }
         ]
       }

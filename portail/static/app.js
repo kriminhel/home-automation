@@ -3,9 +3,49 @@
 (function () {
   'use strict';
 
-  var ACCUEIL = { id: 'accueil', nom: 'Accueil', icone: '🏠', couleur: '#3949AB' };
-  var CAMERAS = { id: 'cameras', nom: 'Caméras', icone: '📷', couleur: '#546E7A' };
-  var MAISON3D = { id: 'maison3d', nom: '3D', icone: '🏠', couleur: '#7C5CFF' };
+  var ACCUEIL = { id: 'accueil', nom: 'Accueil', svg: 'maison' };
+  var CAMERAS = { id: 'cameras', nom: 'Caméras', svg: 'camera' };
+  var MAISON3D = { id: 'maison3d', nom: '3D', svg: 'cube' };
+  var PROFILS = { id: 'profils', nom: 'Famille', svg: 'famille' };
+  var SVG_NIVEAU = { rdc: 'canape', etage: 'escalier' };
+
+  // Pictogrammes au trait (24 × 24, couleur du texte)
+  var PICTOS = {
+    maison: '<path d="M3 11.5 12 4l9 7.5"/><path d="M5 10v10h5v-6h4v6h5V10"/>',
+    cube: '<path d="M12 3 20 7.5v9L12 21l-8-4.5v-9z"/><path d="M4 7.5 12 12l8-4.5M12 12v9"/>',
+    canape: '<path d="M5 11V8a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v3"/><path d="M3 12a2 2 0 0 1 4 0v2h10v-2a2 2 0 0 1 4 0v5H3z"/><path d="M5 17v2M19 17v2"/>',
+    escalier: '<path d="M3 20h5v-4h4v-4h4V8h5"/>',
+    camera: '<rect x="3" y="7" width="12" height="10" rx="2"/><path d="m15 11 6-3v8l-6-3"/>',
+    famille: '<circle cx="9" cy="8" r="3.2"/><path d="M3 20a6 6 0 0 1 12 0"/><circle cx="17.5" cy="9" r="2.4"/><path d="M16 14.6a4.8 4.8 0 0 1 5.5 4.9"/>',
+    wifi: '<path d="M2.5 9a14 14 0 0 1 19 0M5.5 12.5a9.5 9.5 0 0 1 13 0M8.8 16a5 5 0 0 1 6.4 0"/><circle cx="12" cy="19.3" r="0.9"/>',
+    marche: '<path d="M12 3.5v8"/><path d="M6.5 6.8a7.5 7.5 0 1 0 11 0"/>',
+    ampoule: '<path d="M9 17h6M10 20.5h4"/><path d="M8.5 14.5a6 6 0 1 1 7 0c-.7.6-1 1.4-1 2.5h-5c0-1.1-.3-1.9-1-2.5z"/>',
+    tv: '<rect x="3" y="5" width="18" height="12" rx="2"/><path d="M8 21h8M12 17v4"/>',
+    garage: '<path d="M3 20V9l9-5 9 5v11"/><path d="M7 20v-8h10v8M7 15h10M7 17.5h10"/>',
+    lit: '<path d="M3 18V7M3 13h18v5M21 18v-3a3 3 0 0 0-3-3h-7v1"/><circle cx="7" cy="10.5" r="1.6"/>',
+    table: '<path d="M3 9h18M6 9v10M18 9v10M8 13h8"/>',
+    cuisine: '<path d="M4 10h16v10H4z"/><path d="M4 14h16M8 6v2M12 5v3M16 6v2"/>',
+    bain: '<path d="M4 12h16v3a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4z"/><path d="M6 12V6a2 2 0 0 1 4 0M7 19l-1 2M17 19l1 2"/>',
+    porte: '<path d="M6 21V4h10v17M4 21h16"/><circle cx="13" cy="12.5" r=".9"/>',
+    arbre: '<path d="M12 21v-6"/><path d="M12 3a5 5 0 0 1 4.6 7A4 4 0 0 1 15 17H9a4 4 0 0 1-1.6-7A5 5 0 0 1 12 3z"/>',
+    manette: '<path d="M6 8h12a4 4 0 0 1 3.9 4.8l-.7 3.5a2.5 2.5 0 0 1-4.3 1.2L15 15H9l-1.9 2.5a2.5 2.5 0 0 1-4.3-1.2l-.7-3.5A4 4 0 0 1 6 8z"/><path d="M7.5 11v3M6 12.5h3"/>',
+    telephone: '<rect x="7" y="2.5" width="10" height="19" rx="2.2"/><path d="M11 18.5h2"/>',
+    fleche: '<path d="m9 6 6 6-6 6"/>',
+    soleil: '<circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4"/>',
+    lune: '<path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/>',
+    nuage: '<path d="M7 18a4.5 4.5 0 0 1-.6-9A6 6 0 0 1 18 9.5a4.3 4.3 0 0 1-.5 8.5z"/>',
+    eclaircie: '<path d="M8.5 6.5A3.8 3.8 0 0 1 15 8"/><path d="M5 4.5 6 5.5M9 2v1.5M2 9h1.5"/><path d="M8 20a4 4 0 0 1-.5-8 5.5 5.5 0 0 1 10.6.6A3.8 3.8 0 0 1 17.5 20z"/>',
+    pluie: '<path d="M7 15a4.5 4.5 0 0 1-.6-9A6 6 0 0 1 18 6.5a4.3 4.3 0 0 1-.5 8.5z"/><path d="M8 18l-1 3M12 18l-1 3M16 18l-1 3"/>',
+    neige: '<path d="M7 15a4.5 4.5 0 0 1-.6-9A6 6 0 0 1 18 6.5a4.3 4.3 0 0 1-.5 8.5z"/><path d="M8 19h.01M12 20h.01M16 19h.01"/>',
+    orage: '<path d="M7 15a4.5 4.5 0 0 1-.6-9A6 6 0 0 1 18 6.5a4.3 4.3 0 0 1-.5 8.5z"/><path d="m13 14-3 4h4l-3 4"/>',
+    vent: '<path d="M3 9h11a3 3 0 1 0-3-3M3 15h15a3 3 0 1 1-3 3M3 12h8"/>'
+  };
+  function picto(nom, classe) {
+    var s = el('span', 'picto' + (classe ? ' ' + classe : ''));
+    s.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">' +
+      (PICTOS[nom] || PICTOS.maison) + '</svg>';
+    return s;
+  }
   var JOURS = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'];
   var MOIS = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août',
     'septembre', 'octobre', 'novembre', 'décembre'];
@@ -59,11 +99,11 @@
   function majHorloge() {
     var d = new Date();
     var h = deux(d.getHours()) + ':' + deux(d.getMinutes());
-    $('horloge-mini').textContent = vue === 'accueil' ? '' : h;
+    var jour = JOURS[d.getDay()];
+    $('ligne-date').textContent = h + '  •  ' + d.getDate() + ' ' + MOIS[d.getMonth()] + '  •  ' + jour;
     var grande = $('horloge');
     if (grande) {
       grande.textContent = h;
-      var jour = JOURS[d.getDay()];
       $('date').textContent = jour.charAt(0).toUpperCase() + jour.slice(1) + ' ' + d.getDate() + ' ' + MOIS[d.getMonth()];
     }
     var nuit = d.getHours() >= 20 || d.getHours() < 7;
@@ -117,7 +157,7 @@
         for (i = 0; i < tuiles[eid].length; i++) { majTuile(tuiles[eid][i], eid); }
       }
     }
-    if (vue === 'accueil') { majRecap(); }
+    majRecap();
     majPlan();
     if (vue3d) { vue3d.maj(); }
     for (eid in legendesCam) {
@@ -202,24 +242,28 @@
   /* ---------- vues ---------- */
 
   function niveaux() {
-    var l = [ACCUEIL].concat(maison.niveaux);
+    var l = [ACCUEIL];
     if (window.Plan3D && window.Plan3D.disponible() && aDesPlans()) { l.push(MAISON3D); }
+    l = l.concat(maison.niveaux);
     if (maison.cameras && maison.cameras.length) { l.push(CAMERAS); }
+    if (maison.habitants && maison.habitants.length) { l.push(PROFILS); }
     return l;
   }
 
   function dessinerOnglets() {
-    var zone = $('onglets');
+    var zone = $('nav');
     zone.innerHTML = '';
+    var logo = el('div', 'logo');
+    logo.appendChild(picto('maison'));
+    zone.appendChild(logo);
     var liste = niveaux();
     for (var i = 0; i < liste.length; i++) {
       (function (n) {
-        var o = el('div', 'onglet' + (n.id === vue ? ' actif' : ''));
-        var ico = el('span', 'ico', n.icone);
-        o.appendChild(ico);
-        o.appendChild(document.createTextNode(n.nom));
-        if (n.id === vue) { o.style.background = n.couleur; o.style.borderBottomColor = 'rgba(0,0,0,.25)'; }
-        else { o.style.borderBottomColor = n.couleur; }
+        var o = el('div', 'nav-item' + (n.id === vue ? ' actif' : ''));
+        var rond = el('div', 'rond');
+        rond.appendChild(picto(n.svg || SVG_NIVEAU[n.id] || 'cube'));
+        o.appendChild(rond);
+        o.appendChild(el('div', 'lib', n.nom));
         o.addEventListener('click', function () { vue = n.id; dessiner(); });
         zone.appendChild(o);
       })(liste[i]);
@@ -310,77 +354,199 @@
     if (cible) { window.scrollTo(0, cible.offsetTop - 100); }
   }
 
-  function puce(ico, libelle, fn) {
-    var c = el('div', 'puce');
-    c.appendChild(el('span', 'ico', ico));
-    var t = el('div', 'txt');
-    var v = el('div', 'val', '…');
-    t.appendChild(v);
-    t.appendChild(el('div', 'lib', libelle));
-    c.appendChild(t);
-    if (fn) { c.addEventListener('click', fn); c.className += ' lien'; }
-    return { el: c, val: v, ico: c.firstChild };
+  /* Météo (Home Assistant / met.no) */
+  var METEO = {
+    'clear-night': ['Nuit claire', 'lune'], cloudy: ['Couvert', 'nuage'], fog: ['Brouillard', 'nuage'],
+    hail: ['Grêle', 'pluie'], lightning: ['Orage', 'orage'], 'lightning-rainy': ['Orage', 'orage'],
+    partlycloudy: ['Éclaircies', 'eclaircie'], pouring: ['Averses', 'pluie'], rainy: ['Pluie', 'pluie'],
+    snowy: ['Neige', 'neige'], 'snowy-rainy': ['Neige fondue', 'neige'], sunny: ['Ensoleillé', 'soleil'],
+    windy: ['Venteux', 'vent'], 'windy-variant': ['Venteux', 'vent'], exceptional: ['Exceptionnel', 'nuage']
+  };
+  function meteo() {
+    var e = etats[(maison.infos || {}).meteo];
+    if (!e || !METEO[e.state]) { return null; }
+    var t = parseFloat(e.temperature);
+    return { texte: METEO[e.state][0], picto: METEO[e.state][1], temp: isNaN(t) ? '' : Math.round(t) + '°', humidite: e.humidity };
   }
 
-  function pieceDe(eid) {
-    for (var i = 0; i < PIECES.length; i++) {
-      if (PIECES[i].eids.indexOf(eid) >= 0) { return PIECES[i]; }
+  /* Courbes (lumières allumées, débit internet) : un point toutes les 30 s, 40 points */
+  var historique = { lumieres: [], internet: [] }, dernierPoint = 0;
+  function echantillonner() {
+    var t = new Date().getTime();
+    if (historique.lumieres.length && t - dernierPoint < 30000) { return; }
+    dernierPoint = t;
+    historique.lumieres.push(compter(function (e) { return domaine(e) === 'light' && estActif(e); }));
+    var e = etats[(maison.infos || {}).internet];
+    historique.internet.push(e && !isNaN(parseFloat(e.state)) ? parseFloat(e.state) * 8 / 1000 : 0);
+    if (historique.lumieres.length > 40) { historique.lumieres.shift(); historique.internet.shift(); }
+  }
+  function courbe(valeurs) {
+    var v = valeurs.length > 1 ? valeurs : [valeurs[0] || 0, valeurs[0] || 0];
+    var max = Math.max.apply(null, v.concat([1])) * 1.15, pts = [];
+    for (var i = 0; i < v.length; i++) { pts.push((i * 300 / (v.length - 1)).toFixed(1) + ',' + (88 - v[i] / max * 78).toFixed(1)); }
+    var dernier = pts[pts.length - 1].split(',');
+    return '<svg viewBox="0 0 300 90" preserveAspectRatio="none"><defs><linearGradient id="dg" x1="0" y1="0" x2="0" y2="1">' +
+      '<stop offset="0" stop-color="#C9A45C" stop-opacity=".45"/><stop offset="1" stop-color="#C9A45C" stop-opacity="0"/></linearGradient></defs>' +
+      '<path d="M0,90 L' + pts.join(' L') + ' L300,90 Z" fill="url(#dg)"/>' +
+      '<path d="M' + pts.join(' L') + '" fill="none" stroke="#D9B66E" stroke-width="2.5" vector-effect="non-scaling-stroke"/>' +
+      '<circle cx="' + dernier[0] + '" cy="' + dernier[1] + '" r="5" fill="#141416" stroke="#E6C67E" stroke-width="2.5"/></svg>';
+  }
+
+  /* Illustration de repli : maison contemporaine à toit terrasse, de nuit (noir et or) */
+  var ILLUSTRATION = '<svg viewBox="0 0 600 420" preserveAspectRatio="xMidYMid slice" class="illu">' +
+    '<defs><linearGradient id="ciel" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0B1220"/><stop offset=".7" stop-color="#1A2233"/><stop offset="1" stop-color="#2A2A2E"/></linearGradient>' +
+    '<linearGradient id="vitre" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F3D9A0"/><stop offset="1" stop-color="#B98A45"/></linearGradient>' +
+    '<radialGradient id="halo" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#E9C27A" stop-opacity=".55"/><stop offset="1" stop-color="#E9C27A" stop-opacity="0"/></radialGradient>' +
+    '<linearGradient id="eau" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3A3328"/><stop offset="1" stop-color="#121214"/></linearGradient></defs>' +
+    '<rect width="600" height="420" fill="url(#ciel)"/>' +
+    '<circle cx="500" cy="70" r="16" fill="#E9E1CC" opacity=".85"/>' +
+    '<path d="M0 300 C60 250 90 270 120 240 C150 210 170 260 210 250 L210 330 L0 330Z" fill="#0E1712"/>' +
+    '<path d="M470 330 C480 230 520 220 560 200 C600 190 600 260 600 330Z" fill="#0E1712"/>' +
+    '<ellipse cx="300" cy="250" rx="260" ry="90" fill="url(#halo)"/>' +
+    '<rect x="150" y="196" width="330" height="124" fill="#2B2A2C"/>' +
+    '<rect x="140" y="188" width="350" height="10" fill="#E8E2D6"/>' +
+    '<rect x="230" y="110" width="230" height="78" fill="#323134"/>' +
+    '<rect x="220" y="102" width="252" height="10" fill="#E8E2D6"/>' +
+    '<rect x="246" y="124" width="92" height="56" fill="url(#vitre)"/><rect x="350" y="124" width="92" height="56" fill="url(#vitre)" opacity=".85"/>' +
+    '<path d="M292 124v56M396 124v56" stroke="#1B1B1D" stroke-width="3"/>' +
+    '<rect x="168" y="214" width="120" height="96" fill="url(#vitre)"/><rect x="300" y="214" width="60" height="96" fill="#5C4A33"/>' +
+    '<rect x="372" y="230" width="92" height="56" fill="url(#vitre)" opacity=".9"/>' +
+    '<path d="M208 214v96M248 214v96M418 230v56" stroke="#1B1B1D" stroke-width="3"/>' +
+    '<rect x="150" y="306" width="330" height="4" fill="#E9C27A" opacity=".8"/>' +
+    '<rect x="0" y="320" width="600" height="100" fill="url(#eau)"/>' +
+    '<path d="M168 330h120M372 330h92" stroke="#E9C27A" stroke-width="2" opacity=".35"/>' +
+    '<path d="M60 330v-50M90 330v-30M520 330v-40" stroke="#E9C27A" stroke-width="2" opacity=".5"/>' +
+    '</svg>';
+
+  var PICTO_PIECE = [[/salon/i, 'canape'], [/manger/i, 'table'], [/cuisine/i, 'cuisine'], [/bain|wc/i, 'bain'],
+    [/garage|buanderie/i, 'garage'], [/entr/i, 'porte'], [/ext/i, 'arbre'], [/jeux/i, 'manette'], [/chambre|parentale/i, 'lit']];
+  function pictoPiece(nom) {
+    for (var i = 0; i < PICTO_PIECE.length; i++) { if (PICTO_PIECE[i][0].test(nom)) { return PICTO_PIECE[i][1]; } }
+    return 'maison';
+  }
+
+  function lumieresDe(eids) {
+    var l = [];
+    for (var i = 0; i < eids.length; i++) {
+      if (domaine(eids[i]) === 'light' && noms[eids[i]] && !noms[eids[i]].groupe) { l.push(eids[i]); }
     }
-    return null;
+    return l;
+  }
+
+  // Bouton marche / arrêt d'une pièce : éteint toutes ses lumières, ou allume la première
+  function marchePiece(p) {
+    var l = lumieresDe(p.eids), allumees = [], i;
+    for (i = 0; i < l.length; i++) { if (estActif(l[i])) { allumees.push(l[i]); } }
+    if (!l.length) { message(p.nom + ' : aucune lumière pilotable', true); return; }
+    var cibles = allumees.length ? allumees : [l[0]];
+    for (i = 0; i < cibles.length; i++) {
+      if (etats[cibles[i]]) { etats[cibles[i]].state = allumees.length ? 'off' : 'on'; }
+      agir({ entity_id: cibles[i], action: allumees.length ? 'eteindre' : 'allumer' });
+    }
+    majToutesTuiles();
+  }
+
+  function wifiPiece(p) {
+    message('Wi-Fi « ' + p.nom + ' » : bientôt disponible (autorisation Freebox à faire)', true);
+  }
+
+  function boutonRond(nomPicto, classe, fn) {
+    var b = el('div', 'bouton-rond ' + (classe || ''));
+    b.appendChild(picto(nomPicto));
+    b.addEventListener('click', function (ev) { ev.stopPropagation(); fn(); });
+    return b;
+  }
+
+  function piecesDe(h) {
+    var res = [];
+    for (var i = 0; i < PIECES.length; i++) { if ((h.pieces || []).indexOf(PIECES[i].nom) >= 0) { res.push(PIECES[i]); } }
+    return res;
+  }
+  function eidsDe(h) {
+    var p = piecesDe(h), e = [];
+    for (var i = 0; i < p.length; i++) { e = e.concat(p[i].eids); }
+    return e;
+  }
+  function nomsPieces(h) {
+    var p = piecesDe(h), n = [];
+    for (var i = 0; i < p.length; i++) { n.push(p[i].nom); }
+    return n.join(', ');
+  }
+
+  function carteStat(titre, nomPicto) {
+    var c = el('div', 'carte stat');
+    var t = el('div', 'stat-titre');
+    t.appendChild(picto(nomPicto, 'or'));
+    t.appendChild(el('span', '', titre));
+    c.appendChild(t);
+    var v = el('div', 'stat-val');
+    c.appendChild(v);
+    var g = el('div', 'stat-courbe');
+    c.appendChild(g);
+    return { el: c, val: v, courbe: g };
   }
 
   function vueAccueil(c) {
-    recap = { pieces: [] };
-    var haut = el('div', 'heros');
+    recap = { pieces: [], profils: [] };
+    var haut = el('div', 'acc');
 
-    var bienvenue = el('div', 'carte bienvenue');
-    recap.salut = el('div', 'salut');
-    bienvenue.appendChild(recap.salut);
-    var h = el('div', 'horloge'); h.id = 'horloge'; bienvenue.appendChild(h);
-    var d = el('div', 'date'); d.id = 'date'; bienvenue.appendChild(d);
-    recap.resume = el('div', 'resume');
-    bienvenue.appendChild(recap.resume);
-    haut.appendChild(bienvenue);
+    // Héros : maison, lieu, heure, météo
+    var heros = el('div', 'carte acc-heros');
+    var fond = el('div', 'heros-fond');
+    if (maison.photo) { fond.style.backgroundImage = 'url(/static/photos/' + maison.photo + ')'; } else { fond.innerHTML = ILLUSTRATION; }
+    heros.appendChild(fond);
+    var bas = el('div', 'heros-bas');
+    bas.appendChild(el('div', 'lieu', maison.lieu || 'Maison'));
+    var h = el('div', 'horloge'); h.id = 'horloge'; bas.appendChild(h);
+    var d = el('div', 'date'); d.id = 'date'; bas.appendChild(d);
+    recap.meteo = el('div', 'meteo');
+    bas.appendChild(recap.meteo);
+    var chips = el('div', 'chips');
+    recap.chipLum = el('div', 'chip'); recap.chipEcr = el('div', 'chip'); recap.chipGar = el('div', 'chip');
+    chips.appendChild(recap.chipLum); chips.appendChild(recap.chipEcr); chips.appendChild(recap.chipGar);
+    bas.appendChild(chips);
+    heros.appendChild(bas);
+    heros.addEventListener('click', function () { if (aDesPlans() && window.Plan3D && window.Plan3D.disponible()) { vue = 'maison3d'; dessiner(); } });
+    haut.appendChild(heros);
 
-    if (maison.cameras && maison.cameras.length) {
-      var cam = el('div', 'carte cam-heros');
-      recap.camImg = el('img', '');
-      cam.appendChild(recap.camImg);
-      recap.camLeg = el('div', 'legende');
-      cam.appendChild(recap.camLeg);
-      cam.addEventListener('click', function () { vue = 'cameras'; dessiner(); });
-      haut.appendChild(cam);
-    }
-    c.appendChild(haut);
+    var droite = el('div', 'acc-droite');
+    var stats = el('div', 'stats');
+    recap.statLum = carteStat('Lumières', 'ampoule');
+    recap.statNet = carteStat('Internet', 'wifi');
+    stats.appendChild(recap.statLum.el);
+    stats.appendChild(recap.statNet.el);
+    droite.appendChild(stats);
 
-    var puces = el('div', 'puces');
-    recap.lumieres = puce('💡', 'Lumières');
-    recap.ecrans = puce('📺', 'Écrans');
-    puces.appendChild(recap.lumieres.el);
-    puces.appendChild(recap.ecrans.el);
-    recap.covers = [];
-    for (var eid in noms) {
-      if (noms.hasOwnProperty(eid) && domaine(eid) === 'cover') {
-        (function (id) {
-          var p = pieceDe(id);
-          var pc = puce(noms[id].icone || '🚪', noms[id].nom, function () { allerA(p.niveau, p.id); });
-          pc.eid = id;
-          recap.covers.push(pc);
-          puces.appendChild(pc.el);
-        })(eid);
+    var i;
+    if (maison.habitants && maison.habitants.length) {
+      var fam = el('div', 'carte famille');
+      var tf = el('div', 'carte-tete');
+      tf.appendChild(el('h3', '', 'Famille'));
+      var tout = el('span', 'lien', 'Profils');
+      tout.addEventListener('click', function () { vue = 'profils'; dessiner(); });
+      tf.appendChild(tout);
+      fam.appendChild(tf);
+      for (i = 0; i < maison.habitants.length; i++) {
+        (function (hb) {
+          var ligne = el('div', 'personne');
+          ligne.appendChild(el('div', 'avatar', hb.nom.charAt(0)));
+          ligne.appendChild(el('div', 'nom', hb.nom));
+          var statut = el('div', 'statut');
+          ligne.appendChild(statut);
+          ligne.appendChild(el('div', 'ou', nomsPieces(hb)));
+          ligne.appendChild(picto('fleche', 'chevron'));
+          ligne.addEventListener('click', function () { ouvrirProfil(hb); });
+          recap.profils.push({ h: hb, statut: statut });
+          fam.appendChild(ligne);
+        })(maison.habitants[i]);
       }
+      droite.appendChild(fam);
     }
-    if ((maison.infos || {}).internet) { recap.internet = puce('📶', 'Internet'); puces.appendChild(recap.internet.el); }
-    if ((maison.infos || {}).soleil) { recap.soleil = puce('🌅', 'Soleil'); puces.appendChild(recap.soleil.el); }
-    c.appendChild(puces);
 
-    c.appendChild(el('h2', 'titre', 'Scènes'));
     var sc = el('div', 'scenes');
-    for (var i = 0; i < maison.scenes.length; i++) {
+    for (i = 0; i < maison.scenes.length; i++) {
       (function (scene) {
-        var b = el('div', 'scene-btn');
-        b.appendChild(el('span', 'ico', scene.icone));
-        b.appendChild(document.createTextNode(scene.nom));
+        var b = el('div', 'scene-btn', scene.nom);
         b.addEventListener('click', function () {
           b.className = 'scene-btn appui';
           setTimeout(function () { b.className = 'scene-btn'; }, 600);
@@ -390,76 +556,136 @@
         sc.appendChild(b);
       })(maison.scenes[i]);
     }
-    c.appendChild(sc);
+    droite.appendChild(sc);
+    haut.appendChild(droite);
+    c.appendChild(haut);
 
+    // Pièces : cartes photo (photo de la pièce si fournie, sinon pictogramme sur fond dégradé)
     c.appendChild(el('h2', 'titre', 'Pièces'));
-    var grille = el('div', 'grille-pieces');
+    var carrousel = el('div', 'carrousel');
     for (i = 0; i < PIECES.length; i++) {
-      (function (p) {
-        var niv = niveauParId(p.niveau);
-        var carte = el('div', 'carte-piece');
-        var ico = el('div', 'rond', p.icone);
-        carte.appendChild(ico);
-        var t = el('div', 'txt');
-        t.appendChild(el('div', 'nom', p.nom));
-        var etat = el('div', 'etat', '…');
-        t.appendChild(etat);
-        carte.appendChild(t);
-        var badge = el('div', 'badge', niv.nom);
-        badge.style.color = niv.couleur;
-        carte.appendChild(badge);
-        carte.addEventListener('click', function () { allerA(p.niveau, p.id); });
-        recap.pieces.push({ p: p, carte: carte, etat: etat });
-        grille.appendChild(carte);
-      })(PIECES[i]);
+      (function (p, n) {
+        var carte = el('div', 'carte-photo');
+        var img = el('div', 'photo teinte' + (n % 6));
+        if (p.photo) { img.style.backgroundImage = 'url(/static/photos/' + p.photo + ')'; img.className = 'photo'; } else { img.appendChild(picto(pictoPiece(p.nom), 'geant')); }
+        carte.appendChild(img);
+        var boutons = el('div', 'boutons-photo');
+        var bw = boutonRond('wifi', 'wifi', function () { wifiPiece(p); });
+        bw.appendChild(el('span', '', 'Wi-Fi'));
+        boutons.appendChild(bw);
+        var bm = boutonRond('marche', 'marche', function () { marchePiece(p); });
+        boutons.appendChild(bm);
+        carte.appendChild(boutons);
+        var leg = el('div', 'legende');
+        leg.appendChild(el('div', 'nom', p.nom));
+        var etat = el('div', 'etat', '');
+        leg.appendChild(etat);
+        carte.appendChild(leg);
+        carte.addEventListener('click', function () { ouvrirPiece(p); });
+        recap.pieces.push({ p: p, carte: carte, etat: etat, marche: bm });
+        carrousel.appendChild(carte);
+      })(PIECES[i], i);
     }
-    c.appendChild(grille);
+    c.appendChild(carrousel);
+  }
+
+  function majMeteoHaut() {
+    var z = $('meteo-haut');
+    if (!z) { return; }
+    var m = meteo();
+    z.innerHTML = '';
+    if (!m) { return; }
+    z.appendChild(picto(m.picto, 'or'));
+    z.appendChild(el('span', '', m.temp));
   }
 
   function majRecap() {
+    majMeteoHaut();
+    echantillonner();
     if (!recap) { return; }
-    var heure = new Date().getHours();
-    recap.salut.textContent = heure >= 18 || heure < 5 ? 'Bonsoir' : 'Bonjour';
-    var resume = resumeMaison();
-    recap.resume.textContent = resume;
-    recap.resume.className = 'resume' + (resume.indexOf('Tout est') === 0 ? ' calme' : '');
-
+    var i;
+    for (i = 0; i < recap.profils.length; i++) {
+      var rp = recap.profils[i], res = resumeEntites(eidsDe(rp.h));
+      rp.statut.textContent = res.actif ? res.texte : 'Tout éteint';
+      rp.statut.className = 'statut' + (res.actif ? ' on' : '');
+    }
+    if (!recap.meteo) { return; }
+    var m = meteo();
+    recap.meteo.innerHTML = '';
+    if (m) {
+      recap.meteo.appendChild(picto(m.picto, 'or'));
+      recap.meteo.appendChild(el('span', 'temp', m.temp));
+      recap.meteo.appendChild(el('span', 'cond', m.texte + (m.humidite !== undefined ? ' · ' + m.humidite + ' % d’humidité' : '')));
+    }
     var l = compter(function (e) { return domaine(e) === 'light' && estActif(e); });
     var lt = compter(function (e) { return domaine(e) === 'light'; });
-    recap.lumieres.val.textContent = l + ' / ' + lt;
-    recap.lumieres.el.className = 'puce' + (l ? ' on' : '');
-    var m = compter(function (e) { return domaine(e) === 'media_player' && estActif(e); });
-    recap.ecrans.val.textContent = m ? pluriel(m, 'allumé') : 'Éteints';
-    recap.ecrans.el.className = 'puce' + (m ? ' media' : '');
-    for (var i = 0; i < recap.covers.length; i++) {
-      var pc = recap.covers[i];
-      var lib = libelleEtat(pc.eid);
-      pc.val.textContent = lib;
-      pc.el.className = 'puce lien' + (lib !== 'Fermé' && lib !== 'injoignable' && lib !== '…' ? ' alerte' : '');
+    var me = compter(function (e) { return domaine(e) === 'media_player' && estActif(e); });
+    recap.chipLum.textContent = pluriel(l, 'lumière') + (l > 1 ? ' allumées' : ' allumée');
+    recap.chipEcr.textContent = me ? pluriel(me, 'écran') + (me > 1 ? ' allumés' : ' allumé') : 'Écrans éteints';
+    recap.chipGar.textContent = '';
+    for (var eid in noms) {
+      if (noms.hasOwnProperty(eid) && domaine(eid) === 'cover') { recap.chipGar.textContent = 'Garage · ' + libelleEtat(eid).toLowerCase(); }
     }
-    if (recap.internet) { recap.internet.val.textContent = debitInternet(); }
-    if (recap.soleil) {
-      var so = soleil();
-      recap.soleil.val.textContent = so ? so.texte : '—';
-      if (so) { recap.soleil.ico.textContent = so.ico; }
-    }
-
-    if (recap.camImg) {
-      var cam = cameraRecente() || maison.cameras[0];
-      if (recap.camEid !== cam.entity_id) {
-        recap.camEid = cam.entity_id;
-        recap.camImg.src = urlImage(cam.entity_id);
-        imagesCam = [{ img: recap.camImg, eid: cam.entity_id }];
-      }
-      recap.camLeg.textContent = cam.icone + ' ' + cam.nom + ' · ' + libelleMouvement(cam.entity_id);
-    }
-
+    recap.chipGar.className = 'chip' + (recap.chipGar.textContent && recap.chipGar.textContent.indexOf('fermé') < 0 ? ' alerte' : '');
+    recap.statLum.val.innerHTML = '<b>' + l + '</b><span> / ' + lt + ' allumées</span>';
+    recap.statLum.courbe.innerHTML = courbe(historique.lumieres);
+    var net = historique.internet[historique.internet.length - 1] || 0;
+    recap.statNet.val.innerHTML = '<b>' + (net < 10 ? net.toFixed(1) : Math.round(net)).toString().replace('.', ',') + '</b><span> Mbit/s</span>';
+    recap.statNet.courbe.innerHTML = courbe(historique.internet);
     for (i = 0; i < recap.pieces.length; i++) {
-      var r = recap.pieces[i];
-      var res = resumePiece(r.p);
-      r.etat.textContent = res.texte;
-      r.carte.className = 'carte-piece' + (res.actif ? ' on' : '');
+      var r = recap.pieces[i], rs = resumePiece(r.p);
+      r.etat.textContent = rs.texte;
+      r.carte.className = 'carte-photo' + (rs.actif ? ' on' : '');
+      r.marche.className = 'bouton-rond marche' + (rs.actif ? ' on' : '');
     }
+  }
+
+  /* ---------- profils ---------- */
+
+  function ouvrirProfil(h) {
+    ouvrirFeuille(function (tete) {
+      tete.appendChild(el('div', 'avatar grand', h.nom.charAt(0)));
+      var t = el('div', 'titres');
+      t.appendChild(el('h1', '', h.nom));
+      t.appendChild(el('div', 'sous', nomsPieces(h)));
+      tete.appendChild(t);
+    }, eidsDe(h), function (panneau) {
+      var infos = el('div', 'infos-profil');
+      var tel = el('div', 'info');
+      tel.appendChild(picto('telephone', 'or'));
+      tel.appendChild(el('span', '', h.telephone ? h.telephone : 'Téléphone : à connecter (appli Home Assistant)'));
+      infos.appendChild(tel);
+      var wf = el('div', 'info');
+      wf.appendChild(picto('wifi', 'or'));
+      wf.appendChild(el('span', '', 'Wi-Fi de la chambre : bientôt (autorisation Freebox)'));
+      infos.appendChild(wf);
+      panneau.appendChild(infos);
+    });
+  }
+
+  function vueProfils(c) {
+    var ent = el('div', 'entete');
+    ent.appendChild(el('h1', '', 'Famille'));
+    c.appendChild(ent);
+    var grille = el('div', 'grille-profils');
+    for (var i = 0; i < maison.habitants.length; i++) {
+      (function (hb) {
+        var carte = el('div', 'carte profil');
+        carte.appendChild(el('div', 'avatar grand', hb.nom.charAt(0)));
+        carte.appendChild(el('div', 'nom', hb.nom));
+        carte.appendChild(el('div', 'ou', nomsPieces(hb)));
+        var statut = el('div', 'statut');
+        carte.appendChild(statut);
+        var tel = el('div', 'tel');
+        tel.appendChild(picto('telephone'));
+        tel.appendChild(el('span', '', hb.telephone || 'Téléphone à connecter'));
+        carte.appendChild(tel);
+        carte.addEventListener('click', function () { ouvrirProfil(hb); });
+        recap.profils.push({ h: hb, statut: statut });
+        grille.appendChild(carte);
+      })(maison.habitants[i]);
+    }
+    c.appendChild(grille);
   }
 
   function niveauParId(id) {
@@ -609,7 +835,13 @@
         }
         return l;
       },
-      camera: function (eid) { pleinEcran(cameraParId(eid)); }
+      camera: function (eid) { pleinEcran(cameraParId(eid)); },
+      position: function (eid) {
+        var e = etats[eid];
+        if (!e) { return 0; }
+        if (e.current_position !== undefined) { return e.current_position; }
+        return e.state === 'open' || e.state === 'opening' ? 100 : 0;
+      }
     };
   }
 
@@ -620,8 +852,7 @@
 
   function vueMaison3d(c) {
     var ent = el('div', 'entete');
-    ent.style.background = MAISON3D.couleur;
-    ent.appendChild(el('h1', '', '🏠 La maison en 3D'));
+    ent.appendChild(el('h1', '', 'La maison en 3D'));
     c.appendChild(ent);
     var cadre = el('div', 'carte plan');
     var zone = el('div', 'zone-plan en3d grande');
@@ -648,7 +879,13 @@
       zone.className = 'zone-plan' + (en3d ? ' en3d' : '');
       if (en3d) {
         vue3d = window.Plan3D.creer(zone, [niveau3d(niveau, false)], options3d());
-        aide.textContent = 'Un doigt pour tourner · deux doigts pour zoomer · 💡 / 📺 pour allumer ou éteindre · toucher une pièce pour ses commandes';
+        aide.textContent = 'Un doigt pour tourner · deux doigts pour zoomer · touchez une ampoule ou une TV pour l’allumer · touchez le sol pour les commandes';
+      } else if (avec3d) {
+        var o = options3d();
+        o.dessus = true;
+        zone.className = 'zone-plan en3d';
+        vue3d = window.Plan3D.creer(zone, [niveau3d(niveau, false)], o);
+        aide.textContent = 'Vue de dessus · touchez une ampoule ou une TV pour l’allumer · touchez une pièce pour ses commandes';
       } else {
         zone.appendChild(dessinerPlan(niveau));
         majPlan();
@@ -657,8 +894,8 @@
       b3.className = en3d ? 'actif' : '';
       b2.className = en3d ? '' : 'actif';
     }
-    var b3 = el('button', '', '🧊 3D');
-    var b2 = el('button', '', '🗺 Plan');
+    var b3 = el('button', '', '3D');
+    var b2 = el('button', '', 'Plan');
     b3.addEventListener('click', function () { mode3d = true; sauver(); afficher(true); });
     b2.addEventListener('click', function () { mode3d = false; sauver(); afficher(false); });
     function sauver() { try { window.localStorage.setItem('portail-plan', mode3d ? '3d' : '2d'); } catch (e) { return; } }
@@ -693,23 +930,22 @@
     }
   }
 
-  function ouvrirPiece(p) {
+  function ouvrirFeuille(remplirTete, eids, extra) {
     fermerPiece();
     var fond = el('div', '');
     fond.id = 'feuille';
     var panneau = el('div', 'panneau');
     var tete = el('div', 'tete');
-    tete.appendChild(el('h1', '', p.icone + ' ' + p.nom));
+    remplirTete(tete);
     var fermer = el('button', 'fermer', '✕');
     fermer.addEventListener('click', fermerPiece);
     tete.appendChild(fermer);
     panneau.appendChild(tete);
+    if (extra) { extra(panneau); }
     var ts = el('div', 'tuiles');
-    var niv = niveauParId(p.niveau);
-    for (var i = 0; i < p.eids.length; i++) {
-      var eid = p.eids[i];
+    for (var i = 0; i < eids.length; i++) {
+      var eid = eids[i];
       var t = creerTuile({ entity_id: eid, nom: noms[eid].nom, icone: noms[eid].icone, confirmer: noms[eid].confirmer });
-      t.style.borderLeftColor = niv.couleur;
       majTuile(t, eid);
       ts.appendChild(t);
     }
@@ -720,10 +956,18 @@
     document.body.appendChild(fond);
   }
 
+  function ouvrirPiece(p) {
+    ouvrirFeuille(function (tete) {
+      tete.appendChild(picto(pictoPiece(p.nom), 'or grand'));
+      var t = el('div', 'titres');
+      t.appendChild(el('h1', '', p.nom));
+      tete.appendChild(t);
+    }, p.eids);
+  }
+
   function vueNiveau(c, niveau) {
     var ent = el('div', 'entete');
-    ent.style.background = niveau.couleur;
-    ent.appendChild(el('h1', '', niveau.icone + ' ' + niveau.nom));
+    ent.appendChild(el('h1', '', niveau.nom));
     var aVolets = false, i, j;
     for (i = 0; i < niveau.pieces.length; i++) {
       for (j = 0; j < niveau.pieces[i].equipements.length; j++) {
@@ -753,11 +997,10 @@
       var p = niveau.pieces[i];
       var bloc = el('div', 'piece');
       bloc.id = 'piece-' + niveau.id + '-' + i;
-      bloc.appendChild(el('h2', '', (p.icone ? p.icone + ' ' : '') + p.nom));
+      bloc.appendChild(el('h2', '', p.nom));
       var ts = el('div', 'tuiles');
       for (j = 0; j < p.equipements.length; j++) {
         var t = creerTuile(p.equipements[j]);
-        t.style.borderLeftColor = niveau.couleur;
         ts.appendChild(t);
       }
       bloc.appendChild(ts);
@@ -814,8 +1057,7 @@
 
   function vueCameras(c) {
     var ent = el('div', 'entete');
-    ent.style.background = CAMERAS.couleur;
-    ent.appendChild(el('h1', '', CAMERAS.icone + ' Caméras'));
+    ent.appendChild(el('h1', '', 'Caméras'));
     c.appendChild(ent);
     c.appendChild(el('div', 'vide', 'Dernière image prise lors d’un mouvement. Toucher une image pour l’agrandir.'));
     var zone = el('div', 'tuiles');
@@ -850,7 +1092,7 @@
     var c = $('contenu');
     c.innerHTML = '';
     recap = null;
-    if (vue === 'accueil') { vueAccueil(c); } else if (vue === 'cameras') { vueCameras(c); } else if (vue === 'maison3d') { vueMaison3d(c); } else {
+    if (vue === 'accueil') { vueAccueil(c); } else if (vue === 'cameras') { vueCameras(c); } else if (vue === 'maison3d') { vueMaison3d(c); } else if (vue === 'profils') { recap = { pieces: [], profils: [] }; vueProfils(c); } else {
       for (var i = 0; i < maison.niveaux.length; i++) {
         if (maison.niveaux[i].id === vue) { vueNiveau(c, maison.niveaux[i]); }
       }
@@ -889,12 +1131,12 @@
             noms[eq.entity_id] = { nom: eq.nom, icone: eq.icone, piece: p.nom, confirmer: !!eq.confirmer,
               groupe: !!eq.groupe };
           }
-          PIECES.push({ id: 'piece-' + m.niveaux[i].id + '-' + j, nom: p.nom, icone: p.icone || '•',
+          PIECES.push({ id: 'piece-' + m.niveaux[i].id + '-' + j, nom: p.nom, icone: p.icone || '•', photo: p.photo,
             niveau: m.niveaux[i].id, eids: p.equipements.map(function (e) { return e.entity_id; }) });
         }
       }
       var ancre = (window.location.hash || '').replace('#', '');  // lien direct : /#rdc, /#cameras…
-      if (ancre === 'cameras' || ancre === 'maison3d' || niveauParId(ancre)) { vue = ancre; }
+      if (ancre === 'cameras' || ancre === 'maison3d' || ancre === 'profils' || niveauParId(ancre)) { vue = ancre; }
       dessiner();
       lireEtats();
       setInterval(lireEtats, 2000);

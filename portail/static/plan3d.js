@@ -612,11 +612,12 @@
     },
     comptoir: function (g, o) {
       var w = o.w || 120, d = o.d || 36, n = Math.max(2, Math.round(w / 32)), i;
+      var caisson = hex(o.couleur, 0xE6E2DA);
       ombre(g, w, d, 0.4);
-      rb(g, w, 31, d, 1, 0xE6E2DA, 0, 1, 0);
+      rb(g, w, 31, d, 1, matBrillant(caisson), 0, 1, 0);
       for (i = 1; i < n; i++) { rb(g, 0.6, 28, 0.6, 0, 0x8E8A84, -w / 2 + i * w / n, 2, d / 2 + 0.2); }
       for (i = 0; i < n; i++) { rb(g, 8, 0.8, 1, 0.3, C.metal, -w / 2 + (i + 0.5) * w / n, 27, d / 2 + 0.7); }
-      rb(g, w + 2, 2.8, d + 2, 0.8, 0xF4F2EE, 0, 32, 0);
+      rb(g, w + 2, 2.8, d + 2, 0.8, o.couleur ? 0x2C2B2E : 0xF4F2EE, 0, 32, 0);
       if (o.plaque) {
         rb(g, 30, 0.8, 22, 0.4, 0x0D0D10, w / 4, 34.6, 0);
         rb(g, 24, 1, 16, 0.5, 0x8E949E, -w / 5, 34.4, 0);
@@ -635,10 +636,12 @@
     ilot: function (g, o) {
       var w = o.w || 120, d = o.d || 50, i;
       ombre(g, w + 20, d + 30, 0.5);
-      rb(g, w, 33, d, 1.5, 0x2C2F3A, 0, 0, 0);
-      rb(g, w + 10, 3.5, d + 8, 1, 0xF4F2EE, 0, 33, 0);
-      rb(g, 3.5, 33, d + 8, 0.8, 0xF4F2EE, -w / 2 - 3.25, 0, 0);
-      rb(g, 3.5, 33, d + 8, 0.8, 0xF4F2EE, w / 2 + 3.25, 0, 0);
+      var caisson = hex(o.couleur, 0x2C2F3A), plateau = o.couleur ? 0x2C2B2E : 0xF4F2EE;
+      rb(g, w, 33, d, 1.5, matBrillant(caisson), 0, 0, 0);
+      rb(g, w + 10, 3.5, d + 8, 1, plateau, 0, 33, 0);
+      rb(g, 3.5, 33, d + 8, 0.8, plateau, -w / 2 - 3.25, 0, 0);
+      rb(g, 3.5, 33, d + 8, 0.8, plateau, w / 2 + 3.25, 0, 0);
+      plan(g, w, 0.8, lumineux(0xD9B66E), 0, 2, d / 2 + 0.2);
       for (i = -1; i <= 1; i++) {
         cyl(g, 1, 1, 24, C.noir, i * w / 3, 0, d / 2 + 16, 8);
         cyl(g, 7, 7, 3, matBois('#A47A50'), i * w / 3, 24, d / 2 + 16, 18);

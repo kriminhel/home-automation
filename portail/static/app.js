@@ -374,6 +374,7 @@
   function echantillonner() {
     var t = new Date().getTime();
     if (historique.lumieres.length && t - dernierPoint < 30000) { return; }
+    if (!etats[(maison.infos || {}).internet]) { return; }   // états pas encore reçus
     dernierPoint = t;
     historique.lumieres.push(compter(function (e) { return domaine(e) === 'light' && estActif(e); }));
     var e = etats[(maison.infos || {}).internet];
@@ -629,7 +630,8 @@
     recap.chipGar.className = 'chip' + (recap.chipGar.textContent && recap.chipGar.textContent.indexOf('fermé') < 0 ? ' alerte' : '');
     recap.statLum.val.innerHTML = '<b>' + l + '</b><span> / ' + lt + ' allumées</span>';
     recap.statLum.courbe.innerHTML = courbe(historique.lumieres);
-    var net = historique.internet[historique.internet.length - 1] || 0;
+    var en = etats[(maison.infos || {}).internet];
+    var net = en && !isNaN(parseFloat(en.state)) ? parseFloat(en.state) * 8 / 1000 : 0;   // kB/s -> Mbit/s
     recap.statNet.val.innerHTML = '<b>' + (net < 10 ? net.toFixed(1) : Math.round(net)).toString().replace('.', ',') + '</b><span> Mbit/s</span>';
     recap.statNet.courbe.innerHTML = courbe(historique.internet);
     for (i = 0; i < recap.pieces.length; i++) {
@@ -857,7 +859,7 @@
     var cadre = el('div', 'carte plan');
     var zone = el('div', 'zone-plan en3d grande');
     cadre.appendChild(zone);
-    cadre.appendChild(el('div', 'aide', 'Un doigt pour tourner · deux doigts pour zoomer · 💡 / 📺 pour allumer ou éteindre · toucher une pièce pour ses commandes'));
+    cadre.appendChild(el('div', 'aide', 'Un doigt pour tourner · deux doigts pour zoomer · touchez une ampoule ou une TV pour l’allumer · touchez le sol pour les commandes'));
     c.appendChild(cadre);
     var liste = [];
     for (var i = 0; i < maison.niveaux.length; i++) {

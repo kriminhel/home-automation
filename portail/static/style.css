@@ -64,7 +64,7 @@ h2.titre, .piece h2 {
 }
 .salut { font-size: 22px; color: #B9A8FF; font-weight: 600; }
 .horloge { font-size: 96px; font-weight: 200; line-height: 1; letter-spacing: -2px; margin-top: 4px; }
-.date { font-size: 24px; color: #8A90A2; margin: 6px 0 18px; text-transform: capitalize; }
+.date { font-size: 24px; color: #8A90A2; margin: 6px 0 18px; }
 .resume {
   display: inline-block; font-size: 19px; font-weight: 600; padding: 10px 16px; border-radius: 16px;
   background: rgba(255,181,71,.14); color: #FFCF85;

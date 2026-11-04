@@ -62,7 +62,8 @@
     var grande = $('horloge');
     if (grande) {
       grande.textContent = h;
-      $('date').textContent = JOURS[d.getDay()] + ' ' + d.getDate() + ' ' + MOIS[d.getMonth()];
+      var jour = JOURS[d.getDay()];
+      $('date').textContent = jour.charAt(0).toUpperCase() + jour.slice(1) + ' ' + d.getDate() + ' ' + MOIS[d.getMonth()];
     }
     var nuit = d.getHours() >= 20 || d.getHours() < 7;
     document.body.className = nuit ? 'nuit' : '';

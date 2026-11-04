@@ -176,6 +176,40 @@ h2.titre, .piece h2 {
 }
 .boutons button:last-child { margin-right: 0; }
 
+/* ---------- plan de la maison ---------- */
+.plan { padding: 18px 18px 12px; margin: 14px 0 4px; background: rgba(255,255,255,.035); }
+.plan-svg { display: block; }
+.plan .aide { font-size: 14px; color: #8A90A2; text-align: center; margin-top: 8px; }
+.zone rect { fill: rgba(255,255,255,.045); stroke: rgba(205,212,235,.55); stroke-width: 3; }
+.zone.decor rect { fill: rgba(255,255,255,.015); stroke: rgba(205,212,235,.22); stroke-dasharray: 8 6; }
+.zone.exterieur rect { fill: rgba(61,220,132,.06); stroke: rgba(61,220,132,.35); stroke-dasharray: 10 6; }
+.zone.on rect { fill: inherit; stroke: #FFB547; }
+.etiquette text { fill: #EEF0F6; font-family: -apple-system, "Helvetica Neue", Helvetica, Arial, sans-serif; }
+.etiquette .nom { font-size: 22px; font-weight: 700; }
+.etiquette .nom.petit { font-size: 15px; font-weight: 600; fill: #C9CDD6; }
+.etiquette .etat { font-size: 16px; fill: #FFCF85; font-weight: 600; }
+.etiquette.decor text { fill: #6A7080; font-weight: 600; }
+.repere-cam circle { fill: rgba(11,13,20,.85); stroke: #A77BFF; stroke-width: 3; }
+.repere-cam text { font-size: 22px; }
+
+/* ---------- fenêtre d'une pièce ---------- */
+#feuille {
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 25; background: rgba(0,0,0,.55);
+  display: -webkit-flex; display: flex; -webkit-align-items: flex-end; align-items: flex-end;
+  -webkit-justify-content: center; justify-content: center;
+}
+#feuille .panneau {
+  width: 100%; max-width: 980px; max-height: 80%; overflow-y: auto; -webkit-overflow-scrolling: touch;
+  padding: 20px 20px 10px 20px; border-radius: 28px 28px 0 0; background: #161924;
+  border: 1px solid rgba(255,255,255,.1); box-shadow: 0 -10px 40px rgba(0,0,0,.5);
+}
+#feuille .tete { display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; margin-bottom: 14px; }
+#feuille h1 { -webkit-flex: 1; flex: 1; margin: 0; font-size: 28px; }
+#feuille .fermer {
+  width: 64px; height: 64px; border: 0; border-radius: 32px; font-size: 24px;
+  background: rgba(255,255,255,.1); color: #EEF0F6;
+}
+
 /* ---------- caméras ---------- */
 .camera { width: 344px; margin: 0 12px 12px 0; padding: 10px; border-radius: 24px; }
 .camera img { display: block; width: 324px; height: 182px; border-radius: 16px; background: #151821; object-fit: cover; }

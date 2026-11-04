@@ -117,6 +117,7 @@
       }
     }
     if (vue === 'accueil') { majRecap(); }
+    majPlan();
     for (eid in legendesCam) {
       if (legendesCam.hasOwnProperty(eid)) { legendesCam[eid].textContent = libelleMouvement(eid); }
     }
@@ -462,6 +463,151 @@
     return null;
   }
 
+  /* ---------- plan de la maison (SVG) ---------- */
+
+  var SVG = 'http://www.w3.org/2000/svg';
+  var zonesPlan = [];       // [{g, p}] zones liées à une pièce, mises à jour sur place
+
+  function svg(tag, attrs) {
+    var e = document.createElementNS(SVG, tag);
+    for (var k in attrs) { if (attrs.hasOwnProperty(k)) { e.setAttribute(k, attrs[k]); } }
+    return e;
+  }
+
+  function pieceParNom(niveauId, nom) {
+    for (var i = 0; i < PIECES.length; i++) {
+      if (PIECES[i].niveau === niveauId && PIECES[i].nom === nom) { return PIECES[i]; }
+    }
+    return null;
+  }
+
+  function cameraParId(eid) {
+    for (var i = 0; i < (maison.cameras || []).length; i++) {
+      if (maison.cameras[i].entity_id === eid) { return maison.cameras[i]; }
+    }
+    return null;
+  }
+
+  function dessinerPlan(niveau) {
+    var plan = niveau.plan;
+    var marge = 12;
+    var racine = svg('svg', {
+      viewBox: (-marge) + ' ' + (-marge) + ' ' + (plan.largeur + 2 * marge) + ' ' + (plan.hauteur + 2 * marge),
+      width: '100%', 'class': 'plan-svg'
+    });
+    var defs = svg('defs', {});
+    var grad = svg('radialGradient', { id: 'lueur-' + niveau.id, cx: '50%', cy: '50%', r: '70%' });
+    grad.appendChild(svg('stop', { offset: '0%', 'stop-color': '#FFC56B', 'stop-opacity': '0.75' }));
+    grad.appendChild(svg('stop', { offset: '100%', 'stop-color': '#FF9F2E', 'stop-opacity': '0.12' }));
+    defs.appendChild(grad);
+    racine.appendChild(defs);
+
+    var textes = svg('g', {});   // les libellés passent au-dessus de tous les murs
+    for (var i = 0; i < plan.zones.length; i++) {
+      (function (z) {
+        var p = z.piece ? pieceParNom(niveau.id, z.piece) : null;
+        var g = svg('g', { 'class': 'zone ' + (z.type || 'piece') });
+        var cx = 0, cy = 0, aire = 0;
+        for (var j = 0; j < z.rects.length; j++) {
+          var r = z.rects[j];
+          g.appendChild(svg('rect', { x: r[0], y: r[1], width: r[2], height: r[3], rx: 6 }));
+          var a = r[2] * r[3];
+          if (a > aire) { aire = a; cx = r[0] + r[2] / 2; cy = r[1] + r[3] / 2; }
+        }
+        racine.appendChild(g);
+        var t = svg('g', { 'class': 'etiquette ' + (z.type || 'piece') });
+        var petit = aire < 9000;
+        var nom = svg('text', { x: cx, y: cy - (p && !petit ? 4 : -6), 'text-anchor': 'middle', 'class': 'nom' + (petit ? ' petit' : '') });
+        nom.appendChild(document.createTextNode(z.nom || z.piece));
+        t.appendChild(nom);
+        var etat = null;
+        if (p && !petit) {
+          etat = svg('text', { x: cx, y: cy + 22, 'text-anchor': 'middle', 'class': 'etat' });
+          etat.appendChild(document.createTextNode(''));
+          t.appendChild(etat);
+        }
+        textes.appendChild(t);
+        if (p) {
+          var ouvrir = function () { ouvrirPiece(p); };
+          g.addEventListener('click', ouvrir);
+          t.addEventListener('click', ouvrir);
+          zonesPlan.push({ g: g, p: p, etat: etat, niveau: niveau.id, type: z.type || 'piece' });
+        }
+      })(plan.zones[i]);
+    }
+    racine.appendChild(textes);
+
+    var cams = plan.cameras || [];
+    for (i = 0; i < cams.length; i++) {
+      (function (mc) {
+        var cam = cameraParId(mc.entity_id);
+        if (!cam) { return; }
+        var g = svg('g', { 'class': 'repere-cam' });
+        g.appendChild(svg('circle', { cx: mc.pos[0], cy: mc.pos[1], r: 22 }));
+        var ic = svg('text', { x: mc.pos[0], y: mc.pos[1] + 8, 'text-anchor': 'middle' });
+        ic.appendChild(document.createTextNode('📷'));
+        g.appendChild(ic);
+        g.addEventListener('click', function () { pleinEcran(cam); });
+        racine.appendChild(g);
+      })(cams[i]);
+    }
+
+    var cadre = el('div', 'carte plan');
+    cadre.appendChild(racine);
+    cadre.appendChild(el('div', 'aide', 'Toucher une pièce pour la piloter · les pièces allumées brillent'));
+    return cadre;
+  }
+
+  function majPlan() {
+    for (var i = 0; i < zonesPlan.length; i++) {
+      var z = zonesPlan[i];
+      var res = resumePiece(z.p);
+      z.g.setAttribute('class', 'zone ' + z.type + (res.actif ? ' on' : ''));
+      if (res.actif) { z.g.style.fill = 'url(#lueur-' + z.niveau + ')'; } else { z.g.style.fill = ''; }
+      if (z.etat) { z.etat.textContent = res.actif ? res.texte : ''; }
+    }
+  }
+
+  /* ---------- fenêtre d'une pièce ---------- */
+
+  function fermerPiece() {
+    var f = $('feuille');
+    if (!f) { return; }
+    document.body.removeChild(f);
+    for (var eid in tuiles) {
+      if (tuiles.hasOwnProperty(eid)) {
+        tuiles[eid] = tuiles[eid].filter(function (t) { return !f.contains(t); });
+      }
+    }
+  }
+
+  function ouvrirPiece(p) {
+    fermerPiece();
+    var fond = el('div', '');
+    fond.id = 'feuille';
+    var panneau = el('div', 'panneau');
+    var tete = el('div', 'tete');
+    tete.appendChild(el('h1', '', p.icone + ' ' + p.nom));
+    var fermer = el('button', 'fermer', '✕');
+    fermer.addEventListener('click', fermerPiece);
+    tete.appendChild(fermer);
+    panneau.appendChild(tete);
+    var ts = el('div', 'tuiles');
+    var niv = niveauParId(p.niveau);
+    for (var i = 0; i < p.eids.length; i++) {
+      var eid = p.eids[i];
+      var t = creerTuile({ entity_id: eid, nom: noms[eid].nom, icone: noms[eid].icone, confirmer: noms[eid].confirmer });
+      t.style.borderLeftColor = niv.couleur;
+      majTuile(t, eid);
+      ts.appendChild(t);
+    }
+    panneau.appendChild(ts);
+    panneau.addEventListener('click', function (ev) { ev.stopPropagation(); });
+    fond.addEventListener('click', fermerPiece);
+    fond.appendChild(panneau);
+    document.body.appendChild(fond);
+  }
+
   function vueNiveau(c, niveau) {
     var ent = el('div', 'entete');
     ent.style.background = niveau.couleur;
@@ -486,6 +632,10 @@
       })(actions[i]);
     }
     c.appendChild(ent);
+    if (niveau.plan) {
+      c.appendChild(dessinerPlan(niveau));
+      c.appendChild(el('h2', 'titre', 'Toutes les commandes'));
+    }
 
     for (i = 0; i < niveau.pieces.length; i++) {
       var p = niveau.pieces[i];
@@ -579,6 +729,8 @@
     tuiles = {};
     legendesCam = {};
     imagesCam = [];
+    zonesPlan = [];
+    fermerPiece();
     var plein = $('plein');
     if (plein) { document.body.removeChild(plein); }
     dessinerOnglets();

@@ -235,5 +235,24 @@ class TestMaisonJson(unittest.TestCase):
             self.assertIn(eid.split(".")[0], server.ACTIONS, eid)
 
 
+class TestPlan(unittest.TestCase):
+    def test_zones_du_plan_coherentes(self):
+        maison = server.charger_maison()
+        cameras = server.cameras_de(maison)
+        for n in maison["niveaux"]:
+            plan = n.get("plan")
+            if not plan:
+                continue
+            noms = {p["nom"] for p in n["pieces"]}
+            for z in plan["zones"]:
+                if "piece" in z:
+                    self.assertIn(z["piece"], noms, "%s : pièce inconnue %s" % (n["id"], z["piece"]))
+                for x, y, w, h in z["rects"]:
+                    self.assertTrue(0 <= x and 0 <= y and w > 0 and h > 0, z)
+                    self.assertTrue(x + w <= plan["largeur"] + 1 and y + h <= plan["hauteur"] + 1, z)
+            for c in plan.get("cameras", []):
+                self.assertIn(c["entity_id"], cameras)
+
+
 if __name__ == "__main__":
     unittest.main()

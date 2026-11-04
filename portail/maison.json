@@ -253,7 +253,211 @@
             }
           ]
         }
-      ]
+      ],
+      "plan": {
+        "largeur": 994,
+        "hauteur": 630,
+        "zones": [
+          {
+            "piece": "Buanderie et garage",
+            "nom": "Garage",
+            "rects": [
+              [
+                0,
+                56,
+                301,
+                175
+              ]
+            ]
+          },
+          {
+            "piece": "Buanderie et garage",
+            "nom": "Buanderie",
+            "rects": [
+              [
+                0,
+                231,
+                301,
+                42
+              ]
+            ]
+          },
+          {
+            "piece": "Chambre parentale",
+            "nom": "Dressing",
+            "rects": [
+              [
+                0,
+                273,
+                224,
+                112
+              ]
+            ]
+          },
+          {
+            "piece": "Chambre parentale",
+            "rects": [
+              [
+                0,
+                385,
+                182,
+                245
+              ]
+            ]
+          },
+          {
+            "piece": "Chambre parentale",
+            "nom": "SdB",
+            "rects": [
+              [
+                182,
+                430,
+                52,
+                200
+              ]
+            ]
+          },
+          {
+            "type": "decor",
+            "nom": "Escalier",
+            "rects": [
+              [
+                224,
+                273,
+                84,
+                150
+              ]
+            ]
+          },
+          {
+            "piece": "Extérieur",
+            "type": "exterieur",
+            "nom": "Terrasse",
+            "rects": [
+              [
+                308,
+                7,
+                312,
+                332
+              ]
+            ]
+          },
+          {
+            "piece": "Salle à manger",
+            "rects": [
+              [
+                308,
+                340,
+                469,
+                84
+              ]
+            ]
+          },
+          {
+            "piece": "Cuisine",
+            "rects": [
+              [
+                234,
+                424,
+                220,
+                206
+              ]
+            ]
+          },
+          {
+            "piece": "Salon",
+            "rects": [
+              [
+                455,
+                424,
+                490,
+                178
+              ],
+              [
+                777,
+                343,
+                168,
+                80
+              ]
+            ]
+          },
+          {
+            "piece": "Salle de bain et WC enfants",
+            "nom": "SdB enfants",
+            "rects": [
+              [
+                620,
+                14,
+                147,
+                150
+              ]
+            ]
+          },
+          {
+            "piece": "Chambre d'Alia",
+            "nom": "Alia",
+            "rects": [
+              [
+                766,
+                0,
+                150,
+                164
+              ]
+            ]
+          },
+          {
+            "piece": "Entrée et couloir",
+            "nom": "Entrée",
+            "rects": [
+              [
+                620,
+                164,
+                158,
+                175
+              ],
+              [
+                777,
+                164,
+                77,
+                70
+              ]
+            ]
+          },
+          {
+            "piece": "Chambre de Naïm",
+            "nom": "Naïm",
+            "rects": [
+              [
+                854,
+                140,
+                140,
+                102
+              ]
+            ]
+          },
+          {
+            "piece": "Chambre d'Amel",
+            "nom": "Amel",
+            "rects": [
+              [
+                777,
+                234,
+                164,
+                108
+              ]
+            ]
+          }
+        ],
+        "cameras": [
+          {
+            "entity_id": "image.garage_derniere_image_du_mouvement",
+            "pos": [
+              24,
+              56
+            ]
+          }
+        ]
+      }
     },
     {
       "id": "etage",
@@ -272,7 +476,66 @@
             }
           ]
         }
-      ]
+      ],
+      "plan": {
+        "largeur": 978,
+        "hauteur": 574,
+        "zones": [
+          {
+            "type": "decor",
+            "nom": "Escalier",
+            "rects": [
+              [
+                0,
+                21,
+                259,
+                348
+              ]
+            ]
+          },
+          {
+            "piece": "Salle de jeux",
+            "rects": [
+              [
+                259,
+                0,
+                693,
+                289
+              ],
+              [
+                259,
+                289,
+                468,
+                285
+              ]
+            ]
+          },
+          {
+            "type": "decor",
+            "nom": "Salle de bain",
+            "rects": [
+              [
+                8,
+                370,
+                251,
+                204
+              ]
+            ]
+          },
+          {
+            "type": "decor",
+            "nom": "Chambre d'amis",
+            "rects": [
+              [
+                727,
+                289,
+                251,
+                285
+              ]
+            ]
+          }
+        ]
+      }
     }
   ]
 }

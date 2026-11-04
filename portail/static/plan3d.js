@@ -55,11 +55,12 @@
     return new THREE.CanvasTexture(c);
   }
 
+  var PROFONDEUR = false;  // vue multi-niveaux : étiquettes masquées par l'étage
   function spriteTexte(largeur, petit) {
     var c = document.createElement('canvas');
     c.width = 512; c.height = 160;
     var tex = new THREE.CanvasTexture(c);
-    var s = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, depthTest: false, transparent: true }));
+    var s = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, depthTest: PROFONDEUR, transparent: true }));
     s.scale.set(largeur, largeur * 160 / 512, 1);
     s.renderOrder = 10;
     var dernier = null;
@@ -90,7 +91,7 @@
     var c = document.createElement('canvas');
     c.width = c.height = 128;
     var tex = new THREE.CanvasTexture(c);
-    var s = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, depthTest: false, transparent: true }));
+    var s = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, depthTest: PROFONDEUR, transparent: true }));
     s.scale.set(34, 34, 1);
     s.renderOrder = 11;
     var dernier = null;
@@ -407,6 +408,7 @@
     var renderer = obtenirMoteur().renderer;
     var scene = new THREE.Scene();
     cacheMat = {};
+    PROFONDEUR = niveaux.length > 1;
     var texLueur = textureLueur();
     var cliquables = [], zones3d = [], icones = [], groupes = [];
     var ctx = { tvs: [] };
@@ -537,7 +539,11 @@
 
     var cam = new THREE.PerspectiveCamera(36, 1, 10, 6000);
     var dist = Math.max(global.x2 - global.x1, global.z2 - global.z1) * 1.0 + global.h * 1.1;
-    cam.position.set(-dist * 0.36, dist * 0.8 + global.h * 0.3, dist * 0.72);
+    if (niveaux.length > 1) {   // vue globale : plus basse, de face, pour voir sous l'étage
+      cam.position.set(-dist * 0.42, dist * 0.5 + global.h, dist * 0.88);
+    } else {
+      cam.position.set(-dist * 0.36, dist * 0.8 + global.h * 0.3, dist * 0.72);
+    }
     var canvas = renderer.domElement;
     conteneur.appendChild(canvas);
     var controles = new THREE.OrbitControls(cam, canvas);

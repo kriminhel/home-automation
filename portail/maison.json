@@ -29,31 +29,36 @@
       "nom": "Karim",
       "pieces": [
         "Chambre parentale"
-      ]
+      ],
+      "avatar": "prive/karim.jpg"
     },
     {
       "nom": "Samia",
       "pieces": [
         "Chambre parentale"
-      ]
+      ],
+      "avatar": "prive/samia.jpg"
     },
     {
       "nom": "Alia",
       "pieces": [
         "Chambre d'Alia"
-      ]
+      ],
+      "avatar": "prive/alia.jpg"
     },
     {
       "nom": "Naïm",
       "pieces": [
         "Chambre de Naïm"
-      ]
+      ],
+      "avatar": "prive/naim.jpg"
     },
     {
       "nom": "Amel",
       "pieces": [
         "Chambre d'Amel"
-      ]
+      ],
+      "avatar": "prive/amel.jpg"
     }
   ],
   "cameras": [
@@ -455,6 +460,12 @@
                 160,
                 100
               ]
+            ],
+            "icones": [
+              [
+                "light.sdb_enfants",
+                "light.wc_enfants"
+              ]
             ]
           },
           {
@@ -494,6 +505,11 @@
                 140,
                 200,
                 140
+              ]
+            ],
+            "icones": [
+              [
+                "light.chambre_naim"
               ]
             ]
           },
@@ -859,7 +875,7 @@
           },
           {
             "t": "canape",
-            "x": 800,
+            "x": 762,
             "y": 532,
             "face": "droite",
             "w": 160,
@@ -868,7 +884,7 @@
           },
           {
             "t": "canape",
-            "x": 868,
+            "x": 830,
             "y": 617,
             "face": "haut",
             "w": 118,
@@ -877,13 +893,13 @@
           },
           {
             "t": "tablebasseronde",
-            "x": 895,
+            "x": 878,
             "y": 522,
             "face": "bas"
           },
           {
             "t": "tapis",
-            "x": 895,
+            "x": 870,
             "y": 525,
             "face": "bas",
             "w": 150,

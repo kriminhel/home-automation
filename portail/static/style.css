@@ -2,10 +2,15 @@
    Compatible Safari iOS 9 : pas de variables CSS ni de grid, flexbox et dégradés préfixés.
    Palette : fond #0A0A0B · carte #141416 · bord rgba(201,164,92,.14) · texte #F1ECE2 · discret #8C867B
              or #C9A45C (clair #E6C67E, sombre #A8823E) · alerte #D8695B */
+@font-face { font-family: 'Jakarta'; src: url('/static/polices/jakarta-400.woff') format('woff'); font-weight: 400; }
+@font-face { font-family: 'Jakarta'; src: url('/static/polices/jakarta-500.woff') format('woff'); font-weight: 500; }
+@font-face { font-family: 'Jakarta'; src: url('/static/polices/jakarta-600.woff') format('woff'); font-weight: 600; }
+@font-face { font-family: 'Jakarta'; src: url('/static/polices/jakarta-700.woff') format('woff'); font-weight: 700; }
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html.tamise #contenu, html.tamise #haut { opacity: .45; }
 html, body { margin: 0; padding: 0; min-height: 100%; }
 body {
-  font-family: -apple-system, "SF Pro Display", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: 'Jakarta', -apple-system, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 18px; color: #F1ECE2; background: #0A0A0B;
   -webkit-user-select: none; user-select: none; -webkit-touch-callout: none;
 }
@@ -17,31 +22,43 @@ body.nuit #contenu { opacity: .9; }
 .picto.grand { width: 34px; height: 34px; }
 .picto.geant { width: 74px; height: 74px; color: rgba(230,198,126,.55); }
 
-/* ---------- navigation latérale ---------- */
+/* ---------- navigation latérale (pictogrammes seuls, encoche sur l'onglet actif) ---------- */
 #nav {
-  position: fixed; top: 0; left: 0; bottom: 0; width: 104px; z-index: 12; padding-top: 18px;
-  background: #0F0F11; border-right: 1px solid rgba(201,164,92,.12);
+  position: fixed; top: 0; left: 0; bottom: 0; width: 104px; z-index: 12; padding-top: 22px;
+  background: #0A0A0B;
   display: -webkit-flex; display: flex; -webkit-flex-direction: column; flex-direction: column;
-  -webkit-align-items: center; align-items: center; overflow-y: auto; -webkit-overflow-scrolling: touch;
+  -webkit-align-items: center; align-items: center; overflow: hidden;
 }
 #nav .logo {
-  width: 60px; height: 60px; border-radius: 30px; margin-bottom: 22px; color: #141416;
-  background: -webkit-linear-gradient(135deg, #E6C67E, #A8823E); background: linear-gradient(135deg, #E6C67E, #A8823E);
+  width: 62px; height: 62px; border-radius: 31px; margin-bottom: 34px; color: #0A0A0B; background: #F1ECE2;
   display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; -webkit-justify-content: center; justify-content: center;
   -webkit-flex-shrink: 0; flex-shrink: 0;
 }
-#nav .logo .picto { width: 30px; height: 30px; }
-.nav-item { width: 104px; padding: 8px 0 10px; text-align: center; color: #8C867B; -webkit-flex-shrink: 0; flex-shrink: 0; }
-.nav-item .rond {
-  width: 58px; height: 58px; margin: 0 auto; border-radius: 29px; background: #18181B;
+#nav .logo .picto { width: 32px; height: 32px; }
+.nav-item {
+  position: relative; width: 104px; height: 84px; color: #77736B; -webkit-flex-shrink: 0; flex-shrink: 0;
   display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; -webkit-justify-content: center; justify-content: center;
 }
-.nav-item .lib { font-size: 12px; font-weight: 600; margin-top: 5px; letter-spacing: .3px; }
-.nav-item.actif { color: #E6C67E; }
+.nav-item .rond {
+  position: relative; z-index: 2; width: 60px; height: 60px; border-radius: 30px; background: #1E1E21;
+  display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; -webkit-justify-content: center; justify-content: center;
+}
+.nav-item .rond .picto { width: 26px; height: 26px; }
+.nav-item.actif { color: #141416; }
 .nav-item.actif .rond {
-  color: #141416; box-shadow: 0 6px 18px rgba(201,164,92,.35);
+  box-shadow: 0 6px 18px rgba(201,164,92,.35);
   background: -webkit-linear-gradient(135deg, #E6C67E, #A8823E); background: linear-gradient(135deg, #E6C67E, #A8823E);
 }
+.onglet-actif {
+  position: absolute; z-index: 1; left: 0; top: 4px; width: 82px; height: 76px; border-radius: 0 38px 38px 0;
+  background: rgba(201,164,92,.30);
+}
+.creux { position: absolute; z-index: 1; left: 0; width: 22px; height: 22px; }
+.creux.haut { top: -18px; background: -webkit-radial-gradient(100% 0, circle, rgba(10,10,11,1) 21px, rgba(201,164,92,.30) 22px);
+  background: radial-gradient(circle at 100% 0, rgba(10,10,11,1) 21px, rgba(201,164,92,.30) 22px); }
+.creux.bas { bottom: -18px; background: -webkit-radial-gradient(100% 100%, circle, rgba(10,10,11,1) 21px, rgba(201,164,92,.30) 22px);
+  background: radial-gradient(circle at 100% 100%, rgba(10,10,11,1) 21px, rgba(201,164,92,.30) 22px); }
+.nav-item.bas { margin-top: auto; margin-bottom: 18px; }
 
 /* ---------- bandeau du haut ---------- */
 #haut {
@@ -116,8 +133,9 @@ h2.titre, .piece h2 {
 .avatar {
   width: 42px; height: 42px; line-height: 42px; border-radius: 21px; text-align: center; font-weight: 700; font-size: 18px;
   color: #141416; background: -webkit-linear-gradient(135deg, #E6C67E, #A8823E); background: linear-gradient(135deg, #E6C67E, #A8823E);
-  -webkit-flex-shrink: 0; flex-shrink: 0;
+  -webkit-flex-shrink: 0; flex-shrink: 0; background-size: cover; background-position: center;
 }
+.avatar.photo { border: 2px solid rgba(230,198,126,.7); }
 .avatar.grand { width: 64px; height: 64px; line-height: 64px; border-radius: 32px; font-size: 28px; }
 .personne .nom { width: 90px; margin-left: 12px; font-weight: 600; }
 .personne .statut { width: 150px; }
@@ -297,6 +315,7 @@ h2.titre, .piece h2 {
   #nav { width: 76px; }
   .nav-item { width: 76px; }
   .nav-item .rond { width: 48px; height: 48px; }
+  .onglet-actif { width: 62px; }
   #haut { left: 76px; }
   #contenu { padding-left: 92px; padding-right: 12px; }
   .stats { display: block; }

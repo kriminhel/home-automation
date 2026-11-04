@@ -67,3 +67,6 @@ __pycache__/
 
 # Codes radio appris (le garage s ouvre avec) : jamais dans le dépôt public
 docs/codes-rf.json
+
+# Photos personnelles (avatars…) : seulement sur le serveur, jamais sur GitHub (dépôt public)
+portail/static/prive/

@@ -263,6 +263,10 @@ class TestPlan(unittest.TestCase):
                         self.assertIn(mb[cle], eids_niveau, mb)
                 self.assertIn(mb.get("face", "bas"), ("bas", "haut", "gauche", "droite"), mb)
                 self.assertTrue(-5 <= mb["x"] <= plan["largeur"] + 5 and -5 <= mb["y"] <= plan["hauteur"] + 5, mb)
+            for z in plan["zones"]:
+                for groupe in z.get("icones", []):
+                    for eid in groupe:
+                        self.assertIn(eid, eids_niveau, z)
             for c in plan.get("cameras", []):
                 self.assertIn(c["entity_id"], cameras)
 

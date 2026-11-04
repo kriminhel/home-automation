@@ -260,15 +260,26 @@
     for (var i = 0; i < liste.length; i++) {
       (function (n) {
         var o = el('div', 'nav-item' + (n.id === vue ? ' actif' : ''));
+        o.setAttribute('title', n.nom);
+        if (n.id === vue) { o.appendChild(el('span', 'creux haut')); o.appendChild(el('span', 'creux bas')); o.appendChild(el('span', 'onglet-actif')); }
         var rond = el('div', 'rond');
         rond.appendChild(picto(n.svg || SVG_NIVEAU[n.id] || 'cube'));
         o.appendChild(rond);
-        o.appendChild(el('div', 'lib', n.nom));
         o.addEventListener('click', function () { vue = n.id; dessiner(); });
         zone.appendChild(o);
       })(liste[i]);
     }
+    var tamis = el('div', 'nav-item bas');
+    var rt = el('div', 'rond');
+    rt.appendChild(picto('soleil'));
+    tamis.appendChild(rt);
+    tamis.addEventListener('click', function () {
+      tamise = !tamise;
+      document.documentElement.className = tamise ? 'tamise' : '';
+    });
+    zone.appendChild(tamis);
   }
+  var tamise = false;
 
   /* ---------- récapitulatif (Accueil) ---------- */
 
@@ -451,6 +462,12 @@
     message('Wi-Fi « ' + p.nom + ' » : bientôt disponible (autorisation Freebox à faire)', true);
   }
 
+  function avatar(h, grand) {
+    var a = el('div', 'avatar' + (grand ? ' grand' : ''));
+    if (h.avatar) { a.style.backgroundImage = 'url(/static/' + h.avatar + ')'; a.className += ' photo'; } else { a.textContent = h.nom.charAt(0); }
+    return a;
+  }
+
   function boutonRond(nomPicto, classe, fn) {
     var b = el('div', 'bouton-rond ' + (classe || ''));
     b.appendChild(picto(nomPicto));
@@ -530,7 +547,7 @@
       for (i = 0; i < maison.habitants.length; i++) {
         (function (hb) {
           var ligne = el('div', 'personne');
-          ligne.appendChild(el('div', 'avatar', hb.nom.charAt(0)));
+          ligne.appendChild(avatar(hb));
           ligne.appendChild(el('div', 'nom', hb.nom));
           var statut = el('div', 'statut');
           ligne.appendChild(statut);
@@ -646,7 +663,7 @@
 
   function ouvrirProfil(h) {
     ouvrirFeuille(function (tete) {
-      tete.appendChild(el('div', 'avatar grand', h.nom.charAt(0)));
+      tete.appendChild(avatar(h, true));
       var t = el('div', 'titres');
       t.appendChild(el('h1', '', h.nom));
       t.appendChild(el('div', 'sous', nomsPieces(h)));
@@ -673,7 +690,7 @@
     for (var i = 0; i < maison.habitants.length; i++) {
       (function (hb) {
         var carte = el('div', 'carte profil');
-        carte.appendChild(el('div', 'avatar grand', hb.nom.charAt(0)));
+        carte.appendChild(avatar(hb, true));
         carte.appendChild(el('div', 'nom', hb.nom));
         carte.appendChild(el('div', 'ou', nomsPieces(hb)));
         var statut = el('div', 'statut');
@@ -838,6 +855,11 @@
         return l;
       },
       camera: function (eid) { pleinEcran(cameraParId(eid)); },
+      garage: function (eid, action) {
+        if (action !== 'stop' && !window.confirm((action === 'ouvrir' ? 'Ouvrir' : 'Fermer') + ' le garage ?')) { return; }
+        agir({ entity_id: eid, action: action });
+        message('Garage : ' + (action === 'ouvrir' ? 'ouverture' : action === 'fermer' ? 'fermeture' : 'arrêt'), true);
+      },
       position: function (eid) {
         var e = etats[eid];
         if (!e) { return 0; }

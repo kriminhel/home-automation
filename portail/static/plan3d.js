@@ -316,6 +316,11 @@
       g.quadraticCurveTo(100, 86, 94, 86); g.lineTo(34, 86); g.quadraticCurveTo(28, 86, 28, 80); g.lineTo(28, 44);
       g.quadraticCurveTo(28, 38, 34, 38); g.stroke();
       g.beginPath(); g.moveTo(50, 98); g.lineTo(78, 98); g.moveTo(64, 86); g.lineTo(64, 98); g.stroke();
+    } else if (type === 'monter' || type === 'descendre') {
+      var h = type === 'monter' ? -1 : 1;
+      g.moveTo(40, 64 - h * 14); g.lineTo(64, 64 + h * 14); g.lineTo(88, 64 - h * 14); g.lineWidth = 8; g.stroke();
+    } else if (type === 'stop') {
+      g.fillRect(46, 46, 36, 36);
     } else {
       g.moveTo(30, 48); g.lineTo(84, 48); g.lineTo(84, 84); g.lineTo(30, 84); g.closePath(); g.stroke();
       g.beginPath(); g.moveTo(84, 60); g.lineTo(100, 50); g.lineTo(100, 82); g.lineTo(84, 72); g.stroke();
@@ -1148,14 +1153,16 @@
         groupe.add(lueur);
 
 
-        var lums = info.piece ? options.lumieres(info.eids) : [];
-        for (j = 0; j < lums.length; j++) {
+        // une icône par lumière, ou par groupe déclaré dans la zone (« icones ») pour éviter les doublons
+        var lums = info.piece ? options.lumieres(info.eids) : [], grp = z.icones || [];
+        if (!z.icones) { for (j = 0; j < lums.length; j++) { grp.push([lums[j]]); } }
+        for (j = 0; j < grp.length; j++) {
           var ic = spriteIcone('ampoule');
-          ic.position.set(cx + (j - (lums.length - 1) / 2) * 36, MUR_BAS + 34, cy + (petit ? 0 : 24));
-          ic.userData.basculer = lums[j];
+          ic.position.set(cx + (j - (grp.length - 1) / 2) * 36, MUR_BAS + 34, cy + (petit ? 0 : 24));
+          ic.userData.basculer = grp[j];
           groupe.add(ic);
           cliquables.push(ic);
-          icones.push({ sprite: ic, eid: lums[j] });
+          icones.push({ sprite: ic, eids: grp[j] });
         }
         zones3d.push({ info: info, type: type, matSol: matSol, lueur: lueur });
       }
@@ -1182,7 +1189,7 @@
         tv.groupe.add(tv.icone);
         tv.ecran.userData.basculer = tv.entite;
         cliquables.push(tv.icone, tv.ecran);
-        icones.push({ sprite: tv.icone, eid: tv.entite });
+        icones.push({ sprite: tv.icone, eids: [tv.entite] });
       }
       var cams = pl.cameras || [];
       for (i = 0; i < cams.length; i++) {
@@ -1225,6 +1232,15 @@
         tablier.add(lames);
         for (i = 0; i < 14; i++) { rb(lames, L, 5.6, 3.5, 0.8, matBrillant(0x16171A), 0, -(i + 1) * 5.6, 0); }
         portesGarage.push({ lames: lames, entite: o.entite, hauteur: hOuv - 8 });
+        var actions = [['monter', 'ouvrir'], ['stop', 'stop'], ['descendre', 'fermer']];
+        for (i = 0; i < 3; i++) {
+          var bt = spriteIcone(actions[i][0]);
+          bt.position.set((i - 1) * 38, MUR_HAUT + 24, 14);
+          bt.userData.garage = { entite: o.entite, action: actions[i][1] };
+          bt.userData.dessiner(false);
+          g.add(bt);
+          cliquables.push(bt);
+        }
       } else {
         var cadre = matBois('#3A2E24');
         rb(g, 2, hOuv, EP + 1.5, 0, cadre, -L / 2 + 1, 0, 0);
@@ -1317,12 +1333,13 @@
       var choix = null;
       for (var i = 0; i < touches.length; i++) {   // priorité aux icônes, puis au premier sol touché
         var o = touches[i].object;
-        if (o.userData.basculer || o.userData.camera) { choix = o; break; }
+        if (o.userData.basculer || o.userData.camera || o.userData.garage) { choix = o; break; }
         if (!choix) { choix = o; }
       }
       if (!choix) { return; }
       if (choix.userData.camera) { options.camera(choix.userData.camera); return; }
-      if (choix.userData.basculer) { options.basculer(choix.userData.basculer); maj(); return; }
+      if (choix.userData.garage) { options.garage(choix.userData.garage.entite, choix.userData.garage.action); return; }
+      if (choix.userData.basculer) { basculerCible(choix.userData.basculer); maj(); return; }
       var zi = choix.userData.zone;
       if (zi && zi.piece) { options.ouvrir(zi.piece); }
     }
@@ -1330,6 +1347,17 @@
     canvas.addEventListener('touchend', fin, false);
     canvas.addEventListener('mousedown', debut, false);
     canvas.addEventListener('mouseup', fin, false);
+
+    function unAllume(eids) {
+      for (var k = 0; k < eids.length; k++) { if (options.actif(eids[k])) { return true; } }
+      return false;
+    }
+    // Toucher une icône : un appareil, ou un groupe (tout éteint si l'un est allumé, sinon tout allumé)
+    function basculerCible(cible) {
+      if (typeof cible === 'string') { options.basculer(cible); return; }
+      var on = unAllume(cible);
+      for (var k = 0; k < cible.length; k++) { if (!on || options.actif(cible[k])) { options.basculer(cible[k]); } }
+    }
 
     function maj() {
       var i;
@@ -1339,7 +1367,7 @@
         q.lueur.visible = res.actif;
         q.matSol.emissive.setHex(res.actif ? 0x2A1E0C : 0x000000);
       }
-      for (i = 0; i < icones.length; i++) { icones[i].sprite.userData.dessiner(options.actif(icones[i].eid)); }
+      for (i = 0; i < icones.length; i++) { icones[i].sprite.userData.dessiner(unAllume(icones[i].eids)); }
       for (i = 0; i < portesGarage.length; i++) {
         var pg = portesGarage[i];
         var ouvert = options.position ? options.position(pg.entite) : 0;   // 0 fermé … 100 ouvert

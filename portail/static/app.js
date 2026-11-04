@@ -83,7 +83,11 @@
     var d = domaine(eid);
     if (d === 'light' || d === 'switch') { return s === 'on' ? 'Allumé' : 'Éteint'; }
     if (d === 'cover') {
-      if (e.current_position !== undefined) { return e.current_position + ' % ouvert'; }
+      if (e.current_position !== undefined) {
+        if (e.current_position <= 0) { return 'Fermé'; }
+        if (e.current_position >= 100) { return 'Ouvert'; }
+        return 'Entrouvert';
+      }
       return { open: 'Ouvert', closed: 'Fermé', opening: 'Ouverture…', closing: 'Fermeture…' }[s] || s;
     }
     if (d === 'media_player') { return s === 'off' ? 'Éteint' : (e.source || 'Allumé'); }

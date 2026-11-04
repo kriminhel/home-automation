@@ -358,7 +358,15 @@ light:
 # PORTE DE GARAGE - Came TOP à code fixe, rejouée par le Broadlink RM4 Pro
 # ============================================
 # Codes appris avec scripts/broadlink-rf.py, rangés dans secrets.yaml (jamais dans git).
-# Pas de retour d'état en radio : HA affiche le dernier ordre donné (optimiste).
+
+# État déduit du dernier ordre envoyé PAR HA (ouvrir → ouvert, fermer → fermé,
+# stop dans la minute qui suit un ordre → entrouvert). Les manœuvres faites à la
+# télécommande ou au bouton mural ne sont pas vues.
+input_select:
+  garage_dernier_ordre:
+    name: Garage - état déduit
+    icon: mdi:garage
+    options: ["fermé", "entrouvert", "ouvert"]
 
 cover:
   - platform: template
@@ -367,19 +375,36 @@ cover:
         friendly_name: "Porte de garage"
         unique_id: garage_came_broadlink
         device_class: garage
-        optimistic: true
+        position_template: >
+          {{ {'ouvert': 100, 'entrouvert': 50, 'fermé': 0}.get(states('input_select.garage_dernier_ordre'), 0) }}
         open_cover:
-          service: remote.send_command
-          target: { entity_id: remote.broadlink }
-          data: { command: !secret garage_code_ouvrir }
+          - service: remote.send_command
+            target: { entity_id: remote.broadlink }
+            data: { command: !secret garage_code_ouvrir }
+          - service: input_select.select_option
+            target: { entity_id: input_select.garage_dernier_ordre }
+            data: { option: "ouvert" }
         stop_cover:
-          service: remote.send_command
-          target: { entity_id: remote.broadlink }
-          data: { command: !secret garage_code_stop }
+          - service: remote.send_command
+            target: { entity_id: remote.broadlink }
+            data: { command: !secret garage_code_stop }
+          # Porte en mouvement seulement si le dernier ordre date de moins d'une minute
+          - if:
+              - condition: template
+                value_template: >
+                  {{ states('input_select.garage_dernier_ordre') != 'entrouvert' and
+                     (now() - states.input_select.garage_dernier_ordre.last_changed).total_seconds() < 60 }}
+            then:
+              - service: input_select.select_option
+                target: { entity_id: input_select.garage_dernier_ordre }
+                data: { option: "entrouvert" }
         close_cover:
-          service: remote.send_command
-          target: { entity_id: remote.broadlink }
-          data: { command: !secret garage_code_fermer }
+          - service: remote.send_command
+            target: { entity_id: remote.broadlink }
+            data: { command: !secret garage_code_fermer }
+          - service: input_select.select_option
+            target: { entity_id: input_select.garage_dernier_ordre }
+            data: { option: "fermé" }
 
 # ============================================
 # SCÈNES (lumières)

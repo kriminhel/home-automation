@@ -41,14 +41,16 @@ Scan réseau du 04/11/2026 : [`docs/scan-report.md`](scan-report.md).
 |-----------|-----------|---------|----------------|--------|
 | 💡 Lumières | Salon, spots salon, cuisine, chambre, salle de bain (relais 1-5) | IPX800 V3 · 192.168.1.250 | `rest_command` + `light.template` | ✅ en service |
 | 💡 Lumières | Relais 6 à 8 | IPX800 V3 | idem | ⚠️ à quoi sont-ils reliés ? |
-| 🎛️ Télécommande universelle | Broadlink **RM4 Pro** (IR + RF 433 MHz) | 192.168.1.64 | `broadlink` | 🔄 joignable et non verrouillé, à intégrer |
+| 🎛️ Télécommande universelle | Broadlink **RM4 Pro** (IR + RF 433 MHz) | 192.168.1.64 | `broadlink` → `remote.broadlink` | ✅ intégré 04/11, codes à apprendre |
 | 🪟 Volets | Moteurs **Came**, télécommandes RF | via Broadlink | `remote.send_command` + `cover.template` | 📋 test d'apprentissage à faire (§6) |
 | 🚪 Garage | Porte de garage, marque inconnue | ⚠️ | ⚠️ | 📋 à identifier |
-| 📺 TV salon | **Xiaomi** MiTV (Google TV) | 192.168.1.45 | `androidtv_remote` (+ `cast`) | 📋 à intégrer |
-| 📺 Boîtier TV | **Xiaomi** TV Box (Android TV 12) | 192.168.1.59 | `androidtv_remote` | 📋 à intégrer · ⚠️ est-ce le décodeur Free ? |
-| 📺 TV | **Philips** | non vue au scan (éteinte ?) | `philips_js` (port 1925) | 📋 rescanner TV allumée |
-| 📡 Box | **Freebox** Server | 192.168.1.254 | `freebox` | 📋 à intégrer (validation sur l'écran de la box) |
-| 🔌 Tuya / Smart Life | « Passerelle ZigBee » + 1 appareil Tuya | 192.168.1.155 | `tuya` | ⚠️ compte lié mais déconnecté, à réauthentifier |
+| 📺 TV salon | **Xiaomi** MiTV (Google TV) | 192.168.1.45 | `androidtv_remote` → `media_player.salon` | ✅ intégrée 04/11, sur la tablette |
+| 📺 TV chambre de Naïm | **Philips** 43PUS7608/12 (filaire) | 192.168.1.144 | `philips_js` → `media_player.43pus7608_12` + Ambilight | ✅ intégrée 04/11, sur la tablette |
+| 📺 Chambre | **Xiaomi** TV Box (Android TV 12) | 192.168.1.59 | `androidtv_remote` | 📋 association (code à l'écran) |
+| 📺 Chambre | **Apple TV 4** « Chambre » (filaire) | 192.168.1.136 ? | `apple_tv` | 📋 association (code à l'écran) |
+| 📡 Box | **Freebox** v8 | 192.168.1.254 | `freebox` (débits, appels, Wi-Fi) | ✅ intégrée 04/11 (Wi-Fi et redémarrage volontairement absents de la tablette) |
+| 🔌 Tuya / Smart Life | « Passerelle ZigBee » (Tuya + HomeKit « Gateway-type c ») + 1 autre appareil Tuya | 192.168.1.145 / .155 | `homekit_controller` (local) ou `tuya` (cloud) | ⚠️ cloud déconnecté ; appairage HomeKit possible avec le code à 8 chiffres de la passerelle |
+| 🔊 Audio | Enceinte Spotify Connect | 192.168.1.157 | `spotify` | hors V1 |
 | 🖥️ NAS | Synology DS216se | 192.168.1.134 | `synology_dsm` | hors V1 |
 
 Règle : on n'intègre **que ce qui est confirmé**. Aucune entité inventée.
@@ -61,7 +63,7 @@ Règle : on n'intègre **que ce qui est confirmé**. Aucune entité inventée.
 |--------|---------|---------|
 | 🏠 **Accueil** | `#3949AB` | Heure en grand, scènes, tout ce qui est allumé/ouvert (un toucher l'éteint) |
 | 🛋 **RDC** | `#FB8C00` | Salon, cuisine ⚠️ + entrée, garage, extérieur ? |
-| 🛏 **Étage** | `#43A047` | Chambre, salle de bain ⚠️ + autres chambres ? |
+| 🛏 **Étage** | `#43A047` | Chambre, chambre de Naïm, salle de bain ⚠️ (niveau de la chambre de Naïm à confirmer) |
 
 ⚠️ Répartition actuelle supposée (salon/cuisine au RDC, chambre/SdB à l'étage) : à confirmer.
 
@@ -125,7 +127,7 @@ caméras, suivi d'énergie, NAS.
 | J1 | iPad identifié (iOS 9) → portail léger | ✅ décidé 04/11 |
 | J2 | Socle : dépôt unique, config nettoyée, HA relancé, portail lumières | 🔄 04/11 |
 | J3 | Broadlink : test RF Came, puis volets | 📋 |
-| J4 | TV Xiaomi / Philips, Freebox, Tuya, garage | 📋 |
+| J4 | TV Xiaomi / Philips, Freebox, Tuya, garage | 🔄 Broadlink, Freebox, TV salon et Philips faits le 04/11 |
 | J5 | Scènes et automatisations réelles (volets au coucher du soleil…), test 7 jours | 📋 |
 
 ## 10. Questions ouvertes
@@ -133,6 +135,6 @@ caméras, suivi d'énergie, NAS.
 - ⚠️ Référence de la télécommande Came des volets ; nombre de volets et pièces.
 - ⚠️ Porte de garage : marque du moteur et de la télécommande ?
 - ⚠️ Pièces exactes du RDC et de l'Étage ; à quoi servent les relais 6 à 8 ?
-- ⚠️ Le boîtier « Xiaomi TV Box » (192.168.1.59) est-il le décodeur Free ? Où est la TV Philips ?
+- ⚠️ Chambre : sur quelle TV sont branchés le boîtier Xiaomi et l'Apple TV ?
 - ⚠️ Commune de la maison (pour les heures de lever et de coucher du soleil ; HA est réglé par défaut sur Amsterdam).
 - ⚠️ Faut-il un code PIN pour le garage ?

@@ -1,9 +1,21 @@
 {
   "nom": "Maison",
   "scenes": [
-    { "entity_id": "scene.tout_eteindre", "nom": "Tout éteindre", "icone": "⏻" },
-    { "entity_id": "scene.mode_soiree", "nom": "Soirée", "icone": "🛋" },
-    { "entity_id": "scene.mode_nuit", "nom": "Nuit", "icone": "🌙" }
+    {
+      "entity_id": "scene.tout_eteindre",
+      "nom": "Tout éteindre",
+      "icone": "⏻"
+    },
+    {
+      "entity_id": "scene.mode_soiree",
+      "nom": "Soirée",
+      "icone": "🛋"
+    },
+    {
+      "entity_id": "scene.mode_nuit",
+      "nom": "Nuit",
+      "icone": "🌙"
+    }
   ],
   "niveaux": [
     {
@@ -15,14 +27,31 @@
         {
           "nom": "Salon",
           "equipements": [
-            { "entity_id": "light.salon_principale", "nom": "Plafonnier", "icone": "💡" },
-            { "entity_id": "light.salon_spots", "nom": "Spots", "icone": "💡" }
+            {
+              "entity_id": "light.salon_principale",
+              "nom": "Plafonnier",
+              "icone": "💡"
+            },
+            {
+              "entity_id": "light.salon_spots",
+              "nom": "Spots",
+              "icone": "💡"
+            },
+            {
+              "entity_id": "media_player.salon",
+              "nom": "TV Xiaomi",
+              "icone": "📺"
+            }
           ]
         },
         {
           "nom": "Cuisine",
           "equipements": [
-            { "entity_id": "light.cuisine", "nom": "Plafonnier", "icone": "💡" }
+            {
+              "entity_id": "light.cuisine",
+              "nom": "Plafonnier",
+              "icone": "💡"
+            }
           ]
         }
       ]
@@ -36,13 +65,36 @@
         {
           "nom": "Chambre",
           "equipements": [
-            { "entity_id": "light.chambre", "nom": "Plafonnier", "icone": "💡" }
+            {
+              "entity_id": "light.chambre",
+              "nom": "Plafonnier",
+              "icone": "💡"
+            }
+          ]
+        },
+        {
+          "nom": "Chambre de Naïm",
+          "equipements": [
+            {
+              "entity_id": "media_player.43pus7608_12",
+              "nom": "TV Philips",
+              "icone": "📺"
+            },
+            {
+              "entity_id": "light.43pus7608_12_ambilight",
+              "nom": "Ambilight",
+              "icone": "🌈"
+            }
           ]
         },
         {
           "nom": "Salle de bain",
           "equipements": [
-            { "entity_id": "light.salle_de_bain", "nom": "Plafonnier", "icone": "💡" }
+            {
+              "entity_id": "light.salle_de_bain",
+              "nom": "Plafonnier",
+              "icone": "💡"
+            }
           ]
         }
       ]

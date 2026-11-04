@@ -16,15 +16,19 @@ léger servi par le serveur. Détails : [`docs/PRD.md`](docs/PRD.md).
 | J0 — Inventaire réseau | ✅ | `docs/scan-report.md` (04/11) |
 | J1 — Choix iPad | ✅ | iOS 9 → portail léger (plan B) |
 | J2 — Dépôt unique + config nettoyée | ✅ | betanalyst-pro n'héberge plus la domotique |
-| J2 — Portail tablette (lumières, scènes) | 🔄 | En attente du jeton `HA_TOKEN` |
+| J2 — Portail tablette (lumières, scènes, TV) | ✅ | Jeton en place, à tester sur l'iPad |
 | J3 — Broadlink / volets Came | 📋 | Test RF avec `scripts/broadlink-rf.py`, télécommande en main |
-| J4 — TV Xiaomi/Philips, Freebox, Tuya, garage | 📋 | |
+| J4 — TV Xiaomi/Philips, Freebox, Tuya, garage | 🔄 | Broadlink, Freebox, TV salon, Philips (chambre de Naïm) intégrés ; reste chambre (boîtier Xiaomi, Apple TV), Tuya, garage |
 | J5 — Scènes/automatisations réelles, test 7 jours | 📋 | |
 
 ## Blocages / décisions pendantes
 Voir `docs/PRD.md` §10 (référence de la télécommande Came, garage, pièces, Philips, commune).
 
 ## Changelog
+### 2026-11-04 — Intégrations
+- HA : Broadlink, Freebox, TV Xiaomi salon, TV Philips (+ Ambilight) intégrés ; 8 entités fantômes et floor3d supprimés.
+- Portail : TV salon, chambre de Naïm (TV Philips, Ambilight).
+
 ### 2026-11-04 — Ménage et portail iOS 9
 - Dépôt unique `home-automation` ; suppression des guides et scripts obsolètes (Windows, Mosquitto, nginx, Cloudflare, Watchtower, Lovelace et plan 3D).
 - Config HA : IPX800 dans les secrets, `default_config`, journaux ramenés à `warning` (le debug avait produit un journal de 131 Mo), lumières marquées « indisponibles » si l'IPX800 ne répond pas, automatisations fantômes retirées.

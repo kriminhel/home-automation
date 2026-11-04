@@ -41,6 +41,13 @@ class FauxHA(BaseHTTPRequestHandler):
             self.send_response(401)
             self.end_headers()
             return
+        if self.path.startswith("/api/image_proxy/"):
+            APPELS.append((self.path, None))
+            self.send_response(200)
+            self.send_header("Content-Type", "image/jpeg")
+            self.end_headers()
+            self.wfile.write(b"\xff\xd8JPEG")
+            return
         self._ok(ETATS)
 
     def do_POST(self):
@@ -145,6 +152,30 @@ class TestPortail(unittest.TestCase):
         code, _ = self.post({"entity_id": "cover.garage", "action": "ouvrir"})
         self.assertEqual(code, 200)
         self.assertEqual(APPELS[0], ("/api/services/cover/open_cover", {"entity_id": "cover.garage"}))
+
+    def test_image_camera_declaree(self):
+        eid = server.cameras_de(server.charger_maison())[0]
+        server.IMAGES.images.clear()
+        code, brut = self.get("/api/image/" + eid + "?t=1")
+        self.assertEqual((code, brut), (200, b"\xff\xd8JPEG"))
+        self.get("/api/image/" + eid)  # deuxième appel servi par le cache
+        self.assertEqual(APPELS, [("/api/image_proxy/" + eid, None)])
+
+    def test_image_refusee_si_non_declaree(self):
+        with self.assertRaises(urllib.error.HTTPError) as ctx:
+            self.get("/api/image/camera.non_declaree")
+        self.assertEqual(ctx.exception.code, 404)
+        self.assertEqual(APPELS, [])
+
+    def test_camera_sans_action_possible(self):
+        eid = server.cameras_de(server.charger_maison())[0]
+        code, _ = self.post({"entity_id": eid, "action": "basculer"})
+        self.assertEqual(code, 400)
+
+    def test_etats_incluent_les_cameras(self):
+        etats = json.loads(self.get("/api/etats")[1])
+        for eid in server.cameras_de(server.charger_maison()):
+            self.assertIn(eid, etats)
 
     def test_ha_injoignable(self):
         ancien = server.HA_URL

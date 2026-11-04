@@ -19,6 +19,7 @@ léger servi par le serveur. Détails : [`docs/PRD.md`](docs/PRD.md).
 | J2 — Portail tablette (lumières, scènes, TV) | ✅ | Jeton en place, à tester sur l'iPad |
 | J3 — Garage / volets | 🔄 | Garage ✅ via Broadlink ; volets = Somfy RTS → ESPSomfy-RTS à commander |
 | J4 — TV Xiaomi/Philips, Freebox, Tuya, garage | 🔄 | Broadlink, Freebox, toutes les TV intégrées et renommées ; reste Tuya, garage |
+| J4 bis — Caméras sur la tablette | 🔄 | Onglet Caméras (dernière image de mouvement, cloud) ✅ ; direct local à tester sur les C6N, absent sur la H8c |
 | J5 — Scènes/automatisations réelles, test 7 jours | 📋 | |
 
 ## Achats
@@ -28,6 +29,9 @@ Liste cumulative : [`docs/ACHATS.md`](docs/ACHATS.md) — Karim achète tout qua
 Voir `docs/PRD.md` §10 (référence de la télécommande Came, garage, pièces, Philips, commune).
 
 ## Changelog
+### 2026-11-04 — Caméras
+- Portail : onglet **Caméras** (visiophone, garage, salon, salle de jeux) avec la dernière image de mouvement fournie par le cloud EZVIZ, relayée par `/api/image/<entity_id>` (liste blanche `cameras` de maison.json, cache 10 s, jeton côté serveur) ; plein écran au toucher.
+- Garage H8c : le mot de passe local est celui du compte EZVIZ (pas le code de l'étiquette) ; pas de port 554 même avec le direct LAN activé. Carte microSD 537 Go (4 partitions) : contrefaite, la caméra ne peut pas l'initialiser.
 ### 2026-11-04 — Liste d'achats
 - `docs/ACHATS.md` créé (ESPSomfy-RTS, Shelly 1 Mini Gen3, contact garage) ; portail et EZVIZ ajoutés au PRD.
 

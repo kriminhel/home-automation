@@ -86,3 +86,20 @@ body.nuit .tuile { background: #232731; box-shadow: none; }
   font-size: 20px; text-align: center; display: none;
 }
 #message.info { background: #323843; }
+
+/* Caméras */
+.camera {
+  width: 344px; margin: 0 12px 12px 0; padding: 10px; border-radius: 18px;
+  background: #FFFFFF; box-shadow: 0 1px 4px rgba(0,0,0,.08);
+}
+body.nuit .camera { background: #232731; box-shadow: none; }
+.camera img { display: block; width: 324px; height: 182px; border-radius: 12px; background: #2A2E38; }
+.camera .nom { font-size: 20px; font-weight: 600; margin: 8px 4px 2px; }
+.camera .etat { font-size: 17px; opacity: .7; margin: 0 4px 4px; }
+#plein {
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 30; background: #000000;
+  display: -webkit-flex; display: flex; -webkit-flex-direction: column; flex-direction: column;
+  -webkit-align-items: center; align-items: center; -webkit-justify-content: center; justify-content: center;
+}
+#plein img { max-width: 100%; max-height: 88%; }
+#plein .legende { color: #FFFFFF; font-size: 22px; margin-top: 14px; }

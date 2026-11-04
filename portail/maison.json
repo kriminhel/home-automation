@@ -17,6 +17,28 @@
       "icone": "🌙"
     }
   ],
+  "cameras": [
+    {
+      "entity_id": "image.visiophone_entree_derniere_image_du_mouvement",
+      "nom": "Visiophone entrée",
+      "icone": "🔔"
+    },
+    {
+      "entity_id": "image.garage_derniere_image_du_mouvement",
+      "nom": "Garage",
+      "icone": "🚗"
+    },
+    {
+      "entity_id": "image.salon_derniere_image_du_mouvement",
+      "nom": "Salon",
+      "icone": "🛋"
+    },
+    {
+      "entity_id": "image.salle_de_jeux_derniere_image_du_mouvement",
+      "nom": "Salle de jeux",
+      "icone": "🎮"
+    }
+  ],
   "niveaux": [
     {
       "id": "rdc",

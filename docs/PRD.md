@@ -53,8 +53,8 @@ Scan réseau du 04/11/2026 : [`docs/scan-report.md`](scan-report.md).
 | 🔌 Tuya / Smart Life | « Passerelle ZigBee » (Tuya + HomeKit « Gateway-type c ») + 1 autre appareil Tuya | 192.168.1.145 / .155 | `homekit_controller` (local) ou `tuya` (cloud) | ⚠️ cloud déconnecté ; appairage HomeKit possible avec le code à 8 chiffres de la passerelle |
 | 🔊 Audio | Enceinte Spotify Connect | 192.168.1.157 | `spotify` | hors V1 |
 | 🚧 Portail | Motorisation **Nice**, télécommandes Nice (code tournant probable) ; s'ouvre déjà depuis le visiophone EZVIZ | — | Shelly 1 (contact sec) sur l'entrée « pas à pas » de la carte Nice | 📋 achat validé |
-| 🔔 Visiophone | **EZVIZ HP7** (ouvre le portail) | cloud uniquement | `ezviz` | ❌ 04/11 : pas d'image ni d'ouverture via HA → portail par Shelly sur la carte Nice |
-| 📷 Caméras | **EZVIZ** C6N salon (.133), C6N salle de jeux (.55), H8c garage (.160) | `ezviz` (compte lié 04/11) + flux RTSP local (code de vérification) | 📋 à intégrer : image fixe dans les tuiles, **direct (MJPEG) quand on touche une caméra**, une seule à la fois, coupé après 2 min |
+| 🔔 Visiophone | **EZVIZ HP7** (ouvre le portail) | cloud uniquement | `ezviz` | 🔄 04/11 : dernière image de mouvement (cloud) dans l'onglet Caméras ; pas d'ouverture via HA → portail par Shelly sur la carte Nice |
+| 📷 Caméras | **EZVIZ** C6N salon (.133), C6N salle de jeux (.55), H8c garage (.160) | `ezviz` (compte lié 04/11) ; flux RTSP local si la caméra l'ouvre | ✅ 04/11 onglet **Caméras** du portail : dernière image de mouvement (cloud), plein écran au toucher, rafraîchie toutes les 30 s · 📋 direct (MJPEG) seulement pour les caméras dont le port 554 s'ouvre — **H8c garage : RTSP absent avec le firmware actuel** (port 554 fermé même direct LAN activé ; son mot de passe local = celui du compte EZVIZ) |
 | 🖥️ NAS | Synology DS216se | 192.168.1.134 | `synology_dsm` | hors V1 |
 
 Règle : on n'intègre **que ce qui est confirmé**. Aucune entité inventée.
@@ -154,7 +154,7 @@ mur de caméras en direct permanent sur l'iPad (trop lourd pour iOS 9), suivi d'
 
 - ⚠️ Pièce de chacun des 12 volets (pour la tablette).
 - ⚠️ Portail Nice : modèle de la télécommande (FLO2R-S, ON2… = code tournant) et de la carte du moteur.
-- ⚠️ Codes de vérification des caméras salon et salle de jeux ; code du garage refusé en local (401) sans chiffrement personnalisé : retester après changement de la carte microSD et redémarrage ; comparer avec les C6N.
+- ⚠️ Direct local des C6N (salon, salle de jeux) : activer le direct LAN avec le mot de passe du compte EZVIZ, puis vérifier le port 554. Garage H8c : pas de RTSP (firmware) ; microSD : les cartes de rechange sont contrefaites → carte endurance (ACHATS #6).
 - ⚠️ Salle de bain de l'étage : quelle solution (§6 bis) ?
 - ⚠️ Commune de la maison (pour les heures de lever et de coucher du soleil ; HA est réglé par défaut sur Amsterdam).
 - ⚠️ Faut-il un code PIN pour le garage ?

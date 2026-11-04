@@ -5,6 +5,7 @@
 - GET  /api/maison  -> niveaux, pièces, équipements (maison.json)
 - GET  /api/etats   -> état des seules entités déclarées dans maison.json
 - POST /api/action  -> {"entity_id": ..., "action": ...} ou {"niveau": ..., "action": ...}
+- GET  /api/image/<entity_id> -> image JPEG d'une caméra déclarée dans maison.json ("cameras")
 
 Le jeton Home Assistant reste sur le serveur (variable HA_TOKEN) : l'iPad ne le voit
 jamais, et seules les actions de la liste ACTIONS sur les entités déclarées passent.
@@ -66,6 +67,11 @@ def entites_de(maison, niveau_id=None):
     return ids
 
 
+def cameras_de(maison):
+    """entity_id des caméras déclarées (lecture d'image seulement, aucune action)."""
+    return [c["entity_id"] for c in maison.get("cameras", [])]
+
+
 def entites_sensibles(maison):
     """Équipements marqués "confirmer" (garage…) : exclus des actions groupées."""
     return {e["entity_id"] for n in maison.get("niveaux", []) for p in n.get("pieces", [])
@@ -96,6 +102,40 @@ def appel_ha(methode, chemin, corps=None, timeout=6):
         raise ErreurHA("Home Assistant injoignable (%s)" % getattr(e, "reason", e))
 
 
+def image_ha(eid, timeout=15):
+    """Image d'une entité image.* ou camera.* via le proxy de Home Assistant."""
+    if not HA_TOKEN:
+        raise ErreurHA("HA_TOKEN manquant dans .env")
+    proxy = "image_proxy" if eid.startswith("image.") else "camera_proxy"
+    req = urllib.request.Request("%s/api/%s/%s" % (HA_URL, proxy, eid),
+                                 headers={"Authorization": "Bearer " + HA_TOKEN})
+    try:
+        with urllib.request.urlopen(req, timeout=timeout) as r:
+            return r.headers.get("Content-Type", "image/jpeg"), r.read()
+    except urllib.error.HTTPError as e:
+        raise ErreurHA("Home Assistant a répondu %s" % e.code)
+    except (urllib.error.URLError, OSError) as e:
+        raise ErreurHA("Home Assistant injoignable (%s)" % getattr(e, "reason", e))
+
+
+class CacheImages:
+    """Une image par caméra au plus toutes les 10 s, quel que soit le nombre de tablettes."""
+
+    def __init__(self, ttl=10.0):
+        self.ttl, self.verrou, self.images = ttl, threading.Lock(), {}
+
+    def lire(self, eid):
+        with self.verrou:
+            t, img = self.images.get(eid, (0.0, None))
+            if img is None or time.time() - t > self.ttl:
+                img = image_ha(eid)
+                self.images[eid] = (time.time(), img)
+            return img
+
+
+IMAGES = CacheImages()
+
+
 class CacheEtats:
     """Un seul appel /api/states par seconde, quel que soit le nombre de tablettes."""
 
@@ -120,7 +160,7 @@ CACHE = CacheEtats()
 def etats(maison):
     tous = CACHE.lire()
     res = {}
-    for eid in entites_de(maison):
+    for eid in entites_de(maison) + cameras_de(maison):
         e = tous.get(eid)
         if e is None:
             res[eid] = {"state": "absent"}
@@ -161,7 +201,7 @@ class Handler(BaseHTTPRequestHandler):
     server_version = "PortailTablette/1.0"
 
     def log_message(self, fmt, *args):
-        if not self.path.startswith("/api/etats"):
+        if not self.path.startswith(("/api/etats", "/api/image/")):
             sys.stderr.write("%s %s\n" % (self.address_string(), fmt % args))
 
     def _json(self, code, obj):
@@ -189,6 +229,17 @@ class Handler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(brut)
 
+    def _image(self, eid):
+        if eid not in cameras_de(charger_maison()):
+            return self._json(404, {"erreur": "caméra non déclarée dans maison.json"})
+        type_mime, brut = IMAGES.lire(eid)
+        self.send_response(200)
+        self.send_header("Content-Type", type_mime)
+        self.send_header("Cache-Control", "no-store")
+        self.send_header("Content-Length", str(len(brut)))
+        self.end_headers()
+        self.wfile.write(brut)
+
     def do_GET(self):
         chemin = self.path.split("?")[0]
         try:
@@ -200,6 +251,8 @@ class Handler(BaseHTTPRequestHandler):
                 return self._json(200, charger_maison())
             if chemin == "/api/etats":
                 return self._json(200, etats(charger_maison()))
+            if chemin.startswith("/api/image/"):
+                return self._image(chemin[len("/api/image/"):])
             return self._json(404, {"erreur": "introuvable"})
         except ErreurHA as e:
             return self._json(502, {"erreur": str(e)})

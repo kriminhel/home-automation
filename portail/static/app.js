@@ -4,6 +4,7 @@
   'use strict';
 
   var ACCUEIL = { id: 'accueil', nom: 'Accueil', icone: '🏠', couleur: '#3949AB' };
+  var CAMERAS = { id: 'cameras', nom: 'Caméras', icone: '📷', couleur: '#546E7A' };
   var JOURS = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'];
   var MOIS = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août',
     'septembre', 'octobre', 'novembre', 'décembre'];
@@ -14,6 +15,8 @@
   var tuiles = {};          // entity_id -> [éléments tuile] de la vue courante
   var noms = {};            // entity_id -> {nom, icone, piece}
   var minuteurMessage = null;
+  var legendesCam = {};     // entity_id -> élément légende (vue Caméras)
+  var imagesCam = [];       // [{img, eid}] à rafraîchir
 
   function $(id) { return document.getElementById(id); }
 
@@ -113,6 +116,9 @@
       }
     }
     if (vue === 'accueil') { majAllumes(); }
+    for (eid in legendesCam) {
+      if (legendesCam.hasOwnProperty(eid)) { legendesCam[eid].textContent = libelleMouvement(eid); }
+    }
   }
 
   /* ---------- actions ---------- */
@@ -191,7 +197,11 @@
 
   /* ---------- vues ---------- */
 
-  function niveaux() { return [ACCUEIL].concat(maison.niveaux); }
+  function niveaux() {
+    var l = [ACCUEIL].concat(maison.niveaux);
+    if (maison.cameras && maison.cameras.length) { l.push(CAMERAS); }
+    return l;
+  }
 
   function dessinerOnglets() {
     var zone = $('onglets');
@@ -296,13 +306,88 @@
     }
   }
 
+  /* ---------- caméras : dernière image de mouvement (cloud EZVIZ) ---------- */
+
+  // Date ISO de Home Assistant -> Date (Safari iOS 9 ne lit pas les microsecondes)
+  function lireDateIso(s) {
+    var m = /^(\d{4})-(\d\d)-(\d\d)T(\d\d):(\d\d):(\d\d)(?:\.\d+)?(Z|([+-])(\d\d):(\d\d))?$/.exec(s || '');
+    if (!m) { return null; }
+    var t = Date.UTC(+m[1], +m[2] - 1, +m[3], +m[4], +m[5], +m[6]);
+    if (m[8]) { t -= (m[8] === '-' ? -1 : 1) * (+m[9] * 60 + +m[10]) * 60000; }
+    return new Date(t);
+  }
+
+  function libelleMouvement(eid) {
+    var e = etats[eid];
+    if (!e) { return '…'; }
+    var d = lireDateIso(e.state);
+    if (!d) { return 'Pas encore de mouvement'; }
+    var h = deux(d.getHours()) + ':' + deux(d.getMinutes());
+    var auj = new Date();
+    var hier = new Date(auj.getTime() - 86400000);
+    if (d.toDateString() === auj.toDateString()) { return 'Mouvement à ' + h; }
+    if (d.toDateString() === hier.toDateString()) { return 'Mouvement hier à ' + h; }
+    return 'Mouvement le ' + d.getDate() + ' ' + MOIS[d.getMonth()] + ' à ' + h;
+  }
+
+  function urlImage(eid) { return '/api/image/' + eid + '?t=' + new Date().getTime(); }
+
+  function rafraichirImages() {
+    for (var i = 0; i < imagesCam.length; i++) { imagesCam[i].img.src = urlImage(imagesCam[i].eid); }
+  }
+
+  function pleinEcran(cam) {
+    var fond = el('div', '');
+    fond.id = 'plein';
+    var img = el('img', '');
+    img.src = urlImage(cam.entity_id);
+    fond.appendChild(img);
+    var leg = el('div', 'legende', cam.nom + ' — ' + libelleMouvement(cam.entity_id) + ' · toucher pour fermer');
+    fond.appendChild(leg);
+    imagesCam.push({ img: img, eid: cam.entity_id });
+    fond.addEventListener('click', function () {
+      document.body.removeChild(fond);
+      imagesCam.pop();
+    });
+    document.body.appendChild(fond);
+  }
+
+  function vueCameras(c) {
+    var ent = el('div', 'entete');
+    ent.style.background = CAMERAS.couleur;
+    ent.appendChild(el('h1', '', CAMERAS.icone + ' Caméras'));
+    c.appendChild(ent);
+    c.appendChild(el('div', 'vide', 'Dernière image prise lors d’un mouvement. Toucher une image pour l’agrandir.'));
+    var zone = el('div', 'tuiles');
+    for (var i = 0; i < maison.cameras.length; i++) {
+      (function (cam) {
+        var bloc = el('div', 'camera');
+        var img = el('img', '');
+        img.src = urlImage(cam.entity_id);
+        bloc.appendChild(img);
+        bloc.appendChild(el('div', 'nom', cam.icone + ' ' + cam.nom));
+        var leg = el('div', 'etat', libelleMouvement(cam.entity_id));
+        bloc.appendChild(leg);
+        legendesCam[cam.entity_id] = leg;
+        imagesCam.push({ img: img, eid: cam.entity_id });
+        bloc.addEventListener('click', function () { pleinEcran(cam); });
+        zone.appendChild(bloc);
+      })(maison.cameras[i]);
+    }
+    c.appendChild(zone);
+  }
+
   function dessiner() {
     tuiles = {};
+    legendesCam = {};
+    imagesCam = [];
+    var plein = $('plein');
+    if (plein) { document.body.removeChild(plein); }
     dessinerOnglets();
     var c = $('contenu');
     c.innerHTML = '';
     signatureAllumes = null;
-    if (vue === 'accueil') { vueAccueil(c); } else {
+    if (vue === 'accueil') { vueAccueil(c); } else if (vue === 'cameras') { vueCameras(c); } else {
       for (var i = 0; i < maison.niveaux.length; i++) {
         if (maison.niveaux[i].id === vue) { vueNiveau(c, maison.niveaux[i]); }
       }
@@ -346,6 +431,7 @@
       lireEtats();
       setInterval(lireEtats, 2000);
       setInterval(majHorloge, 10000);
+      setInterval(rafraichirImages, 30000);
     }, function (err) {
       $('contenu').innerHTML = '';
       $('contenu').appendChild(el('p', 'attente', 'Serveur injoignable (' + err + '). Nouvel essai…'));

@@ -88,6 +88,7 @@
         {
           "nom": "Salon",
           "icone": "🛋",
+          "photo": "salon.jpg",
           "equipements": [
             {
               "entity_id": "light.salon",
@@ -104,6 +105,7 @@
         {
           "nom": "Salle à manger",
           "icone": "🍽",
+          "photo": "salle-a-manger.jpg",
           "equipements": [
             {
               "entity_id": "light.salle_a_manger",
@@ -115,6 +117,7 @@
         {
           "nom": "Cuisine",
           "icone": "🍳",
+          "photo": "cuisine.jpg",
           "equipements": [
             {
               "entity_id": "light.cuisine",
@@ -126,6 +129,7 @@
         {
           "nom": "Entrée et couloir",
           "icone": "🚪",
+          "photo": "entree.jpg",
           "equipements": [
             {
               "entity_id": "light.entree",
@@ -142,6 +146,7 @@
         {
           "nom": "Buanderie et garage",
           "icone": "🚗",
+          "photo": "garage.jpg",
           "equipements": [
             {
               "entity_id": "light.buanderie",
@@ -164,6 +169,7 @@
         {
           "nom": "Chambre parentale",
           "icone": "🛏",
+          "photo": "parents.jpg",
           "equipements": [
             {
               "entity_id": "light.chambre_parentale",
@@ -190,6 +196,7 @@
         {
           "nom": "Chambre d'Alia",
           "icone": "🧸",
+          "photo": "alia.jpg",
           "equipements": [
             {
               "entity_id": "light.chambre_alia",
@@ -201,6 +208,7 @@
         {
           "nom": "Chambre de Naïm",
           "icone": "🎮",
+          "photo": "naim.jpg",
           "equipements": [
             {
               "entity_id": "light.chambre_naim",
@@ -222,6 +230,7 @@
         {
           "nom": "Chambre d'Amel",
           "icone": "📚",
+          "photo": "amel.jpg",
           "equipements": [
             {
               "entity_id": "light.chambre_amel",
@@ -238,6 +247,7 @@
         {
           "nom": "Salle de bain et WC enfants",
           "icone": "🛁",
+          "photo": "bain.jpg",
           "equipements": [
             {
               "entity_id": "light.sdb_enfants",
@@ -254,6 +264,7 @@
         {
           "nom": "Extérieur",
           "icone": "🌳",
+          "photo": "exterieur.jpg",
           "equipements": [
             {
               "entity_id": "light.facade_jardin",
@@ -1066,6 +1077,7 @@
         {
           "nom": "Salle de jeux",
           "icone": "🕹",
+          "photo": "jeux.jpg",
           "equipements": [
             {
               "entity_id": "light.salle_de_jeux",

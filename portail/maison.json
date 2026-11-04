@@ -586,8 +586,7 @@
             "face": "haut",
             "w": 220,
             "d": 36,
-            "plaque": true,
-            "haut": true
+            "plaque": true
           },
           {
             "t": "frigo",

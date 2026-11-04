@@ -355,6 +355,33 @@ light:
     entities: [light.jardin_1, light.jardin_2, light.jardin_3, light.jardin_4]
 
 # ============================================
+# PORTE DE GARAGE - Came TOP à code fixe, rejouée par le Broadlink RM4 Pro
+# ============================================
+# Codes appris avec scripts/broadlink-rf.py, rangés dans secrets.yaml (jamais dans git).
+# Pas de retour d'état en radio : HA affiche le dernier ordre donné (optimiste).
+
+cover:
+  - platform: template
+    covers:
+      garage:
+        friendly_name: "Porte de garage"
+        unique_id: garage_came_broadlink
+        device_class: garage
+        optimistic: true
+        open_cover:
+          service: remote.send_command
+          target: { entity_id: remote.broadlink }
+          data: { command: !secret garage_code_ouvrir }
+        stop_cover:
+          service: remote.send_command
+          target: { entity_id: remote.broadlink }
+          data: { command: !secret garage_code_stop }
+        close_cover:
+          service: remote.send_command
+          target: { entity_id: remote.broadlink }
+          data: { command: !secret garage_code_fermer }
+
+# ============================================
 # SCÈNES (lumières)
 # ============================================
 

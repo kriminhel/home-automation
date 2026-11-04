@@ -157,9 +157,16 @@
 
     if (d === 'cover') {
       var bc = el('div', 'boutons');
-      bc.appendChild(bouton('▲', function () { agir({ entity_id: eid, action: 'ouvrir' }, t); }));
+      // Équipement sensible (garage) : confirmation avant d'ouvrir ou de fermer
+      var ordre = function (action, verbe) {
+        return function () {
+          if (eq.confirmer && !window.confirm(verbe + ' : ' + eq.nom + ' ?')) { return; }
+          agir({ entity_id: eid, action: action }, t);
+        };
+      };
+      bc.appendChild(bouton('▲', ordre('ouvrir', 'Ouvrir')));
       bc.appendChild(bouton('■', function () { agir({ entity_id: eid, action: 'stop' }, t); }));
-      bc.appendChild(bouton('▼', function () { agir({ entity_id: eid, action: 'fermer' }, t); }));
+      bc.appendChild(bouton('▼', ordre('fermer', 'Fermer')));
       t.appendChild(bc);
     } else if (d === 'media_player') {
       var bm = el('div', 'boutons');
@@ -215,7 +222,7 @@
     var n = 0;
     for (var eid in noms) {
       if (noms.hasOwnProperty(eid) && domaine(eid) !== 'scene' && estActif(eid)) {
-        var t = creerTuile({ entity_id: eid, nom: noms[eid].nom, icone: noms[eid].icone });
+        var t = creerTuile({ entity_id: eid, nom: noms[eid].nom, icone: noms[eid].icone, confirmer: noms[eid].confirmer });
         t.querySelector('.etat').textContent = noms[eid].piece;
         t.className += ' on';
         zone.appendChild(t);
@@ -252,7 +259,8 @@
     var aVolets = false, i, j;
     for (i = 0; i < niveau.pieces.length; i++) {
       for (j = 0; j < niveau.pieces[i].equipements.length; j++) {
-        if (domaine(niveau.pieces[i].equipements[j].entity_id) === 'cover') { aVolets = true; }
+        var eqv = niveau.pieces[i].equipements[j];
+        if (domaine(eqv.entity_id) === 'cover' && !eqv.confirmer) { aVolets = true; }
       }
     }
     var actions = [['💡 Tout éteindre', 'tout_eteindre', 'Extinction']];
@@ -326,7 +334,7 @@
           var p = m.niveaux[i].pieces[j];
           for (var k = 0; k < p.equipements.length; k++) {
             var eq = p.equipements[k];
-            noms[eq.entity_id] = { nom: eq.nom, icone: eq.icone, piece: p.nom };
+            noms[eq.entity_id] = { nom: eq.nom, icone: eq.icone, piece: p.nom, confirmer: !!eq.confirmer };
           }
         }
       }

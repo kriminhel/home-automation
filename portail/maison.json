@@ -86,6 +86,12 @@
               "entity_id": "light.garage",
               "nom": "Garage",
               "icone": "💡"
+            },
+            {
+              "entity_id": "cover.garage",
+              "nom": "Porte de garage",
+              "icone": "🚗",
+              "confirmer": true
             }
           ]
         },

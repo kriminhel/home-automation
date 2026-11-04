@@ -134,6 +134,18 @@ class TestPortail(unittest.TestCase):
         self.assertEqual((code, r["cibles"]), (200, 0))
         self.assertEqual(APPELS, [])
 
+    def test_garage_jamais_dans_une_action_groupee(self):
+        maison = server.charger_maison()
+        self.assertIn("cover.garage", server.entites_sensibles(maison))
+        code, r = self.post({"niveau": "rdc", "action": "tout_ouvrir"})
+        self.assertEqual((code, r["cibles"]), (200, 0))
+        self.assertEqual(APPELS, [])
+
+    def test_garage_pilotable_individuellement(self):
+        code, _ = self.post({"entity_id": "cover.garage", "action": "ouvrir"})
+        self.assertEqual(code, 200)
+        self.assertEqual(APPELS[0], ("/api/services/cover/open_cover", {"entity_id": "cover.garage"}))
+
     def test_ha_injoignable(self):
         ancien = server.HA_URL
         server.HA_URL = "http://127.0.0.1:1"

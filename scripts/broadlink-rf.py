@@ -33,6 +33,7 @@ FICHIER = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__)
 
 def appareil():
     d = broadlink.hello(HOTE, timeout=5)
+    d.timeout = 3  # chaque échange réseau abandonne au bout de 3 s
     d.auth()
     return d
 
@@ -51,9 +52,14 @@ def info():
 
 
 def attendre(fonction, duree, pas=1.0):
-    fin = time.time() + duree
-    while time.time() < fin:
-        r = fonction()
+    """Appelle fonction() jusqu'à un résultat ou la fin du délai ; journalise chaque essai."""
+    debut = time.time()
+    while time.time() - debut < duree:
+        try:
+            r = fonction()
+        except Exception as e:  # le Broadlink peut ne pas répondre ponctuellement
+            print("   … %.0f s : %s" % (time.time() - debut, type(e).__name__), flush=True)
+            r = None
         if r:
             return r
         time.sleep(pas)
@@ -67,12 +73,13 @@ def apprendre(nom):
 
     def frequence():
         trouve, freq = d.check_frequency()
+        print("   … balayage en cours" if not trouve else "", end="\r", flush=True)
         return freq if trouve else None
 
-    freq = attendre(frequence, 30)
+    freq = attendre(frequence, int(os.environ.get("DUREE_BALAYAGE", "30")))
     if not freq:
         d.cancel_sweep_frequency()
-        sys.exit("❌ Aucune fréquence détectée en 30 s (télécommande trop loin, pile faible, ou pas en 433 MHz).")
+        sys.exit("❌ Aucune fréquence détectée (télécommande trop loin, pile faible, ou pas en 433 MHz).")
     print("   Fréquence trouvée : %.2f MHz. Relâchez le bouton." % freq)
     time.sleep(2)
     print("2/2 Faites maintenant un APPUI COURT sur le même bouton…")
@@ -82,7 +89,7 @@ def apprendre(nom):
         try:
             return d.check_data()
         except (broadlink.exceptions.ReadError, broadlink.exceptions.StorageError):
-            return None
+            return None  # rien de capturé pour l'instant
 
     code = attendre(paquet, 20)
     if not code:

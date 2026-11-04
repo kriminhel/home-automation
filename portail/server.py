@@ -66,6 +66,12 @@ def entites_de(maison, niveau_id=None):
     return ids
 
 
+def entites_sensibles(maison):
+    """Équipements marqués "confirmer" (garage…) : exclus des actions groupées."""
+    return {e["entity_id"] for n in maison.get("niveaux", []) for p in n.get("pieces", [])
+            for e in p.get("equipements", []) if e.get("confirmer")}
+
+
 class ErreurHA(Exception):
     pass
 
@@ -132,7 +138,9 @@ def executer(maison, demande):
         if demande["niveau"] not in [n["id"] for n in maison.get("niveaux", [])]:
             raise ValueError("niveau inconnu")
         domaine, service = ACTIONS_NIVEAU[action]
-        cibles = [e for e in entites_de(maison, demande["niveau"]) if e.split(".")[0] == domaine]
+        sensibles = entites_sensibles(maison)  # ex. garage : jamais dans une action groupée
+        cibles = [e for e in entites_de(maison, demande["niveau"])
+                  if e.split(".")[0] == domaine and e not in sensibles]
         if cibles:
             appel_ha("POST", "/api/services/%s/%s" % (domaine, service), {"entity_id": cibles})
         CACHE.invalider()

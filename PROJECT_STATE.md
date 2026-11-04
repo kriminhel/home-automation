@@ -17,7 +17,7 @@ léger servi par le serveur. Détails : [`docs/PRD.md`](docs/PRD.md).
 | J1 — Choix iPad | ✅ | iOS 9 → portail léger (plan B) |
 | J2 — Dépôt unique + config nettoyée | ✅ | betanalyst-pro n'héberge plus la domotique |
 | J2 — Portail tablette (lumières, scènes, TV) | ✅ | Jeton en place, à tester sur l'iPad |
-| J3 — Broadlink / volets Came | 📋 | Test RF avec `scripts/broadlink-rf.py`, télécommande en main |
+| J3 — Garage / volets | 🔄 | Garage ✅ via Broadlink ; volets = Somfy RTS → ESPSomfy-RTS à commander |
 | J4 — TV Xiaomi/Philips, Freebox, Tuya, garage | 🔄 | Broadlink, Freebox, toutes les TV intégrées et renommées ; reste Tuya, garage |
 | J5 — Scènes/automatisations réelles, test 7 jours | 📋 | |
 
@@ -25,6 +25,11 @@ léger servi par le serveur. Détails : [`docs/PRD.md`](docs/PRD.md).
 Voir `docs/PRD.md` §10 (référence de la télécommande Came, garage, pièces, Philips, commune).
 
 ## Changelog
+### 2026-11-04 — Garage et diagnostic volets
+- Garage Came (TOP code fixe) : 3 codes appris et rejoués, `cover.garage` dans HA, tuile avec confirmation, exclu des actions groupées.
+- Volets : émetteurs Somfy RTS (433,42 MHz, code tournant) → Broadlink et Loratap SC500W inadaptés ; solution ESPSomfy-RTS.
+- IPX800 : 21 relais sous leurs vrais noms.
+
 ### 2026-11-04 — Intégrations
 - HA : Broadlink, Freebox, TV Xiaomi salon, TV Philips (+ Ambilight) intégrés ; 8 entités fantômes et floor3d supprimés.
 - HA : boîtier Xiaomi (chambre parentale) et Apple TV (Amel) intégrés ; entités TV renommées (tv_salon, tv_naim, ambilight_naim…).

@@ -42,8 +42,9 @@ Scan réseau du 04/11/2026 : [`docs/scan-report.md`](scan-report.md).
 | 💡 Lumières | 21 relais nommés dans l'IPX800 (salon, salle à manger, cuisine, entrée, couloir, buanderie, garage, chambres parentale / Alia / Naïm / Amel, dressing, SDB parentale, SdB et WC enfants, salle de jeux, façade jardin ×4, côté rue) | IPX800 V3 (24 relais, 192.168.1.250) | `light.template` → script en file → `preset.htm?setN` | ✅ en service 04/11 · relais libres : 8, 23, 24 |
 | 💡 Salle de bain étage | Pas de relais | — | voir §6 bis | 📋 solution à choisir |
 | 🎛️ Télécommande universelle | Broadlink **RM4 Pro** (IR + RF 433 MHz) | 192.168.1.64 | `broadlink` → `remote.broadlink` | ✅ intégré 04/11, codes à apprendre |
-| 🪟 Volets | Moteurs **Came**, télécommandes RF | via Broadlink | `remote.send_command` + `cover.template` | 📋 test d'apprentissage à faire (§6) |
-| 🚪 Garage | Porte de garage, marque inconnue | ⚠️ | ⚠️ | 📋 à identifier |
+| 🪟 Volets (×12) | Émetteurs muraux radio **Somfy RTS** (433,42 MHz, code tournant, bouton PROG) | ESPSomfy-RTS (à acheter) | intégration ESPSomfy-RTS | 📋 matériel à commander (§6) |
+| 🚪 Garage | Porte Came, télécommande **TOP 4 boutons à code fixe** (433,9 MHz) | via Broadlink | `cover.template` → `remote.send_command` (codes dans secrets.yaml) | ✅ 04/11 : ouvrir / stop / fermer rejoués, confirmation sur la tablette |
+| 🔌 Modules Loratap **SC500W** (×16) | Modules volet Wi-Fi **filaires** | — | `tuya` | ❌ inutilisables avec des moteurs radio ; à garder si les moteurs deviennent filaires |
 | 📺 TV salon | **Xiaomi** MiTV (Google TV) | 192.168.1.45 | `androidtv_remote` → `media_player.tv_salon` | ✅ intégrée 04/11, sur la tablette |
 | 📺 TV chambre de Naïm | **Philips** 43PUS7608/12 (filaire) | 192.168.1.144 | `philips_js` → `media_player.tv_naim` + `light.ambilight_naim` | ✅ intégrée 04/11, sur la tablette |
 | 📺 Chambre parentale | **Xiaomi** TV Box (Android TV 12) | 192.168.1.59 | `androidtv_remote` → `media_player.boitier_chambre_parentale` | ✅ intégré 04/11 · ⚠️ en veille il coupe son Wi-Fi : allumage à distance via CEC ou IR Broadlink à prévoir |
@@ -83,23 +84,28 @@ Noms et pièces des relais relevés dans l'interface de l'IPX800 le 04/11.
 - Réglages → Général → Accessibilité → **Accès guidé** pour bloquer l'iPad sur le portail.
 - ⚠️ Modèle exact (Réglages → Général → Informations) : utile si l'écran est petit (iPad mini).
 
-## 6. Broadlink RM4 Pro et volets Came
+## 6. Volets et garage (radio)
 
-Constat du 04/11 : le RM4 Pro répond sur le réseau, il est **non verrouillé** et accepte la
-connexion depuis le serveur. Le blocage venait de l'appli, pas de l'appareil.
+**Constat du 04/11** :
+- Les volets sont commandés par des **émetteurs muraux Somfy RTS** : fréquence mesurée 433,40 MHz,
+  bouton PROG. Le RTS est à **code tournant** : le Broadlink capte la fréquence mais ne peut pas
+  rejouer les ordres. Les Loratap SC500W (modules filaires) ne peuvent pas commander des
+  moteurs à récepteur radio intégré, d'où les échecs passés.
+- Le garage utilise une **Came TOP à code fixe** : codes ouvrir / stop / fermer appris et rejoués
+  avec succès par le Broadlink. Les codes sont dans `secrets.yaml` et `docs/codes-rf.json`
+  (ignorés par git : **le dépôt est public**).
 
-1. **Test d'apprentissage hors Home Assistant**, avec `scripts/broadlink-rf.py` :
-   balayage de fréquence (bouton maintenu), puis appui court ; on renvoie ensuite le code et on
-   regarde si le volet bouge. À faire ensemble, une télécommande Came à la main.
-2. **Risque principal** : certaines télécommandes Came utilisent un **code tournant**
-   (gammes ATOMO, TWIN…), qui n'est pas apprenable. Les télécommandes à code fixe (ex.
-   TOP-432EE) le sont. ⚠️ Référence écrite au dos de la télécommande des volets ?
-3. Si le code est apprenable : intégration `broadlink` dans HA, apprentissage
-   monter / stop / descendre par volet, puis un `cover.template` par volet (état « optimiste »
-   et durée de course pour estimer la position).
-4. Si le code n'est pas apprenable : piloter les moteurs autrement (récepteur Came compatible,
-   module filaire sur l'IPX800 ou module Zigbee). Décision à prendre après le test.
-5. Le RM4 Pro sert aussi de télécommande **infrarouge** pour ce qui n'est pas pilotable en IP.
+**Solution retenue pour les volets : ESPSomfy-RTS** (≈ 20 €, local, sans cloud)
+1. Matériel : ESP32 DevKit (WROOM-32) + module **CC1101 433 MHz** avec antenne + 8 fils Dupont + alimentation USB.
+2. Logiciel ESPSomfy-RTS installé depuis le navigateur, connexion au Wi-Fi, boîtier placé au centre de la maison.
+3. Pour chaque volet : créer une télécommande virtuelle, appui 2-3 s sur **PROG** de l'émetteur mural
+   (va-et-vient du volet), puis « appairer ». Les émetteurs muraux continuent de fonctionner.
+4. Intégration dans HA, puis tuiles ▲ ■ ▼ par pièce, « ouvrir / fermer les volets » par niveau, automatisations soleil.
+
+Alternatives : RFXtrx433E (≈ 110 €, natif HA, USB) · box Somfy TaHoma · émetteur RTS de rechange
+câblé sur les relais libres de l'IPX800 (commande globale uniquement).
+
+Le Broadlink reste utile pour le garage et l'infrarouge (TV, clim…).
 
 ## 6 bis. Salle de bain de l'étage (pas de relais)
 
@@ -137,14 +143,15 @@ caméras, suivi d'énergie, NAS.
 | J0 | Inventaire réseau | ✅ 04/11 |
 | J1 | iPad identifié (iOS 9) → portail léger | ✅ décidé 04/11 |
 | J2 | Socle : dépôt unique, config nettoyée, HA relancé, portail lumières | 🔄 04/11 |
-| J3 | Broadlink : test RF Came, puis volets | 📋 |
+| J3 | Radio : garage ✅ (Broadlink) ; volets via ESPSomfy-RTS | 🔄 matériel à commander |
 | J4 | TV Xiaomi / Philips, Freebox, Tuya, garage | 🔄 Broadlink, Freebox, TV salon et Philips faits le 04/11 |
 | J5 | Scènes et automatisations réelles (volets au coucher du soleil…), test 7 jours | 📋 |
 
 ## 10. Questions ouvertes
 
-- ⚠️ Référence de la télécommande Came des volets ; nombre de volets et pièces.
-- ⚠️ Porte de garage : marque du moteur et de la télécommande ?
+- ⚠️ Pièce de chacun des 12 volets (pour la tablette).
+- ⚠️ Rôle du 4e bouton de la télécommande garage.
+- ⚠️ Commande du matériel ESPSomfy-RTS.
 - ⚠️ Salle de bain de l'étage : quelle solution (§6 bis) ?
 - ⚠️ Commune de la maison (pour les heures de lever et de coucher du soleil ; HA est réglé par défaut sur Amsterdam).
 - ⚠️ Faut-il un code PIN pour le garage ?

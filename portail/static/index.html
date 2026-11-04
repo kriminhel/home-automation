@@ -6,6 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="apple-mobile-web-app-title" content="Maison">
+<link rel="apple-touch-icon" href="/static/icone-180.png">
 <meta name="format-detection" content="telephone=no">
 <title>Maison</title>
 <link rel="stylesheet" href="/static/style.css">
@@ -15,8 +16,14 @@
 <div id="haut"><div id="ligne-date"></div><div id="meteo-haut"></div><div id="liaison" title="Liaison avec le serveur"></div></div>
 <div id="contenu"><p class="attente">Chargement…</p></div>
 <div id="message"></div>
-<script src="/static/lib/three.min.js"></script>
-<script src="/static/lib/OrbitControls.js"></script>
+<script>
+  // Mode léger pour les vieux iPad (iOS 9 et moins, ex. iPad mini A1432) : pas de 3D, effets réduits.
+  // Forcer la 3D malgré tout : ajouter ?3d à l'adresse.
+  var PORTAIL_LEGER = /(iPad|iPhone|iPod).*OS [5-9]_/.test(navigator.userAgent) && location.search.indexOf('3d') < 0;
+  if (PORTAIL_LEGER) { document.documentElement.className = 'leger'; } else {
+    document.write('<script src="/static/lib/three.min.js"><\/script><script src="/static/lib/OrbitControls.js"><\/script>');
+  }
+</script>
 <script src="/static/plan3d.js"></script>
 <script src="/static/app.js"></script>
 </body>

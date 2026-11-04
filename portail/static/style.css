@@ -8,6 +8,9 @@
 @font-face { font-family: 'Jakarta'; src: url('/static/polices/jakarta-700.woff') format('woff'); font-weight: 700; }
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 html.tamise #contenu, html.tamise #haut { opacity: .45; }
+/* mode léger (vieux iPad) : pas de flou ni d'ombres portées, coûteux pour le processeur graphique */
+html.leger #haut { -webkit-backdrop-filter: none; backdrop-filter: none; background: #0A0A0B; }
+html.leger .carte, html.leger .tuile, html.leger .carte-photo, html.leger .nav-item.actif .rond, html.leger #message, html.leger #feuille .panneau { box-shadow: none !important; }
 html, body { margin: 0; padding: 0; min-height: 100%; }
 body {
   font-family: 'Jakarta', -apple-system, "Helvetica Neue", Helvetica, Arial, sans-serif;

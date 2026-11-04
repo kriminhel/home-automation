@@ -282,7 +282,7 @@
     tamis.appendChild(rt);
     tamis.addEventListener('click', function () {
       tamise = !tamise;
-      document.documentElement.className = tamise ? 'tamise' : '';
+      document.documentElement.className = (window.PORTAIL_LEGER ? 'leger ' : '') + (tamise ? 'tamise' : '');
     });
     zone.appendChild(tamis);
   }
@@ -1285,7 +1285,7 @@
       if (ancre === 'cameras' || ancre === 'maison3d' || ancre === 'profils' || niveauParId(ancre)) { vue = ancre; }
       dessiner();
       lireEtats();
-      setInterval(lireEtats, 2000);
+      setInterval(lireEtats, window.PORTAIL_LEGER ? 4000 : 2000);
       setInterval(majHorloge, 10000);
       setInterval(rafraichirImages, 30000);
     }, function (err) {

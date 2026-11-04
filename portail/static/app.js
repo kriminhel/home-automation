@@ -900,7 +900,7 @@
         if (z.label) { cx = z.label[0]; cy = z.label[1]; }
         racine.appendChild(g);
         var t = svg('g', { 'class': 'etiquette ' + (z.type || 'piece') });
-        var petit = aire < 9000 || largeur < 100;
+        var petit = aire < 9000 || largeur < 120;
         var nom = svg('text', { x: cx, y: cy - (p && !petit ? 4 : -6), 'text-anchor': 'middle', 'class': 'nom' + (petit ? ' petit' : '') });
         nom.appendChild(document.createTextNode(z.nom || z.piece));
         t.appendChild(nom);

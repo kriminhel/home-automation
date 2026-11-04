@@ -14,10 +14,10 @@
 | 2 | Câble USB-C + chargeur USB 5 V | Alimenter le module ESPSomfy en permanence | 1 | ~10 € | n'importe où (ou vieux chargeur de téléphone) | ✅ (inutile si déjà à la maison) |
 | 3 | **Shelly 1 Mini Gen3** | Lumière de la **salle de bain de l'étage** (pas de relais IPX800) | 1 | 13,99 € | [Shelly](https://www.shelly.com/fr/products/shop/shelly-1-mini-gen3) · [Domadoo](https://www.domadoo.fr/en/access-control-system/6984-shelly-wi-fi-smart-relay-switch-dry-contacts-shelly-1-mini-gen3-3800235261576.html) | ⚠️ vérifier la présence du **neutre** (fil bleu) dans la boîte de l'interrupteur ; sinon version sans neutre |
 | 4 | Contact d'ouverture filaire (capteur magnétique NF/NO) | Connaître l'**état réel de la porte de garage** (entrée libre de l'IPX800) + alerte « garage ouvert la nuit » | 1 | ~5 € | à préciser | ❓ optionnel |
-| 5 | **Shelly 1 Mini Gen3** (contact sec) dans le coffret du moteur **Nice**, sur l'entrée « pas à pas » | Piloter le **portail** depuis la tablette, sans dépendre de la radio à code tournant | 1 | 13,99 € | [Shelly](https://www.shelly.com/fr/products/shop/shelly-1-mini-gen3) | ⚠️ seulement si l'intégration EZVIZ ne sait pas ouvrir le portail (à tester d'abord) |
-| 6 | Caméras / visiophone EZVIZ | Image fixe sur la tablette, direct quand on choisit une caméra | — | — | — | ❓ modèles attendus ; a priori rien à acheter |
+| 5 | **Shelly 1 Mini Gen3** (contact sec) dans le coffret du moteur **Nice**, sur l'entrée « pas à pas » | Piloter le **portail** depuis la tablette, sans dépendre de la radio à code tournant | 1 | 13,99 € | [Shelly](https://www.shelly.com/fr/products/shop/shelly-1-mini-gen3) | ✅ l'intégration EZVIZ n'expose pas l'ouverture du portail (HP7 testé le 04/11) — ⚠️ vérifier le modèle de la carte Nice (entrée « pas à pas » / SbS) |
+| 6 | Carte microSD (classe 10 / U3, 64-128 Go) | Caméra **garage** H8c : carte mémoire en erreur | 1 | ~10-15 € | à préciser | ❓ seulement si le formatage depuis l'appli EZVIZ ne règle pas le problème |
 
-**Total validé à ce jour : ~50-65 €** (lignes 1 à 3).
+**Total validé à ce jour : ~65-80 €** (lignes 1, 2, 3 et 5).
 
 ## Déjà possédé (pas à racheter)
 
@@ -29,6 +29,7 @@
 | Freebox | Box (intégrée) |
 | 16 × Loratap SC500W | ❌ inutilisables avec les moteurs radio actuels — à garder si les moteurs deviennent filaires, ou à revendre |
 | Passerelle Zigbee Tuya | En attente (code HomeKit / reconnexion Smart Life) |
-| Visiophone + caméras EZVIZ | À intégrer |
+| Caméras EZVIZ (C6N ×2, H8c) | Intégrées (cloud) ; flux local à débloquer (codes) |
+| Visiophone EZVIZ HP7 | Pas d'intégration locale (ni image ni ouverture portail) |
 | Télécommandes Nice du portail (code tournant probable) | Non rejouables par le Broadlink |
 | 4e bouton de la Came TOP | Libre (non programmé) |

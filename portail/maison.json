@@ -53,17 +53,9 @@
               "icone": "💡"
             }
           ]
-        }
-      ]
-    },
-    {
-      "id": "etage",
-      "nom": "Étage",
-      "icone": "🛏",
-      "couleur": "#43A047",
-      "pieces": [
+        },
         {
-          "nom": "Chambre",
+          "nom": "Chambre parentale",
           "equipements": [
             {
               "entity_id": "light.chambre",
@@ -86,7 +78,15 @@
               "icone": "🌈"
             }
           ]
-        },
+        }
+      ]
+    },
+    {
+      "id": "etage",
+      "nom": "Étage",
+      "icone": "🛏",
+      "couleur": "#43A047",
+      "pieces": [
         {
           "nom": "Salle de bain",
           "equipements": [

@@ -62,10 +62,11 @@ Règle : on n'intègre **que ce qui est confirmé**. Aucune entité inventée.
 | Onglet | Couleur | Contenu |
 |--------|---------|---------|
 | 🏠 **Accueil** | `#3949AB` | Heure en grand, scènes, tout ce qui est allumé/ouvert (un toucher l'éteint) |
-| 🛋 **RDC** | `#FB8C00` | Salon, cuisine ⚠️ + entrée, garage, extérieur ? |
-| 🛏 **Étage** | `#43A047` | Chambre, chambre de Naïm, salle de bain ⚠️ (niveau de la chambre de Naïm à confirmer) |
+| 🛋 **RDC** | `#FB8C00` | Salon, cuisine, chambre parentale, chambres d'Alia, de Naïm et d'Amel (+ garage, extérieur) |
+| 🛏 **Étage** | `#43A047` | Salle de jeux, salle de bain, chambre d'amis |
 
-⚠️ Répartition actuelle supposée (salon/cuisine au RDC, chambre/SdB à l'étage) : à confirmer.
+Pièces confirmées le 04/11. Une pièce n'apparaît sur la tablette que lorsqu'elle a au moins un équipement.
+⚠️ Supposé : le relais « Chambre » est la chambre parentale, le relais « Salle de bain » est celle de l'étage.
 
 - Une **section par pièce**, toujours dans l'ordre lumières → volets → médias → autres.
 - En tête de chaque niveau : **Tout éteindre**, **Ouvrir / Fermer les volets du niveau**.
@@ -134,7 +135,7 @@ caméras, suivi d'énergie, NAS.
 
 - ⚠️ Référence de la télécommande Came des volets ; nombre de volets et pièces.
 - ⚠️ Porte de garage : marque du moteur et de la télécommande ?
-- ⚠️ Pièces exactes du RDC et de l'Étage ; à quoi servent les relais 6 à 8 ?
-- ⚠️ Chambre : sur quelle TV sont branchés le boîtier Xiaomi et l'Apple TV ?
+- ⚠️ Relais 4 « Chambre » = chambre parentale ? Relais 5 « Salle de bain » = étage ou RDC ? À quoi servent les relais 6 à 8 ?
+- ⚠️ Boîtier Xiaomi et Apple TV : dans quelle chambre, sur quelle TV ?
 - ⚠️ Commune de la maison (pour les heures de lever et de coucher du soleil ; HA est réglé par défaut sur Amsterdam).
 - ⚠️ Faut-il un code PIN pour le garage ?

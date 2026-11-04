@@ -6,6 +6,8 @@
 - GET  /api/etats   -> état des seules entités déclarées dans maison.json
 - POST /api/action  -> {"entity_id": ..., "action": ...} ou {"niveau": ..., "action": ...}
 - GET  /api/image/<entity_id> -> image JPEG d'une caméra déclarée dans maison.json ("cameras")
+- GET  /api/agenda  -> événements des 15 prochains jours (agendas de maison.json)
+- POST /api/agenda  -> {"titre", "date": "AAAA-MM-JJ", "heure": "HH:MM" facultative} dans l'agenda « ecriture »
 
 Le jeton Home Assistant reste sur le serveur (variable HA_TOKEN) : l'iPad ne le voit
 jamais, et seules les actions de la liste ACTIONS sur les entités déclarées passent.
@@ -14,11 +16,14 @@ Python standard uniquement.
 import json
 import mimetypes
 import os
+import re
 import sys
 import threading
 import time
 import urllib.error
+import urllib.parse
 import urllib.request
+from datetime import date, datetime, timedelta, timezone
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 import ezviz_image
@@ -175,6 +180,48 @@ class CacheImages:
 IMAGES = CacheImages()
 
 
+def lire_agenda(maison, jours=15):
+    debut = datetime.now(timezone.utc) - timedelta(hours=12)
+    fin = debut + timedelta(days=jours)
+    res = []
+    for a in maison.get("agendas", []):
+        chemin = "/api/calendars/%s?start=%s&end=%s" % (
+            a["entity_id"], urllib.parse.quote(debut.isoformat()), urllib.parse.quote(fin.isoformat()))
+        for e in appel_ha("GET", chemin) or []:
+            d, f = e.get("start", {}), e.get("end", {})
+            res.append({"titre": e.get("summary", ""), "debut": d.get("dateTime") or d.get("date"),
+                        "fin": f.get("dateTime") or f.get("date"), "journee": "date" in d,
+                        "agenda": a.get("nom", ""), "couleur": a.get("couleur", "#C9A45C")})
+    res.sort(key=lambda e: e["debut"] or "")
+    return res
+
+
+def ajouter_evenement(maison, demande):
+    agenda = next((a["entity_id"] for a in maison.get("agendas", []) if a.get("ecriture")), None)
+    if not agenda:
+        raise ValueError("aucun agenda modifiable dans maison.json")
+    titre = str(demande.get("titre") or "").strip()[:120]
+    jour = str(demande.get("date") or "")
+    heure = str(demande.get("heure") or "")
+    if not titre:
+        raise ValueError("titre manquant")
+    if not re.match(r"^\d{4}-\d{2}-\d{2}$", jour):
+        raise ValueError("date invalide")
+    d = date.fromisoformat(jour)
+    corps = {"entity_id": agenda, "summary": titre}
+    if heure:
+        if not re.match(r"^\d{2}:\d{2}$", heure):
+            raise ValueError("heure invalide")
+        debut = datetime.fromisoformat("%s %s:00" % (jour, heure))
+        corps["start_date_time"] = debut.strftime("%Y-%m-%d %H:%M:%S")
+        corps["end_date_time"] = (debut + timedelta(hours=1)).strftime("%Y-%m-%d %H:%M:%S")
+    else:
+        corps["start_date"] = d.isoformat()
+        corps["end_date"] = (d + timedelta(days=1)).isoformat()
+    appel_ha("POST", "/api/services/calendar/create_event", corps)
+    return corps
+
+
 class CacheEtats:
     """Un seul appel /api/states par seconde, quel que soit le nombre de tablettes."""
 
@@ -290,6 +337,8 @@ class Handler(BaseHTTPRequestHandler):
                 return self._json(200, charger_maison())
             if chemin == "/api/etats":
                 return self._json(200, etats(charger_maison()))
+            if chemin == "/api/agenda":
+                return self._json(200, lire_agenda(charger_maison()))
             if chemin.startswith("/api/image/"):
                 return self._image(chemin[len("/api/image/"):])
             return self._json(404, {"erreur": "introuvable"})
@@ -297,11 +346,14 @@ class Handler(BaseHTTPRequestHandler):
             return self._json(502, {"erreur": str(e)})
 
     def do_POST(self):
-        if self.path != "/api/action":
+        if self.path not in ("/api/action", "/api/agenda"):
             return self._json(404, {"erreur": "introuvable"})
         try:
             longueur = min(int(self.headers.get("Content-Length") or 0), 10000)
             demande = json.loads(self.rfile.read(longueur) or b"{}")
+            if self.path == "/api/agenda":
+                ajouter_evenement(charger_maison(), demande)
+                return self._json(200, {"ok": True})
             n = executer(charger_maison(), demande)
             return self._json(200, {"ok": True, "cibles": n})
         except (ValueError, json.JSONDecodeError) as e:

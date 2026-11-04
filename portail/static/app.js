@@ -3,14 +3,23 @@
 (function () {
   'use strict';
 
-  var ACCUEIL = { id: 'accueil', nom: 'Accueil', svg: 'maison' };
-  var CAMERAS = { id: 'cameras', nom: 'Caméras', svg: 'camera' };
+  var ACCUEIL = { id: 'accueil', nom: 'Accueil', svg: 'navMaison' };
+  var CAMERAS = { id: 'cameras', nom: 'Caméras', svg: 'navCamera' };
   var MAISON3D = { id: 'maison3d', nom: '3D', svg: 'cube' };
-  var PROFILS = { id: 'profils', nom: 'Famille', svg: 'famille' };
-  var SVG_NIVEAU = { rdc: 'canape', etage: 'escalier' };
+  var PROFILS = { id: 'profils', nom: 'Famille', svg: 'navFamille' };
+  var SVG_NIVEAU = { rdc: 'navCanape', etage: 'navEtage' };
 
   // Pictogrammes au trait (24 × 24, couleur du texte)
   var PICTOS = {
+    // pictogrammes de navigation : formes arrondies, deux tons
+    navMaison: '<path fill="currentColor" opacity=".35" stroke="none" d="M4.5 10.8 12 4.8l7.5 6V19a2 2 0 0 1-2 2h-11a2 2 0 0 1-2-2z"/><path d="M3 11.5 12 4l9 7.5"/><rect x="9.6" y="13.6" width="4.8" height="7.4" rx="2.4" fill="currentColor" stroke="none"/>',
+    navCanape: '<rect x="5" y="5.5" width="14" height="8" rx="3.2" fill="currentColor" opacity=".35" stroke="none"/><rect x="2.5" y="10" width="19" height="7.5" rx="3.6" fill="currentColor" stroke="none"/><path d="M6 17.5v2M18 17.5v2"/>',
+    navEtage: '<path fill="currentColor" opacity=".35" stroke="none" d="M4 20.5h16.5V5h-3a1.5 1.5 0 0 0-1.5 1.5V10h-3a1.5 1.5 0 0 0-1.5 1.5V15H8a1.5 1.5 0 0 0-1.5 1.5v4z"/><path d="M3 20.5h4.5v-4.5H12v-4.5h4.5V7H21"/>',
+    navCamera: '<rect x="2.5" y="6.5" width="13" height="11" rx="3.6" fill="currentColor" opacity=".35" stroke="none"/><rect x="2.5" y="6.5" width="13" height="11" rx="3.6"/><path d="M15.5 10.4 21 8v8l-5.5-2.4z" fill="currentColor" stroke="none"/><circle cx="9" cy="12" r="2.3" fill="currentColor" stroke="none"/>',
+    navFamille: '<circle cx="9" cy="8" r="3.6" fill="currentColor" stroke="none"/><path d="M2.5 20.5a6.5 6.5 0 0 1 13 0z" fill="currentColor" opacity=".4" stroke="none"/><circle cx="17.6" cy="9.4" r="2.6" fill="currentColor" opacity=".7" stroke="none"/><path d="M16 14.6a5 5 0 0 1 5.6 5.9"/>',
+    navSoleil: '<circle cx="12" cy="12" r="4.6" fill="currentColor" stroke="none"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4"/>',
+    agenda: '<rect x="3.5" y="5" width="17" height="15.5" rx="3.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/><circle cx="8.5" cy="14.5" r="1.2" fill="currentColor" stroke="none"/>',
+    plus: '<path d="M12 5v14M5 12h14"/>',
     maison: '<path d="M3 11.5 12 4l9 7.5"/><path d="M5 10v10h5v-6h4v6h5V10"/>',
     cube: '<path d="M12 3 20 7.5v9L12 21l-8-4.5v-9z"/><path d="M4 7.5 12 12l8-4.5M12 12v9"/>',
     canape: '<path d="M5 11V8a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v3"/><path d="M3 12a2 2 0 0 1 4 0v2h10v-2a2 2 0 0 1 4 0v5H3z"/><path d="M5 17v2M19 17v2"/>',
@@ -242,9 +251,7 @@
   /* ---------- vues ---------- */
 
   function niveaux() {
-    var l = [ACCUEIL];
-    if (window.Plan3D && window.Plan3D.disponible() && aDesPlans()) { l.push(MAISON3D); }
-    l = l.concat(maison.niveaux);
+    var l = [ACCUEIL].concat(maison.niveaux);
     if (maison.cameras && maison.cameras.length) { l.push(CAMERAS); }
     if (maison.habitants && maison.habitants.length) { l.push(PROFILS); }
     return l;
@@ -254,7 +261,7 @@
     var zone = $('nav');
     zone.innerHTML = '';
     var logo = el('div', 'logo');
-    logo.appendChild(picto('maison'));
+    logo.appendChild(picto('navMaison'));
     zone.appendChild(logo);
     var liste = niveaux();
     for (var i = 0; i < liste.length; i++) {
@@ -271,7 +278,7 @@
     }
     var tamis = el('div', 'nav-item bas');
     var rt = el('div', 'rond');
-    rt.appendChild(picto('soleil'));
+    rt.appendChild(picto('navSoleil'));
     tamis.appendChild(rt);
     tamis.addEventListener('click', function () {
       tamise = !tamise;
@@ -524,7 +531,7 @@
     chips.appendChild(recap.chipLum); chips.appendChild(recap.chipEcr); chips.appendChild(recap.chipGar);
     bas.appendChild(chips);
     heros.appendChild(bas);
-    heros.addEventListener('click', function () { if (aDesPlans() && window.Plan3D && window.Plan3D.disponible()) { vue = 'maison3d'; dessiner(); } });
+    heros.addEventListener('click', function () { if (maison.niveaux.length) { vue = maison.niveaux[0].id; dessiner(); } });
     haut.appendChild(heros);
 
     var droite = el('div', 'acc-droite');
@@ -559,6 +566,26 @@
         })(maison.habitants[i]);
       }
       droite.appendChild(fam);
+    }
+
+    if (maison.agendas && maison.agendas.length) {
+      var ag = el('div', 'carte agenda');
+      var ta = el('div', 'carte-tete');
+      var h3 = el('h3', '');
+      h3.appendChild(picto('agenda', 'or'));
+      h3.appendChild(el('span', '', 'Agenda'));
+      ta.appendChild(h3);
+      var ajout = el('span', 'lien ajout');
+      ajout.appendChild(picto('plus'));
+      ajout.appendChild(el('span', '', 'Ajouter'));
+      ajout.addEventListener('click', formulaireEvenement);
+      ta.appendChild(ajout);
+      ag.appendChild(ta);
+      recap.agenda = el('div', 'evenements');
+      ag.appendChild(recap.agenda);
+      droite.appendChild(ag);
+      afficherAgenda();
+      chargerAgenda();
     }
 
     var sc = el('div', 'scenes');
@@ -620,6 +647,7 @@
   function majRecap() {
     majMeteoHaut();
     echantillonner();
+    if (recap && recap.agenda && new Date().getTime() - dernierAgenda > 300000) { chargerAgenda(); }
     if (!recap) { return; }
     var i;
     for (i = 0; i < recap.profils.length; i++) {
@@ -657,6 +685,100 @@
       r.carte.className = 'carte-photo' + (rs.actif ? ' on' : '');
       r.marche.className = 'bouton-rond marche' + (rs.actif ? ' on' : '');
     }
+  }
+
+  /* ---------- agenda ---------- */
+
+  var evenements = null, dernierAgenda = 0;
+  function chargerAgenda() {
+    dernierAgenda = new Date().getTime();
+    requete('GET', '/api/agenda', null, function (r) { evenements = r || []; afficherAgenda(); },
+      function () { evenements = evenements || []; afficherAgenda(); });
+  }
+
+  function lireJour(s) {   // "AAAA-MM-JJ" (journée entière) ou date ISO avec heure
+    var m = /^(\d{4})-(\d\d)-(\d\d)$/.exec(s || '');
+    return m ? new Date(+m[1], +m[2] - 1, +m[3]) : lireDateIso(s);
+  }
+
+  function libelleJour(d) {
+    var auj = new Date(); auj.setHours(0, 0, 0, 0);
+    var j = new Date(d.getTime()); j.setHours(0, 0, 0, 0);
+    var ecart = Math.round((j - auj) / 86400000);
+    if (ecart === 0) { return 'Aujourd’hui'; }
+    if (ecart === 1) { return 'Demain'; }
+    var jour = JOURS[d.getDay()];
+    return jour.charAt(0).toUpperCase() + jour.slice(1) + ' ' + d.getDate() + ' ' + MOIS[d.getMonth()];
+  }
+
+  function afficherAgenda() {
+    if (!recap || !recap.agenda) { return; }
+    var z = recap.agenda;
+    z.innerHTML = '';
+    if (evenements === null) { z.appendChild(el('div', 'vide', 'Chargement…')); return; }
+    var maintenant = new Date(), n = 0, jourCourant = '';
+    for (var i = 0; i < evenements.length && n < 6; i++) {
+      var e = evenements[i], d = lireJour(e.debut), f = lireJour(e.fin);
+      if (!d || (f && f < maintenant && !e.journee)) { continue; }
+      var lj = libelleJour(d);
+      if (lj !== jourCourant) { z.appendChild(el('div', 'jour', lj)); jourCourant = lj; }
+      var ligne = el('div', 'evenement');
+      var point = el('span', 'point');
+      point.style.background = e.couleur || '#C9A45C';
+      ligne.appendChild(point);
+      ligne.appendChild(el('span', 'heure', e.journee ? 'Journée' : deux(d.getHours()) + ':' + deux(d.getMinutes())));
+      ligne.appendChild(el('span', 'titre-evt', e.titre));
+      z.appendChild(ligne);
+      n++;
+    }
+    if (!n) { z.appendChild(el('div', 'vide', 'Rien de prévu. Touchez « Ajouter ».')); }
+  }
+
+  function formulaireEvenement() {
+    fermerPiece();
+    var fond = el('div', '');
+    fond.id = 'feuille';
+    var panneau = el('div', 'panneau formulaire');
+    var tete = el('div', 'tete');
+    tete.appendChild(picto('agenda', 'or grand'));
+    var t = el('div', 'titres');
+    t.appendChild(el('h1', '', 'Nouvel événement'));
+    tete.appendChild(t);
+    var fermer = el('button', 'fermer', '✕');
+    fermer.addEventListener('click', fermerPiece);
+    tete.appendChild(fermer);
+    panneau.appendChild(tete);
+    function champ(libelle, type, valeur) {
+      var l = el('label', 'champ');
+      l.appendChild(el('span', '', libelle));
+      var i = document.createElement('input');
+      i.type = type;
+      if (valeur) { i.value = valeur; }
+      l.appendChild(i);
+      panneau.appendChild(l);
+      return i;
+    }
+    var auj = new Date();
+    var titre = champ('Quoi ?', 'text');
+    titre.placeholder = 'Ex. : dentiste Amel, foot Naïm…';
+    var jour = champ('Quel jour ?', 'date', auj.getFullYear() + '-' + deux(auj.getMonth() + 1) + '-' + deux(auj.getDate()));
+    var heure = champ('À quelle heure ? (vide = toute la journée)', 'time');
+    var ok = el('button', 'valider', 'Enregistrer');
+    ok.addEventListener('click', function () {
+      if (!titre.value) { message('Indiquez ce qui est prévu'); return; }
+      ok.disabled = true;
+      requete('POST', '/api/agenda', { titre: titre.value, date: jour.value, heure: heure.value }, function () {
+        fermerPiece();
+        message('Ajouté à l’agenda', true);
+        chargerAgenda();
+      }, function (err) { ok.disabled = false; message('Impossible d’ajouter : ' + err); });
+    });
+    panneau.appendChild(ok);
+    panneau.addEventListener('click', function (ev) { ev.stopPropagation(); });
+    fond.addEventListener('click', fermerPiece);
+    fond.appendChild(panneau);
+    document.body.appendChild(fond);
+    titre.focus();
   }
 
   /* ---------- profils ---------- */
@@ -1180,6 +1302,30 @@
     inactivite = setTimeout(function () { if (vue !== 'accueil') { vue = 'accueil'; dessiner(); } }, 120000);
   }
   document.addEventListener('touchstart', reveil, false);
+
+  // Glisser le doigt à gauche / à droite : vue suivante / précédente (pas sur la 3D, les carrousels ni les fenêtres)
+  var glisse = null;
+  document.addEventListener('touchstart', function (ev) {
+    glisse = null;
+    if (!maison || ev.touches.length !== 1) { return; }
+    for (var t = ev.target; t && t !== document.body; t = t.parentNode) {
+      var c = typeof t.className === 'string' ? t.className : '';
+      if (t.tagName === 'CANVAS' || t.tagName === 'INPUT' || t.id === 'feuille' || t.id === 'plein' || /carrousel/.test(c)) { return; }
+    }
+    glisse = { x: ev.touches[0].clientX, y: ev.touches[0].clientY, t: new Date().getTime() };
+  }, false);
+  document.addEventListener('touchend', function (ev) {
+    if (!glisse) { return; }
+    var p = ev.changedTouches[0], dx = p.clientX - glisse.x, dy = p.clientY - glisse.y, dt = new Date().getTime() - glisse.t;
+    glisse = null;
+    if (Math.abs(dx) < 90 || Math.abs(dy) > Math.abs(dx) * 0.6 || dt > 800) { return; }
+    var l = niveaux(), i;
+    for (i = 0; i < l.length; i++) { if (l[i].id === vue) { break; } }
+    var j = i + (dx < 0 ? 1 : -1);
+    if (j < 0 || j >= l.length) { return; }
+    vue = l[j].id;
+    dessiner();
+  }, false);
   document.addEventListener('click', reveil, false);
 
   demarrer();

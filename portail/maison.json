@@ -24,6 +24,14 @@
     "soleil": "sun.sun",
     "meteo": "weather.forecast_maison"
   },
+  "agendas": [
+    {
+      "entity_id": "calendar.famille",
+      "nom": "Famille",
+      "couleur": "#C9A45C",
+      "ecriture": true
+    }
+  ],
   "habitants": [
     {
       "nom": "Karim",
@@ -132,7 +140,7 @@
           ]
         },
         {
-          "nom": "Entrée et couloir",
+          "nom": "Entrée",
           "icone": "🚪",
           "photo": "entree.jpg",
           "equipements": [
@@ -140,10 +148,17 @@
               "entity_id": "light.entree",
               "nom": "Entrée",
               "icone": "💡"
-            },
+            }
+          ]
+        },
+        {
+          "nom": "Couloir buanderie",
+          "icone": "🚪",
+          "photo": "entree.jpg",
+          "equipements": [
             {
               "entity_id": "light.couloir_buanderie",
-              "nom": "Couloir buanderie",
+              "nom": "Couloir",
               "icone": "💡"
             }
           ]
@@ -299,14 +314,14 @@
             },
             {
               "entity_id": "light.facade_rue",
-              "nom": "Côté rue",
+              "nom": "Petite terrasse",
               "icone": "🏮"
             }
           ]
         }
       ],
       "plan": {
-        "largeur": 1000,
+        "largeur": 1110,
         "hauteur": 640,
         "zones": [
           {
@@ -356,8 +371,7 @@
             ]
           },
           {
-            "type": "decor",
-            "nom": "Escalier",
+            "nom": "Couloir",
             "rects": [
               [
                 230,
@@ -365,7 +379,8 @@
                 70,
                 180
               ]
-            ]
+            ],
+            "piece": "Couloir buanderie"
           },
           {
             "piece": "Chambre parentale",
@@ -408,6 +423,20 @@
                 0,
                 340,
                 330
+              ]
+            ],
+            "entites": [
+              "light.jardin_1",
+              "light.jardin_2",
+              "light.jardin_3",
+              "light.jardin_4"
+            ],
+            "icones": [
+              [
+                "light.jardin_1",
+                "light.jardin_2",
+                "light.jardin_3",
+                "light.jardin_4"
               ]
             ]
           },
@@ -469,7 +498,7 @@
             ]
           },
           {
-            "piece": "Entrée et couloir",
+            "piece": "Entrée",
             "nom": "Entrée",
             "rects": [
               [
@@ -480,7 +509,8 @@
               ]
             ],
             "ouvert_vers": [
-              "Salon"
+              "Salon",
+              "Salle à manger"
             ],
             "mur": "#AEB9C4"
           },
@@ -523,6 +553,22 @@
                 200,
                 140
               ]
+            ]
+          },
+          {
+            "piece": "Extérieur",
+            "type": "exterieur",
+            "nom": "Petite terrasse",
+            "rects": [
+              [
+                1000,
+                470,
+                110,
+                170
+              ]
+            ],
+            "entites": [
+              "light.facade_rue"
             ]
           }
         ],
@@ -956,6 +1002,24 @@
             "y": 110,
             "face": "bas",
             "w": 70
+          },
+          {
+            "t": "transat",
+            "x": 1060,
+            "y": 540,
+            "face": "gauche"
+          },
+          {
+            "t": "plante",
+            "x": 1090,
+            "y": 485,
+            "face": "bas"
+          },
+          {
+            "t": "plante",
+            "x": 1090,
+            "y": 625,
+            "face": "bas"
           }
         ],
         "ouvertures": [

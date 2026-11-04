@@ -122,6 +122,17 @@
     return false;
   }
 
+  // Emprise des pièces (hors extérieur) : sert à repérer les murs extérieurs
+  function limites(plan) {
+    var x = 0, y = 0;
+    for (var i = 0; i < plan.zones.length; i++) {
+      if (plan.zones[i].type === 'exterieur') { continue; }
+      var b = boite([].concat.apply([], contours(plan.zones[i])));
+      x = Math.max(x, b.x2); y = Math.max(y, b.y2);
+    }
+    return { x: x, y: y };
+  }
+
   function disponible() {
     if (!window.THREE || !THREE.OrbitControls) { return false; }
     try {
@@ -1094,13 +1105,14 @@
 
       // murs : fond (haut du plan, côté droit) pleine hauteur, les autres coupés bas ; pas de cloison
       // à l'intérieur d'un espace ouvert
+      var lim = limites(pl);
       var murs = segments(pl);
       for (i = 0; i < murs.length; i++) {
         var s = murs[i];
         if (s.ouvert) { continue; }
         var a = s.a, b = s.b, dx = b[0] - a[0], dy = b[1] - a[1], long = Math.sqrt(dx * dx + dy * dy);
-        var fond = (a[1] === 0 && b[1] === 0) || (a[0] === pl.largeur && b[0] === pl.largeur);
-        var bord = fond || (a[0] === 0 && b[0] === 0) || (a[1] === pl.hauteur && b[1] === pl.hauteur);
+        var fond = (a[1] === 0 && b[1] === 0) || (a[0] === lim.x && b[0] === lim.x);
+        var bord = fond || (a[0] === 0 && b[0] === 0) || (a[1] === lim.y && b[1] === lim.y);
         var h = fond ? MUR_HAUT : MUR_BAS, zo = pl.zones[s.i] || {};
         // cloison : chaque pièce dessine sa moitié, de sa couleur, côté intérieur
         var ep = bord ? EP : EP * 0.55, nx = 0, ny = 0;
@@ -1168,7 +1180,7 @@
       }
 
       var ouv = pl.ouvertures || [];
-      for (i = 0; i < ouv.length; i++) { ouverture(groupe, pl, ouv[i]); }
+      for (i = 0; i < ouv.length; i++) { ouverture(groupe, pl, ouv[i], lim); }
 
       var meubles = pl.meubles || [];
       for (i = 0; i < meubles.length; i++) {
@@ -1203,9 +1215,9 @@
     }
 
     // Portes, baies vitrées et porte de garage (volet roulant noir, suit l'état du garage)
-    function ouverture(groupe, pl, o) {
+    function ouverture(groupe, pl, o, lim) {
       var dx = o.b[0] - o.a[0], dy = o.b[1] - o.a[1], L = Math.sqrt(dx * dx + dy * dy);
-      var fond = (o.a[1] === 0 && o.b[1] === 0) || (o.a[0] === pl.largeur && o.b[0] === pl.largeur);
+      var fond = (o.a[1] === 0 && o.b[1] === 0) || (o.a[0] === lim.x && o.b[0] === lim.x);
       var hMur = fond ? MUR_HAUT : MUR_BAS, hOuv = fond ? 84 : MUR_BAS;
       var g = new THREE.Group();
       g.position.set((o.a[0] + o.b[0]) / 2, 0, (o.a[1] + o.b[1]) / 2);

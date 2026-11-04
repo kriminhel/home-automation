@@ -42,6 +42,11 @@ class FauxHA(BaseHTTPRequestHandler):
             self.send_response(401)
             self.end_headers()
             return
+        if self.path.startswith("/api/calendars/"):
+            self._ok([{"summary": "Dentiste", "start": {"dateTime": "2026-11-06T10:00:00+01:00"},
+                       "end": {"dateTime": "2026-11-06T11:00:00+01:00"}},
+                      {"summary": "Anniversaire", "start": {"date": "2026-11-05"}, "end": {"date": "2026-11-06"}}])
+            return
         if self.path.startswith("/api/image_proxy/"):
             APPELS.append((self.path, None))
             self.send_response(200)
@@ -214,6 +219,32 @@ class TestPortail(unittest.TestCase):
         for eid in server.infos_de(server.charger_maison()):
             code, _ = self.post({"entity_id": eid, "action": "basculer"})
             self.assertEqual(code, 400)
+
+    def test_agenda_lu_et_trie(self):
+        evts = json.loads(self.get("/api/agenda")[1])
+        self.assertEqual([e["titre"] for e in evts], ["Anniversaire", "Dentiste"])
+        self.assertTrue(evts[0]["journee"])
+
+    def _post(self, chemin, corps):
+        req = urllib.request.Request(self.base + chemin, data=json.dumps(corps).encode(), method="POST",
+                                     headers={"Content-Type": "application/json"})
+        try:
+            with urllib.request.urlopen(req, timeout=5) as r:
+                return r.status
+        except urllib.error.HTTPError as e:
+            return e.code
+
+    def test_ajout_evenement_avec_heure(self):
+        self.assertEqual(self._post("/api/agenda", {"titre": "Foot Naïm", "date": "2026-11-07", "heure": "14:30"}), 200)
+        chemin, corps = APPELS[0]
+        self.assertEqual(chemin, "/api/services/calendar/create_event")
+        self.assertEqual((corps["start_date_time"], corps["end_date_time"]), ("2026-11-07 14:30:00", "2026-11-07 15:30:00"))
+
+    def test_ajout_evenement_journee_et_refus(self):
+        self.assertEqual(self._post("/api/agenda", {"titre": "Vacances", "date": "2026-12-19"}), 200)
+        self.assertEqual((APPELS[0][1]["start_date"], APPELS[0][1]["end_date"]), ("2026-12-19", "2026-12-20"))
+        self.assertEqual(self._post("/api/agenda", {"titre": "", "date": "2026-12-19"}), 400)
+        self.assertEqual(self._post("/api/agenda", {"titre": "X", "date": "demain"}), 400)
 
     def test_ha_injoignable(self):
         ancien = server.HA_URL

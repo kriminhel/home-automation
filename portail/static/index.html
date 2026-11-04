@@ -17,13 +17,12 @@
 <div id="contenu"><p class="attente">Chargement…</p></div>
 <div id="message"></div>
 <script>
-  // Mode léger pour les vieux iPad (iOS 9 et moins, ex. iPad mini A1432) : pas de 3D, effets réduits.
-  // Forcer la 3D malgré tout : ajouter ?3d à l'adresse.
-  var PORTAIL_LEGER = /(iPad|iPhone|iPod).*OS [5-9]_/.test(navigator.userAgent) && location.search.indexOf('3d') < 0;
-  if (PORTAIL_LEGER) { document.documentElement.className = 'leger'; } else {
-    document.write('<script src="/static/lib/three.min.js"><\/script><script src="/static/lib/OrbitControls.js"><\/script>');
-  }
+  // Mode léger pour les vieux iPad (iOS 9 et moins, ex. iPad mini A1432) : 3D allégée, effets réduits.
+  var PORTAIL_LEGER = /(iPad|iPhone|iPod).*OS [5-9]_/.test(navigator.userAgent);
+  if (PORTAIL_LEGER) { document.documentElement.className = 'leger'; }
 </script>
+<script src="/static/lib/three.min.js"></script>
+<script src="/static/lib/OrbitControls.js"></script>
 <script src="/static/plan3d.js"></script>
 <script src="/static/app.js"></script>
 </body>

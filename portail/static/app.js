@@ -1026,7 +1026,7 @@
       if (en3d) {
         vue3d = window.Plan3D.creer(zone, [niveau3d(niveau, false)], options3d());
         aide.textContent = 'Un doigt pour tourner · deux doigts pour zoomer · touchez une ampoule ou une TV pour l’allumer · touchez le sol pour les commandes';
-      } else if (avec3d) {
+      } else if (avec3d && !window.PORTAIL_LEGER) {   // vieux iPad : plan SVG, plus léger que la vue de dessus 3D
         var o = options3d();
         o.dessus = true;
         zone.className = 'zone-plan en3d';

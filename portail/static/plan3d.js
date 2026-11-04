@@ -144,6 +144,8 @@
   if (!window.THREE) { window.Plan3D = { disponible: disponible, segments: segments }; return; }
 
   var MUR_HAUT = 100, MUR_BAS = 40, EP = 7;
+  // Vieux iPad : pas de lissage, définition 1×, pas d'ombres ni de lueurs transparentes, formes simplifiées
+  var LEGER = !!window.PORTAIL_LEGER, SEG = LEGER ? 8 : 20;
   var C = {
     mur: 0xA8A39B, hautMur: 0x23252B, hautMurDessus: 0xD6D0C6, dalle: 0x111215, or: 0xC9A45C,
     blanc: 0xF1EFEA, noir: 0x1B1C21, metal: 0xA7ADB8, chene: 0x9A7148, noyer: 0x5E3D24
@@ -153,9 +155,9 @@
   function obtenirMoteur() {
     if (!moteur) {
       // Fond opaque : sur tablette, un canvas transparent se mélange à la page.
-      var r = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+      var r = new THREE.WebGLRenderer({ antialias: !LEGER, alpha: false, powerPreference: 'low-power' });
       r.setClearColor(0x0E0E10, 1);
-      r.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+      r.setPixelRatio(LEGER ? 1 : Math.min(window.devicePixelRatio || 1, 2));
       moteur = { renderer: r };
     }
     return moteur;
@@ -420,7 +422,7 @@
       s.lineTo(x + cr, y + sd); s.quadraticCurveTo(x, y + sd, x, y + sd - cr);
       s.lineTo(x, y + cr); s.quadraticCurveTo(x, y, x + cr, y);
       geo = new THREE.ExtrudeGeometry(s, { depth: Math.max(0.1, h - 2 * bs), bevelEnabled: true,
-        bevelThickness: bs, bevelSize: bs, bevelSegments: 2, curveSegments: 4 });
+        bevelThickness: bs, bevelSize: bs, bevelSegments: LEGER ? 1 : 2, curveSegments: LEGER ? 2 : 4 });
       geo.rotateX(-Math.PI / 2);
       geo.translate(0, bs, 0);
     }
@@ -436,14 +438,14 @@
   }
 
   function cyl(g, rBas, rHaut, h, matiere, x, y, z, seg) {
-    var o = new THREE.Mesh(new THREE.CylinderGeometry(rHaut, rBas, h, seg || 20), m(matiere));
+    var o = new THREE.Mesh(new THREE.CylinderGeometry(rHaut, rBas, h, LEGER ? Math.min(seg || SEG, SEG) : (seg || 20)), m(matiere));
     o.position.set(x || 0, (y || 0) + h / 2, z || 0);
     g.add(o);
     return o;
   }
 
   function sphere(g, r, matiere, x, y, z) {
-    var o = new THREE.Mesh(new THREE.SphereGeometry(r, 18, 12), m(matiere));
+    var o = new THREE.Mesh(new THREE.SphereGeometry(r, LEGER ? 8 : 18, LEGER ? 6 : 12), m(matiere));
     o.position.set(x || 0, y || 0, z || 0);
     g.add(o);
     return o;
@@ -469,6 +471,7 @@
 
   // Ombre douce au sol sous un meuble
   function ombre(g, w, d, force) {
+    if (LEGER) { return; }
     var o = new THREE.Mesh(new THREE.PlaneGeometry(w * 1.25, d * 1.25),
       new THREE.MeshBasicMaterial({ map: R.texOmbre, transparent: true, depthWrite: false, opacity: force || 0.6 }));
     o.rotation.x = -Math.PI / 2;
@@ -478,6 +481,7 @@
 
   // Lueur additive (LED, lampe) posée à plat
   function halo(g, w, d, x, y, z, opacite) {
+    if (LEGER) { return; }
     var o = new THREE.Mesh(new THREE.PlaneGeometry(w, d), new THREE.MeshBasicMaterial({ map: R.texLueur,
       transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, opacity: opacite || 0.6 }));
     o.rotation.x = -Math.PI / 2;

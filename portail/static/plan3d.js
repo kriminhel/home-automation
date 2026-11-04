@@ -13,7 +13,7 @@
 (function () {
   'use strict';
 
-  var HAUTEUR_MUR = 70, EPAISSEUR = 7;
+  var HAUTEUR_MUR = 55, EPAISSEUR = 7;
   var COULEURS = {
     mur: 0xD8D3CB, sol: 0x2B2F3A, solDecor: 0x1C1F28, solExt: 0x1E3A2C,
     solAllume: 0x6B4A22, ambre: 0xFFB04A, camera: 0xA77BFF
@@ -59,7 +59,7 @@
     var tex = new THREE.CanvasTexture(c);
     var mat = new THREE.SpriteMaterial({ map: tex, depthTest: false, transparent: true });
     var s = new THREE.Sprite(mat);
-    var largeur = petit ? 95 : 150;
+    var largeur = petit ? 130 : 230;
     s.scale.set(largeur, largeur * 160 / 512, 1);
     s.renderOrder = 10;
     var dernier = null;
@@ -217,8 +217,8 @@
 
     // Caméra et contrôles
     var cam = new THREE.PerspectiveCamera(38, 1, 10, 5000);
-    var dist = Math.max(plan.largeur, plan.hauteur) * 1.25;
-    cam.position.set(-dist * 0.35, dist * 0.8, dist * 0.75);
+    var dist = Math.max(plan.largeur, plan.hauteur) * 0.92;
+    cam.position.set(-dist * 0.28, dist * 0.85, dist * 0.6);
     var canvas = renderer.domElement;
     conteneur.appendChild(canvas);
     var controles = new THREE.OrbitControls(cam, canvas);

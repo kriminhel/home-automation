@@ -187,7 +187,8 @@ h2.titre, .piece h2 {
 .choix-plan button.actif { background: #7C5CFF; border-color: #7C5CFF; color: #FFFFFF; }
 .zone-plan.en3d { height: 560px; border-radius: 18px; overflow: hidden; }
 .zone-plan.en3d canvas { display: block; touch-action: none; }
-@media (max-width: 900px) { .zone-plan.en3d { height: 460px; } }
+.zone-plan.en3d.grande { height: 680px; }
+@media (max-width: 900px) { .zone-plan.en3d { height: 460px; } .zone-plan.en3d.grande { height: 620px; } }
 .plan .aide { font-size: 14px; color: #8A90A2; text-align: center; margin-top: 8px; }
 .zone rect, .zone polygon { fill: rgba(255,255,255,.045); stroke: rgba(205,212,235,.55); stroke-width: 3; }
 .zone.decor rect, .zone.decor polygon { fill: rgba(255,255,255,.015); stroke: rgba(205,212,235,.22); stroke-dasharray: 8 6; }

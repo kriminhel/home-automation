@@ -462,6 +462,412 @@
               20
             ]
           }
+        ],
+        "meubles": [
+          {
+            "t": "voiture",
+            "x": 150,
+            "y": 95,
+            "face": "droite",
+            "w": 100,
+            "d": 230
+          },
+          {
+            "t": "plante",
+            "x": 280,
+            "y": 170,
+            "face": "bas"
+          },
+          {
+            "t": "lavelinge",
+            "x": 25,
+            "y": 215,
+            "face": "haut"
+          },
+          {
+            "t": "lavelinge",
+            "x": 65,
+            "y": 215,
+            "face": "haut"
+          },
+          {
+            "t": "comptoir",
+            "x": 150,
+            "y": 222,
+            "face": "haut",
+            "w": 80,
+            "d": 30
+          },
+          {
+            "t": "armoire",
+            "x": 115,
+            "y": 258,
+            "face": "bas",
+            "w": 210,
+            "d": 28
+          },
+          {
+            "t": "tapis",
+            "x": 115,
+            "y": 310,
+            "face": "bas",
+            "w": 120,
+            "d": 50,
+            "couleur": "#6B5A7A"
+          },
+          {
+            "t": "escalier",
+            "x": 265,
+            "y": 330,
+            "face": "haut",
+            "w": 60,
+            "d": 170
+          },
+          {
+            "t": "lit",
+            "x": 70,
+            "y": 480,
+            "face": "droite",
+            "w": 90,
+            "d": 115,
+            "drap": "#B9A48A",
+            "double": true
+          },
+          {
+            "t": "tv",
+            "x": 170,
+            "y": 480,
+            "face": "gauche",
+            "w": 70,
+            "entite": "media_player.boitier_chambre_parentale"
+          },
+          {
+            "t": "tapis",
+            "x": 95,
+            "y": 580,
+            "face": "bas",
+            "w": 110,
+            "d": 50,
+            "couleur": "#4A4F63"
+          },
+          {
+            "t": "plante",
+            "x": 20,
+            "y": 625,
+            "face": "bas"
+          },
+          {
+            "t": "douche",
+            "x": 202,
+            "y": 605,
+            "face": "haut",
+            "w": 46,
+            "d": 56
+          },
+          {
+            "t": "lavabo",
+            "x": 202,
+            "y": 375,
+            "face": "bas"
+          },
+          {
+            "t": "wc",
+            "x": 202,
+            "y": 495,
+            "face": "gauche"
+          },
+          {
+            "t": "comptoir",
+            "x": 345,
+            "y": 620,
+            "face": "haut",
+            "w": 220,
+            "d": 36,
+            "plaque": true
+          },
+          {
+            "t": "frigo",
+            "x": 252,
+            "y": 445,
+            "face": "droite"
+          },
+          {
+            "t": "comptoir",
+            "x": 250,
+            "y": 530,
+            "face": "droite",
+            "w": 110,
+            "d": 36
+          },
+          {
+            "t": "ilot",
+            "x": 370,
+            "y": 515,
+            "face": "bas",
+            "w": 120,
+            "d": 50
+          },
+          {
+            "t": "buffet",
+            "x": 470,
+            "y": 340,
+            "face": "bas",
+            "w": 140,
+            "d": 26
+          },
+          {
+            "t": "plante",
+            "x": 315,
+            "y": 405,
+            "face": "bas"
+          },
+          {
+            "t": "plante",
+            "x": 625,
+            "y": 405,
+            "face": "bas"
+          },
+          {
+            "t": "tapis",
+            "x": 470,
+            "y": 385,
+            "face": "bas",
+            "w": 200,
+            "d": 40,
+            "couleur": "#3E3A36"
+          },
+          {
+            "t": "table",
+            "x": 580,
+            "y": 530,
+            "face": "bas",
+            "w": 150,
+            "d": 78,
+            "chaises": 6,
+            "bois": "#7A4A22"
+          },
+          {
+            "t": "canape",
+            "x": 880,
+            "y": 617,
+            "face": "haut",
+            "w": 200,
+            "d": 44,
+            "couleur": "#16171B"
+          },
+          {
+            "t": "canape",
+            "x": 977,
+            "y": 520,
+            "face": "gauche",
+            "w": 150,
+            "d": 44,
+            "couleur": "#16171B"
+          },
+          {
+            "t": "tablebasse",
+            "x": 870,
+            "y": 540,
+            "face": "bas",
+            "w": 80,
+            "d": 44
+          },
+          {
+            "t": "tapis",
+            "x": 870,
+            "y": 545,
+            "face": "bas",
+            "w": 200,
+            "d": 120,
+            "couleur": "#5C5348"
+          },
+          {
+            "t": "tv",
+            "x": 860,
+            "y": 428,
+            "face": "bas",
+            "w": 110,
+            "entite": "media_player.tv_salon"
+          },
+          {
+            "t": "plante",
+            "x": 985,
+            "y": 435,
+            "face": "bas"
+          },
+          {
+            "t": "plante",
+            "x": 478,
+            "y": 625,
+            "face": "bas"
+          },
+          {
+            "t": "baignoire",
+            "x": 720,
+            "y": 25,
+            "face": "bas",
+            "w": 130,
+            "d": 42
+          },
+          {
+            "t": "lavabo",
+            "x": 660,
+            "y": 115,
+            "face": "droite"
+          },
+          {
+            "t": "wc",
+            "x": 780,
+            "y": 115,
+            "face": "haut"
+          },
+          {
+            "t": "console",
+            "x": 655,
+            "y": 280,
+            "face": "droite",
+            "w": 60,
+            "d": 20
+          },
+          {
+            "t": "tapis",
+            "x": 720,
+            "y": 290,
+            "face": "bas",
+            "w": 60,
+            "d": 180,
+            "couleur": "#7A3E3E"
+          },
+          {
+            "t": "plante",
+            "x": 785,
+            "y": 405,
+            "face": "bas"
+          },
+          {
+            "t": "lit",
+            "x": 945,
+            "y": 60,
+            "face": "gauche",
+            "w": 60,
+            "d": 105,
+            "drap": "#E79BB8"
+          },
+          {
+            "t": "tv",
+            "x": 806,
+            "y": 70,
+            "face": "droite",
+            "w": 60
+          },
+          {
+            "t": "ps5",
+            "x": 820,
+            "y": 105,
+            "face": "droite"
+          },
+          {
+            "t": "tapis",
+            "x": 870,
+            "y": 70,
+            "face": "bas",
+            "w": 70,
+            "d": 70,
+            "couleur": "#D9A3C7"
+          },
+          {
+            "t": "lit",
+            "x": 945,
+            "y": 210,
+            "face": "gauche",
+            "w": 60,
+            "d": 105,
+            "drap": "#3E6FD8"
+          },
+          {
+            "t": "tv",
+            "x": 806,
+            "y": 205,
+            "face": "droite",
+            "w": 70,
+            "entite": "media_player.tv_naim",
+            "ambilight": "light.ambilight_naim"
+          },
+          {
+            "t": "fauteuil",
+            "x": 850,
+            "y": 240,
+            "face": "gauche",
+            "couleur": "#C0303A"
+          },
+          {
+            "t": "lit",
+            "x": 945,
+            "y": 350,
+            "face": "gauche",
+            "w": 60,
+            "d": 105,
+            "drap": "#8BC6A0"
+          },
+          {
+            "t": "tv",
+            "x": 806,
+            "y": 345,
+            "face": "droite",
+            "w": 60,
+            "entite": "media_player.apple_tv_amel"
+          },
+          {
+            "t": "bureau",
+            "x": 870,
+            "y": 292,
+            "face": "bas",
+            "w": 80,
+            "d": 34
+          },
+          {
+            "t": "biblio",
+            "x": 870,
+            "y": 410,
+            "face": "haut",
+            "w": 80
+          },
+          {
+            "t": "tablejardin",
+            "x": 470,
+            "y": 175,
+            "face": "bas"
+          },
+          {
+            "t": "transat",
+            "x": 360,
+            "y": 60,
+            "face": "bas"
+          },
+          {
+            "t": "transat",
+            "x": 410,
+            "y": 60,
+            "face": "bas"
+          },
+          {
+            "t": "arbre",
+            "x": 600,
+            "y": 45,
+            "face": "bas"
+          },
+          {
+            "t": "plante",
+            "x": 315,
+            "y": 315,
+            "face": "bas"
+          },
+          {
+            "t": "plante",
+            "x": 625,
+            "y": 315,
+            "face": "bas"
+          }
         ]
       }
     },
@@ -484,8 +890,13 @@
         }
       ],
       "plan": {
-        "largeur": 1000,
-        "hauteur": 640,
+        "largeur": 520,
+        "hauteur": 380,
+        "position3d": {
+          "x": 180,
+          "y": 230,
+          "altitude": 108
+        },
         "zones": [
           {
             "type": "decor",
@@ -494,8 +905,8 @@
               [
                 0,
                 0,
-                300,
-                380
+                150,
+                220
               ]
             ]
           },
@@ -505,9 +916,9 @@
             "rects": [
               [
                 0,
-                380,
-                300,
-                260
+                220,
+                150,
+                160
               ]
             ]
           },
@@ -515,33 +926,33 @@
             "piece": "Salle de jeux",
             "poly": [
               [
-                300,
+                150,
                 0
               ],
               [
-                1000,
+                520,
                 0
               ],
               [
-                1000,
-                330
+                520,
+                190
               ],
               [
-                700,
-                330
+                360,
+                190
               ],
               [
-                700,
-                640
+                360,
+                380
               ],
               [
-                300,
-                640
+                150,
+                380
               ]
             ],
             "label": [
-              600,
-              250
+              300,
+              150
             ]
           },
           {
@@ -549,12 +960,132 @@
             "nom": "Chambre d'amis",
             "rects": [
               [
-                700,
-                330,
-                300,
-                310
+                360,
+                190,
+                160,
+                190
               ]
             ]
+          }
+        ],
+        "meubles": [
+          {
+            "t": "escalier",
+            "x": 75,
+            "y": 110,
+            "face": "bas",
+            "w": 70,
+            "d": 180
+          },
+          {
+            "t": "douche",
+            "x": 30,
+            "y": 345,
+            "face": "haut",
+            "w": 50,
+            "d": 56
+          },
+          {
+            "t": "lavabo",
+            "x": 120,
+            "y": 240,
+            "face": "bas"
+          },
+          {
+            "t": "wc",
+            "x": 120,
+            "y": 350,
+            "face": "haut"
+          },
+          {
+            "t": "billard",
+            "x": 265,
+            "y": 95,
+            "face": "bas",
+            "w": 150,
+            "d": 82
+          },
+          {
+            "t": "arcade",
+            "x": 500,
+            "y": 40,
+            "face": "gauche"
+          },
+          {
+            "t": "arcade",
+            "x": 500,
+            "y": 95,
+            "face": "gauche",
+            "couleur": "#C0303A"
+          },
+          {
+            "t": "arcade",
+            "x": 500,
+            "y": 150,
+            "face": "gauche",
+            "couleur": "#2D7BD8"
+          },
+          {
+            "t": "canape",
+            "x": 255,
+            "y": 355,
+            "face": "haut",
+            "w": 150,
+            "d": 44,
+            "couleur": "#3A2F5A"
+          },
+          {
+            "t": "tv",
+            "x": 255,
+            "y": 198,
+            "face": "bas",
+            "w": 100
+          },
+          {
+            "t": "pouf",
+            "x": 205,
+            "y": 280,
+            "face": "bas"
+          },
+          {
+            "t": "pouf",
+            "x": 300,
+            "y": 280,
+            "face": "bas",
+            "couleur": "#2D7BD8"
+          },
+          {
+            "t": "tapis",
+            "x": 255,
+            "y": 285,
+            "face": "bas",
+            "w": 180,
+            "d": 90,
+            "couleur": "#2E2A4A"
+          },
+          {
+            "t": "lit",
+            "x": 440,
+            "y": 320,
+            "face": "haut",
+            "w": 86,
+            "d": 110,
+            "drap": "#C9C2B4",
+            "double": true
+          },
+          {
+            "t": "plante",
+            "x": 505,
+            "y": 365,
+            "face": "bas"
+          },
+          {
+            "t": "armoire",
+            "x": 440,
+            "y": 205,
+            "face": "bas",
+            "w": 110,
+            "d": 26
           }
         ]
       }

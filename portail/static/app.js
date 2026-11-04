@@ -5,6 +5,7 @@
 
   var ACCUEIL = { id: 'accueil', nom: 'Accueil', icone: '🏠', couleur: '#3949AB' };
   var CAMERAS = { id: 'cameras', nom: 'Caméras', icone: '📷', couleur: '#546E7A' };
+  var MAISON3D = { id: 'maison3d', nom: '3D', icone: '🏠', couleur: '#7C5CFF' };
   var JOURS = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'];
   var MOIS = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août',
     'septembre', 'octobre', 'novembre', 'décembre'];
@@ -202,6 +203,7 @@
 
   function niveaux() {
     var l = [ACCUEIL].concat(maison.niveaux);
+    if (window.Plan3D && window.Plan3D.disponible() && aDesPlans()) { l.push(MAISON3D); }
     if (maison.cameras && maison.cameras.length) { l.push(CAMERAS); }
     return l;
   }
@@ -580,6 +582,50 @@
     return res;
   }
 
+  function aDesPlans() {
+    for (var i = 0; i < maison.niveaux.length; i++) { if (maison.niveaux[i].plan) { return true; } }
+    return false;
+  }
+
+  function options3d() {
+    return {
+      resume: resumeEntites,
+      actif: estActif,
+      ouvrir: ouvrirPiece,
+      basculer: function (eid) { basculer(eid, null); },
+      lumieres: function (eids) {
+        var l = [];
+        for (var i = 0; i < eids.length; i++) {
+          if (domaine(eids[i]) === 'light' && noms[eids[i]] && !noms[eids[i]].groupe) { l.push(eids[i]); }
+        }
+        return l;
+      },
+      camera: function (eid) { pleinEcran(cameraParId(eid)); }
+    };
+  }
+
+  function niveau3d(niveau, global) {
+    var pos = (global && niveau.plan.position3d) || { x: 0, y: 0, altitude: 0 };
+    return { plan: niveau.plan, zones: zonesPourPlan(niveau), dx: pos.x, dz: pos.y, alt: pos.altitude };
+  }
+
+  function vueMaison3d(c) {
+    var ent = el('div', 'entete');
+    ent.style.background = MAISON3D.couleur;
+    ent.appendChild(el('h1', '', '🏠 La maison en 3D'));
+    c.appendChild(ent);
+    var cadre = el('div', 'carte plan');
+    var zone = el('div', 'zone-plan en3d grande');
+    cadre.appendChild(zone);
+    cadre.appendChild(el('div', 'aide', 'Un doigt pour tourner · deux doigts pour zoomer · 💡 / 📺 pour allumer ou éteindre · toucher une pièce pour ses commandes'));
+    c.appendChild(cadre);
+    var liste = [];
+    for (var i = 0; i < maison.niveaux.length; i++) {
+      if (maison.niveaux[i].plan) { liste.push(niveau3d(maison.niveaux[i], true)); }
+    }
+    setTimeout(function () { vue3d = window.Plan3D.creer(zone, liste, options3d()); }, 0);
+  }
+
   function carteplan(niveau) {
     var avec3d = window.Plan3D && window.Plan3D.disponible();
     var cadre = el('div', 'carte plan');
@@ -592,13 +638,8 @@
       zone.innerHTML = '';
       zone.className = 'zone-plan' + (en3d ? ' en3d' : '');
       if (en3d) {
-        vue3d = window.Plan3D.creer(zone, niveau.plan, {
-          zones: zonesPourPlan(niveau),
-          resume: resumeEntites,
-          ouvrir: ouvrirPiece,
-          camera: function (eid) { pleinEcran(cameraParId(eid)); }
-        });
-        aide.textContent = 'Un doigt pour tourner · deux doigts pour zoomer · toucher une pièce pour la piloter';
+        vue3d = window.Plan3D.creer(zone, [niveau3d(niveau, false)], options3d());
+        aide.textContent = 'Un doigt pour tourner · deux doigts pour zoomer · 💡 / 📺 pour allumer ou éteindre · toucher une pièce pour ses commandes';
       } else {
         zone.appendChild(dessinerPlan(niveau));
         majPlan();
@@ -800,7 +841,7 @@
     var c = $('contenu');
     c.innerHTML = '';
     recap = null;
-    if (vue === 'accueil') { vueAccueil(c); } else if (vue === 'cameras') { vueCameras(c); } else {
+    if (vue === 'accueil') { vueAccueil(c); } else if (vue === 'cameras') { vueCameras(c); } else if (vue === 'maison3d') { vueMaison3d(c); } else {
       for (var i = 0; i < maison.niveaux.length; i++) {
         if (maison.niveaux[i].id === vue) { vueNiveau(c, maison.niveaux[i]); }
       }
@@ -844,7 +885,7 @@
         }
       }
       var ancre = (window.location.hash || '').replace('#', '');  // lien direct : /#rdc, /#cameras…
-      if (ancre === 'cameras' || niveauParId(ancre)) { vue = ancre; }
+      if (ancre === 'cameras' || ancre === 'maison3d' || niveauParId(ancre)) { vue = ancre; }
       dessiner();
       lireEtats();
       setInterval(lireEtats, 2000);

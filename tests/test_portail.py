@@ -256,6 +256,13 @@ class TestPlan(unittest.TestCase):
                 for x, y, w, h in z.get("rects", []):
                     self.assertTrue(0 <= x and 0 <= y and w > 0 and h > 0, z)
                     self.assertTrue(x + w <= plan["largeur"] + 1 and y + h <= plan["hauteur"] + 1, z)
+            eids_niveau = [e["entity_id"] for p in n["pieces"] for e in p["equipements"]]
+            for mb in plan.get("meubles", []):
+                for cle in ("entite", "ambilight"):
+                    if cle in mb:
+                        self.assertIn(mb[cle], eids_niveau, mb)
+                self.assertIn(mb.get("face", "bas"), ("bas", "haut", "gauche", "droite"), mb)
+                self.assertTrue(-5 <= mb["x"] <= plan["largeur"] + 5 and -5 <= mb["y"] <= plan["hauteur"] + 5, mb)
             for c in plan.get("cameras", []):
                 self.assertIn(c["entity_id"], cameras)
 

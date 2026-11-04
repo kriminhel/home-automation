@@ -31,6 +31,7 @@ Voir `docs/PRD.md` §10 (référence de la télécommande Came, garage, pièces,
 ## Changelog
 ### 2026-11-04 — Caméras
 - Portail : onglet **Caméras** (visiophone, garage, salon, salle de jeux) avec la dernière image de mouvement fournie par le cloud EZVIZ, relayée par `/api/image/<entity_id>` (liste blanche `cameras` de maison.json, cache 10 s, jeton côté serveur) ; plein écran au toucher.
+- Images chiffrées par EZVIZ (« hikencodepicture ») : déchiffrées par le portail (`portail/ezviz_image.py`, AES en Python standard, code vérifié hors ligne par son empreinte) avec `EZVIZ_CODES` dans `.env` du serveur. Codes salon / salle de jeux probablement inversés. Garage : nouveau code de chiffrement à créer dans l'appli (choix de Karim : ne pas stocker le mot de passe du compte).
 - Garage H8c : le mot de passe local est celui du compte EZVIZ (pas le code de l'étiquette) ; pas de port 554 même avec le direct LAN activé. Carte microSD 537 Go (4 partitions) : contrefaite, la caméra ne peut pas l'initialiser.
 ### 2026-11-04 — Liste d'achats
 - `docs/ACHATS.md` créé (ESPSomfy-RTS, Shelly 1 Mini Gen3, contact garage) ; portail et EZVIZ ajoutés au PRD.

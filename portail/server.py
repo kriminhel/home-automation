@@ -21,12 +21,20 @@ import urllib.error
 import urllib.request
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
+import ezviz_image
+
 ICI = os.path.dirname(os.path.abspath(__file__))
 STATIC = os.path.join(ICI, "static")
 MAISON_PATH = os.environ.get("MAISON_JSON", os.path.join(ICI, "maison.json"))
 HA_URL = os.environ.get("HA_URL", "http://127.0.0.1:8123").rstrip("/")
 HA_TOKEN = os.environ.get("HA_TOKEN", "")
 PORT = int(os.environ.get("PORTAIL_PORT", "8124"))
+# Codes de chiffrement des images EZVIZ, par entity_id (JSON dans .env, jamais dans git)
+try:
+    EZVIZ_CODES = json.loads(os.environ.get("EZVIZ_CODES") or "{}")
+except ValueError:
+    print("⚠️  EZVIZ_CODES illisible (JSON attendu) : images chiffrées non affichées.", flush=True)
+    EZVIZ_CODES = {}
 
 # Actions autorisées par domaine : action du portail -> service Home Assistant
 ACTIONS = {
@@ -118,6 +126,31 @@ def image_ha(eid, timeout=15):
         raise ErreurHA("Home Assistant injoignable (%s)" % getattr(e, "reason", e))
 
 
+def vignette(texte):
+    """Petite image SVG affichée à la place d'une image illisible."""
+    svg = ('<svg xmlns="http://www.w3.org/2000/svg" width="512" height="288">'
+           '<rect width="512" height="288" fill="#2A2E38"/>'
+           '<text x="256" y="152" font-family="Helvetica,Arial" font-size="26" fill="#C9CDD6" '
+           'text-anchor="middle">%s</text></svg>' % texte)
+    return "image/svg+xml", svg.encode()
+
+
+def image_lisible(eid):
+    """Image de HA, déchiffrée si EZVIZ l'a chiffrée et que le code est connu."""
+    type_mime, brut = image_ha(eid)
+    if not ezviz_image.est_chiffree(brut):
+        return type_mime, brut
+    code = EZVIZ_CODES.get(eid)
+    if not code:
+        return vignette("🔒 Image chiffrée : code inconnu")
+    try:
+        return "image/jpeg", ezviz_image.dechiffrer(brut, code)
+    except ezviz_image.CodeIncorrect:
+        return vignette("🔒 Code de chiffrement incorrect")
+    except ValueError:
+        return vignette("Image illisible")
+
+
 class CacheImages:
     """Une image par caméra au plus toutes les 10 s, quel que soit le nombre de tablettes."""
 
@@ -128,7 +161,7 @@ class CacheImages:
         with self.verrou:
             t, img = self.images.get(eid, (0.0, None))
             if img is None or time.time() - t > self.ttl:
-                img = image_ha(eid)
+                img = image_lisible(eid)
                 self.images[eid] = (time.time(), img)
             return img
 

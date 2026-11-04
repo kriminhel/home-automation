@@ -18,6 +18,7 @@ os.environ["HA_TOKEN"] = "jeton-test"
 import server  # noqa: E402
 
 APPELS = []
+IMAGES_HA = {}  # entity_id -> octets renvoyés par le faux HA (défaut : petit JPEG)
 ETATS = [
     {"entity_id": "light.salon", "state": "on", "attributes": {"friendly_name": "Salon"}},
     {"entity_id": "light.cuisine", "state": "off", "attributes": {}},
@@ -46,7 +47,7 @@ class FauxHA(BaseHTTPRequestHandler):
             self.send_response(200)
             self.send_header("Content-Type", "image/jpeg")
             self.end_headers()
-            self.wfile.write(b"\xff\xd8JPEG")
+            self.wfile.write(IMAGES_HA.get(self.path.rsplit("/", 1)[1], b"\xff\xd8JPEG"))
             return
         self._ok(ETATS)
 
@@ -160,6 +161,37 @@ class TestPortail(unittest.TestCase):
         self.assertEqual((code, brut), (200, b"\xff\xd8JPEG"))
         self.get("/api/image/" + eid)  # deuxième appel servi par le cache
         self.assertEqual(APPELS, [("/api/image_proxy/" + eid, None)])
+
+    def _image_chiffree(self, code, clair=b"\xff\xd8" + b"photo" * 30):
+        """Chiffre comme EZVIZ (AES-128-CBC) avec l'outil openssl, pour tester le portail."""
+        import subprocess
+        from hashlib import md5
+        cle = code.encode().ljust(16, b"\0").hex()
+        iv = (b"01234567" + b"\0" * 8).hex()
+        ct = subprocess.run(["openssl", "enc", "-aes-128-cbc", "-K", cle, "-iv", iv],
+                            input=clair, capture_output=True, check=True).stdout
+        h = md5(md5(code.encode()).hexdigest().encode()).hexdigest().encode()
+        return b"hikencodepicture" + h + ct, clair
+
+    def test_image_chiffree_dechiffree_avec_le_code(self):
+        eid = server.cameras_de(server.charger_maison())[0]
+        IMAGES_HA[eid], clair = self._image_chiffree("ABCDEF")
+        server.EZVIZ_CODES[eid] = "ABCDEF"
+        server.IMAGES.images.clear()
+        try:
+            self.assertEqual(self.get("/api/image/" + eid)[1], clair)
+            server.EZVIZ_CODES[eid] = "ZZZZZZ"  # mauvais code -> vignette, pas d'erreur
+            server.IMAGES.images.clear()
+            code, brut = self.get("/api/image/" + eid)
+            self.assertEqual(code, 200)
+            self.assertIn(b"incorrect", brut)
+            del server.EZVIZ_CODES[eid]  # code inconnu
+            server.IMAGES.images.clear()
+            self.assertIn("inconnu".encode(), self.get("/api/image/" + eid)[1])
+        finally:
+            IMAGES_HA.clear()
+            server.EZVIZ_CODES.pop(eid, None)
+            server.IMAGES.images.clear()
 
     def test_image_refusee_si_non_declaree(self):
         with self.assertRaises(urllib.error.HTTPError) as ctx:

@@ -369,7 +369,8 @@
                 340,
                 90
               ]
-            ]
+            ],
+            "espace": "sejour"
           },
           {
             "piece": "Cuisine",
@@ -380,7 +381,8 @@
                 230,
                 220
               ]
-            ]
+            ],
+            "espace": "sejour"
           },
           {
             "piece": "Salon",
@@ -391,7 +393,8 @@
                 540,
                 220
               ]
-            ]
+            ],
+            "espace": "sejour"
           },
           {
             "piece": "Salle de bain et WC enfants",
@@ -583,7 +586,8 @@
             "face": "haut",
             "w": 220,
             "d": 36,
-            "plaque": true
+            "plaque": true,
+            "haut": true
           },
           {
             "t": "frigo",

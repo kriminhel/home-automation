@@ -552,6 +552,15 @@
         }
       })(plan.zones[i]);
     }
+    // murs : bords des zones, sauf à l'intérieur d'un espace ouvert (pointillés = zones de lumière)
+    if (window.Plan3D && window.Plan3D.segments) {
+      var murs = window.Plan3D.segments(plan), gm = svg('g', {});
+      for (i = 0; i < murs.length; i++) {
+        var s = murs[i];
+        gm.appendChild(svg('line', { x1: s.a[0], y1: s.a[1], x2: s.b[0], y2: s.b[1], 'class': 'mur' + (s.ouvert ? ' ouvert' : '') }));
+      }
+      racine.appendChild(gm);
+    }
     racine.appendChild(textes);
 
     var cams = plan.cameras || [];

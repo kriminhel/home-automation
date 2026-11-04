@@ -31,7 +31,10 @@
 
   function obtenirMoteur() {
     if (!moteur) {
-      var r = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+      // Fond opaque : avec un canvas transparent, certains navigateurs de tablette (Android
+      // surtout) mélangent la maquette avec la page et tout paraît translucide.
+      var r = new THREE.WebGLRenderer({ antialias: true, alpha: false, premultipliedAlpha: false });
+      r.setClearColor(0x12141B, 1);
       r.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
       moteur = { renderer: r };
     }

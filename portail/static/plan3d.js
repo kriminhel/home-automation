@@ -481,9 +481,9 @@
         lueur.position.set((b.x1 + b.x2) / 2, 1.5, (b.y1 + b.y2) / 2);
         lueur.visible = false;
         groupe.add(lueur);
-        var lampe = new THREE.PointLight(0xFFB45A, 0, Math.max(b.x2 - b.x1, b.y2 - b.y1) * 1.2, 1.5);
-        lampe.position.set(cx, MUR_BAS + 30, cy);
-        groupe.add(lampe);
+        // Pas de PointLight par pièce : au-delà de quelques lumières, les puces graphiques
+        // d'iPad anciens n'arrivent plus à compiler les matériaux éclairés (tout devient invisible).
+        // L'effet « allumé » passe par la lueur au sol et la couleur/émission du sol.
 
         var lab = spriteTexte(petit ? 120 : 190, petit);
         lab.position.set(cx, MUR_HAUT + (petit ? 8 : 20), cy);
@@ -499,7 +499,7 @@
           cliquables.push(ic);
           icones.push({ sprite: ic, eid: lums[j], couleur: '#FFB547' });
         }
-        zones3d.push({ info: info, type: type, matSol: matSol, couleurSol: couleurSol, lueur: lueur, lampe: lampe, lab: lab });
+        zones3d.push({ info: info, type: type, matSol: matSol, couleurSol: couleurSol, lueur: lueur, lab: lab });
       }
 
       var meubles = plan.meubles || [];
@@ -625,7 +625,7 @@
         var q = zones3d[i];
         var res = q.info.piece ? options.resume(q.info.eids) : { actif: false, texte: '' };
         q.lueur.visible = res.actif;
-        q.lampe.intensity = res.actif ? 1.1 : 0;
+        q.matSol.emissive.setHex(res.actif && q.type !== 'exterieur' ? 0x4A2A08 : 0x000000);
         q.matSol.color.setHex(res.actif && q.type !== 'exterieur' ? C.solAllume : q.couleurSol);
         q.lab.userData.ecrire(q.info.zone.nom || q.info.zone.piece, res.actif ? res.texte : '');
       }

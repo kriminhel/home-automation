@@ -180,10 +180,10 @@ h2.titre, .piece h2 {
 .plan { padding: 18px 18px 12px; margin: 14px 0 4px; background: rgba(255,255,255,.035); }
 .plan-svg { display: block; }
 .plan .aide { font-size: 14px; color: #8A90A2; text-align: center; margin-top: 8px; }
-.zone rect { fill: rgba(255,255,255,.045); stroke: rgba(205,212,235,.55); stroke-width: 3; }
-.zone.decor rect { fill: rgba(255,255,255,.015); stroke: rgba(205,212,235,.22); stroke-dasharray: 8 6; }
-.zone.exterieur rect { fill: rgba(61,220,132,.06); stroke: rgba(61,220,132,.35); stroke-dasharray: 10 6; }
-.zone.on rect { fill: inherit; stroke: #FFB547; }
+.zone rect, .zone polygon { fill: rgba(255,255,255,.045); stroke: rgba(205,212,235,.55); stroke-width: 3; }
+.zone.decor rect, .zone.decor polygon { fill: rgba(255,255,255,.015); stroke: rgba(205,212,235,.22); stroke-dasharray: 8 6; }
+.zone.exterieur rect, .zone.exterieur polygon { fill: rgba(61,220,132,.06); stroke: rgba(61,220,132,.35); stroke-dasharray: 10 6; }
+.zone.on rect, .zone.on polygon { fill: inherit; stroke: #FFB547; }
 .etiquette text { fill: #EEF0F6; font-family: -apple-system, "Helvetica Neue", Helvetica, Arial, sans-serif; }
 .etiquette .nom { font-size: 22px; font-weight: 700; }
 .etiquette .nom.petit { font-size: 15px; font-weight: 600; fill: #C9CDD6; }

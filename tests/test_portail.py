@@ -247,7 +247,13 @@ class TestPlan(unittest.TestCase):
             for z in plan["zones"]:
                 if "piece" in z:
                     self.assertIn(z["piece"], noms, "%s : pièce inconnue %s" % (n["id"], z["piece"]))
-                for x, y, w, h in z["rects"]:
+                pieces = {p["nom"]: p for p in n["pieces"]}
+                for eid in z.get("entites", []):
+                    self.assertIn(eid, [e["entity_id"] for e in pieces[z["piece"]]["equipements"]], z)
+                self.assertTrue(z.get("rects") or z.get("poly"), z)
+                for x, y in z.get("poly", []):
+                    self.assertTrue(0 <= x <= plan["largeur"] + 1 and 0 <= y <= plan["hauteur"] + 1, z)
+                for x, y, w, h in z.get("rects", []):
                     self.assertTrue(0 <= x and 0 <= y and w > 0 and h > 0, z)
                     self.assertTrue(x + w <= plan["largeur"] + 1 and y + h <= plan["hauteur"] + 1, z)
             for c in plan.get("cameras", []):

@@ -261,6 +261,10 @@
           {
             "piece": "Buanderie et garage",
             "nom": "Garage",
+            "entites": [
+              "light.garage",
+              "cover.garage"
+            ],
             "rects": [
               [
                 0,
@@ -273,6 +277,9 @@
           {
             "piece": "Buanderie et garage",
             "nom": "Buanderie",
+            "entites": [
+              "light.buanderie"
+            ],
             "rects": [
               [
                 0,
@@ -285,6 +292,9 @@
           {
             "piece": "Chambre parentale",
             "nom": "Dressing",
+            "entites": [
+              "light.dressing"
+            ],
             "rects": [
               [
                 0,
@@ -296,6 +306,11 @@
           },
           {
             "piece": "Chambre parentale",
+            "nom": "Chambre parentale",
+            "entites": [
+              "light.chambre_parentale",
+              "media_player.boitier_chambre_parentale"
+            ],
             "rects": [
               [
                 0,
@@ -308,6 +323,9 @@
           {
             "piece": "Chambre parentale",
             "nom": "SdB",
+            "entites": [
+              "light.sdb_parentale"
+            ],
             "rects": [
               [
                 182,
@@ -366,19 +384,35 @@
           },
           {
             "piece": "Salon",
-            "rects": [
+            "poly": [
               [
                 455,
-                424,
-                490,
-                178
+                424
               ],
               [
                 777,
-                343,
-                168,
-                80
+                424
+              ],
+              [
+                777,
+                343
+              ],
+              [
+                945,
+                343
+              ],
+              [
+                945,
+                602
+              ],
+              [
+                455,
+                602
               ]
+            ],
+            "label": [
+              665,
+              511
             ]
           },
           {
@@ -408,19 +442,35 @@
           {
             "piece": "Entrée et couloir",
             "nom": "Entrée",
-            "rects": [
+            "poly": [
               [
                 620,
-                164,
-                158,
-                175
+                164
+              ],
+              [
+                854,
+                164
+              ],
+              [
+                854,
+                234
               ],
               [
                 777,
-                164,
-                77,
-                70
+                234
+              ],
+              [
+                777,
+                340
+              ],
+              [
+                620,
+                340
               ]
+            ],
+            "label": [
+              698,
+              252
             ]
           },
           {
@@ -429,9 +479,9 @@
             "rects": [
               [
                 854,
+                164,
                 140,
-                140,
-                102
+                77
               ]
             ]
           },
@@ -495,19 +545,35 @@
           },
           {
             "piece": "Salle de jeux",
-            "rects": [
+            "poly": [
               [
                 259,
-                0,
-                693,
+                0
+              ],
+              [
+                952,
+                0
+              ],
+              [
+                952,
                 289
               ],
               [
+                727,
+                289
+              ],
+              [
+                727,
+                574
+              ],
+              [
                 259,
-                289,
-                468,
-                285
+                574
               ]
+            ],
+            "label": [
+              544,
+              208
             ]
           },
           {

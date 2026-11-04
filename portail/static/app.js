@@ -253,10 +253,13 @@
     return morceaux.length ? morceaux.join(' · ') : 'Tout est éteint et fermé.';
   }
 
-  function resumePiece(p) {
+  function resumePiece(p) { return resumeEntites(p.eids); }
+
+  function resumeEntites(eids) {
     var l = 0, m = 0, autres = [];
-    for (var i = 0; i < p.eids.length; i++) {
-      var eid = p.eids[i];
+    for (var i = 0; i < eids.length; i++) {
+      var eid = eids[i];
+      if (!noms[eid]) { continue; }
       if (noms[eid].groupe || !estActif(eid)) { continue; }
       if (domaine(eid) === 'light') { l++; } else if (domaine(eid) === 'media_player') { m++; } else {
         autres.push(noms[eid].nom + ' ' + libelleEtat(eid).toLowerCase());
@@ -507,16 +510,24 @@
       (function (z) {
         var p = z.piece ? pieceParNom(niveau.id, z.piece) : null;
         var g = svg('g', { 'class': 'zone ' + (z.type || 'piece') });
-        var cx = 0, cy = 0, aire = 0;
-        for (var j = 0; j < z.rects.length; j++) {
-          var r = z.rects[j];
+        var cx = 0, cy = 0, aire = 0, largeur = 0, j;
+        var rects = z.rects || [];
+        for (j = 0; j < rects.length; j++) {
+          var r = rects[j];
           g.appendChild(svg('rect', { x: r[0], y: r[1], width: r[2], height: r[3], rx: 6 }));
           var a = r[2] * r[3];
-          if (a > aire) { aire = a; cx = r[0] + r[2] / 2; cy = r[1] + r[3] / 2; }
+          if (a > aire) { aire = a; largeur = r[2]; cx = r[0] + r[2] / 2; cy = r[1] + r[3] / 2; }
         }
+        if (z.poly) {
+          var pts = [];
+          for (j = 0; j < z.poly.length; j++) { pts.push(z.poly[j][0] + ',' + z.poly[j][1]); }
+          g.appendChild(svg('polygon', { points: pts.join(' ') }));
+          aire = 100000; largeur = 1000;
+        }
+        if (z.label) { cx = z.label[0]; cy = z.label[1]; }
         racine.appendChild(g);
         var t = svg('g', { 'class': 'etiquette ' + (z.type || 'piece') });
-        var petit = aire < 9000;
+        var petit = aire < 9000 || largeur < 70;
         var nom = svg('text', { x: cx, y: cy - (p && !petit ? 4 : -6), 'text-anchor': 'middle', 'class': 'nom' + (petit ? ' petit' : '') });
         nom.appendChild(document.createTextNode(z.nom || z.piece));
         t.appendChild(nom);
@@ -531,7 +542,7 @@
           var ouvrir = function () { ouvrirPiece(p); };
           g.addEventListener('click', ouvrir);
           t.addEventListener('click', ouvrir);
-          zonesPlan.push({ g: g, p: p, etat: etat, niveau: niveau.id, type: z.type || 'piece' });
+          zonesPlan.push({ g: g, p: p, eids: z.entites || p.eids, etat: etat, niveau: niveau.id, type: z.type || 'piece' });
         }
       })(plan.zones[i]);
     }
@@ -561,7 +572,7 @@
   function majPlan() {
     for (var i = 0; i < zonesPlan.length; i++) {
       var z = zonesPlan[i];
-      var res = resumePiece(z.p);
+      var res = resumeEntites(z.eids);
       z.g.setAttribute('class', 'zone ' + z.type + (res.actif ? ' on' : ''));
       if (res.actif) { z.g.style.fill = 'url(#lueur-' + z.niveau + ')'; } else { z.g.style.fill = ''; }
       if (z.etat) { z.etat.textContent = res.actif ? res.texte : ''; }

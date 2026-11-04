@@ -118,6 +118,7 @@
     }
     if (vue === 'accueil') { majRecap(); }
     majPlan();
+    if (vue3d) { vue3d.maj(); }
     for (eid in legendesCam) {
       if (legendesCam.hasOwnProperty(eid)) { legendesCam[eid].textContent = libelleMouvement(eid); }
     }
@@ -470,6 +471,9 @@
 
   var SVG = 'http://www.w3.org/2000/svg';
   var zonesPlan = [];       // [{g, p}] zones liées à une pièce, mises à jour sur place
+  var vue3d = null;         // maquette 3D affichée (Plan3D) ou null
+  var mode3d = true;        // préférence 3D / plan 2D
+  try { mode3d = window.localStorage.getItem('portail-plan') !== '2d'; } catch (e) { mode3d = true; }
 
   function svg(tag, attrs) {
     var e = document.createElementNS(SVG, tag);
@@ -563,9 +567,56 @@
       })(cams[i]);
     }
 
+    return racine;
+  }
+
+  function zonesPourPlan(niveau) {
+    var res = [];
+    for (var i = 0; i < niveau.plan.zones.length; i++) {
+      var z = niveau.plan.zones[i];
+      var p = z.piece ? pieceParNom(niveau.id, z.piece) : null;
+      res.push({ zone: z, piece: p, eids: z.entites || (p ? p.eids : []) });
+    }
+    return res;
+  }
+
+  function carteplan(niveau) {
+    var avec3d = window.Plan3D && window.Plan3D.disponible();
     var cadre = el('div', 'carte plan');
-    cadre.appendChild(racine);
-    cadre.appendChild(el('div', 'aide', 'Toucher une pièce pour la piloter · les pièces allumées brillent'));
+    var choix = el('div', 'choix-plan');
+    var zone = el('div', 'zone-plan');
+    var aide = el('div', 'aide');
+    function afficher(en3d) {
+      if (vue3d) { vue3d.detruire(); vue3d = null; }
+      zonesPlan = [];
+      zone.innerHTML = '';
+      zone.className = 'zone-plan' + (en3d ? ' en3d' : '');
+      if (en3d) {
+        vue3d = window.Plan3D.creer(zone, niveau.plan, {
+          zones: zonesPourPlan(niveau),
+          resume: resumeEntites,
+          ouvrir: ouvrirPiece,
+          camera: function (eid) { pleinEcran(cameraParId(eid)); }
+        });
+        aide.textContent = 'Un doigt pour tourner · deux doigts pour zoomer · toucher une pièce pour la piloter';
+      } else {
+        zone.appendChild(dessinerPlan(niveau));
+        majPlan();
+        aide.textContent = 'Toucher une pièce pour la piloter · les pièces allumées brillent';
+      }
+      b3.className = en3d ? 'actif' : '';
+      b2.className = en3d ? '' : 'actif';
+    }
+    var b3 = el('button', '', '🧊 3D');
+    var b2 = el('button', '', '🗺 Plan');
+    b3.addEventListener('click', function () { mode3d = true; sauver(); afficher(true); });
+    b2.addEventListener('click', function () { mode3d = false; sauver(); afficher(false); });
+    function sauver() { try { window.localStorage.setItem('portail-plan', mode3d ? '3d' : '2d'); } catch (e) { return; } }
+    if (avec3d) { choix.appendChild(b3); choix.appendChild(b2); cadre.appendChild(choix); }
+    cadre.appendChild(zone);
+    cadre.appendChild(aide);
+    // la 3D a besoin que la zone soit dans la page pour connaître sa taille
+    setTimeout(function () { afficher(avec3d && mode3d); }, 0);
     return cadre;
   }
 
@@ -644,7 +695,7 @@
     }
     c.appendChild(ent);
     if (niveau.plan) {
-      c.appendChild(dessinerPlan(niveau));
+      c.appendChild(carteplan(niveau));
       c.appendChild(el('h2', 'titre', 'Toutes les commandes'));
     }
 
@@ -741,6 +792,7 @@
     legendesCam = {};
     imagesCam = [];
     zonesPlan = [];
+    if (vue3d) { vue3d.detruire(); vue3d = null; }
     fermerPiece();
     var plein = $('plein');
     if (plein) { document.body.removeChild(plein); }

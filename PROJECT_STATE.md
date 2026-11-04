@@ -29,6 +29,10 @@ Liste cumulative : [`docs/ACHATS.md`](docs/ACHATS.md) — Karim achète tout qua
 Voir `docs/PRD.md` §10 (référence de la télécommande Came, garage, pièces, Philips, commune).
 
 ## Changelog
+### 2026-11-05 — Agenda, navigation, couloir
+- Agenda local HA `calendar.famille` : carte sur l'accueil + ajout d'événements depuis la tablette (`/api/agenda`). iCloud / Google à brancher ensuite (ajouter l'entité dans `maison.json` → `agendas`).
+- Glisser pour changer de vue ; pictogrammes arrondis ; vue 3D globale supprimée ; barre latérale façon référence ; police Plus Jakarta Sans ; avatars (privés, serveur seulement).
+- Plan : couloir buanderie (light.couloir_buanderie), petite terrasse devant la baie du salon (light.facade_rue), entrée ouverte sur salon et salle à manger, boutons ▲■▼ du garage en 3D.
 ### 2026-11-04 (nuit) — Portail noir et or
 - HA localisé à Saint-Aubin-lès-Elbeuf (Europe/Paris) ; météo met.no → `weather.forecast_maison`.
 - Accueil type tableau de bord (illustration maison toit terrasse en attendant une vraie photo, heure, météo, courbes lumières / internet, famille Karim · Samia · Alia · Naïm · Amel, scènes, cartes de pièces avec marche/arrêt), navigation latérale, vue Famille.

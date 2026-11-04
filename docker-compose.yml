@@ -2,7 +2,7 @@ services:
   # Hub domotique : intégrations, automatisations, scènes
   homeassistant:
     container_name: homeassistant
-    image: ghcr.io/home-assistant/home-assistant:stable
+    image: ghcr.io/home-assistant/home-assistant:2026.2.0  # version figée : mise à jour = décision explicite
     volumes:
       - ./homeassistant-config:/config
       - /etc/localtime:/etc/localtime:ro

@@ -115,7 +115,7 @@
         for (i = 0; i < tuiles[eid].length; i++) { majTuile(tuiles[eid][i], eid); }
       }
     }
-    if (vue === 'accueil') { majAllumes(); }
+    if (vue === 'accueil') { majRecap(); }
     for (eid in legendesCam) {
       if (legendesCam.hasOwnProperty(eid)) { legendesCam[eid].textContent = libelleMouvement(eid); }
     }
@@ -221,49 +221,244 @@
     }
   }
 
-  var signatureAllumes = null;
-  function majAllumes() {
-    var zone = $('allumes');
-    if (!zone) { return; }
-    // Ne reconstruire que si la liste change (sinon un toucher en cours serait perdu)
-    var sig = [];
-    for (var id in noms) { if (noms.hasOwnProperty(id) && estActif(id)) { sig.push(id); } }
-    sig = sig.join(',');
-    if (sig === signatureAllumes) { return; }
-    signatureAllumes = sig;
-    zone.innerHTML = '';
-    tuiles = {};
+  /* ---------- récapitulatif (Accueil) ---------- */
+
+  var PIECES = [];          // [{id, nom, icone, niveau, eids}]
+  var recap = null;         // éléments du récapitulatif à mettre à jour sur place
+
+  function compter(filtre) {
     var n = 0;
     for (var eid in noms) {
-      if (noms.hasOwnProperty(eid) && domaine(eid) !== 'scene' && estActif(eid)) {
-        var t = creerTuile({ entity_id: eid, nom: noms[eid].nom, icone: noms[eid].icone, confirmer: noms[eid].confirmer });
-        t.querySelector('.etat').textContent = noms[eid].piece;
-        t.className += ' on';
-        zone.appendChild(t);
-        n++;
+      if (noms.hasOwnProperty(eid) && !noms[eid].groupe && filtre(eid)) { n++; }
+    }
+    return n;
+  }
+
+  function pluriel(n, mot) { return n + ' ' + mot + (n > 1 ? 's' : ''); }
+
+  function resumeMaison() {
+    var morceaux = [];
+    var l = compter(function (e) { return domaine(e) === 'light' && estActif(e); });
+    var m = compter(function (e) { return domaine(e) === 'media_player' && estActif(e); });
+    if (l) { morceaux.push(pluriel(l, 'lumière') + ' ' + (l > 1 ? 'allumées' : 'allumée')); }
+    if (m) { morceaux.push(pluriel(m, 'écran') + ' ' + (m > 1 ? 'allumés' : 'allumé')); }
+    for (var eid in noms) {
+      if (noms.hasOwnProperty(eid) && domaine(eid) === 'cover' && libelleEtat(eid) !== 'Fermé' &&
+          etats[eid] && etats[eid].state !== 'unknown' && etats[eid].state !== 'unavailable') {
+        morceaux.push(noms[eid].nom + ' ' + libelleEtat(eid).toLowerCase());
       }
     }
-    if (!n) { zone.appendChild(el('div', 'vide', 'Tout est éteint et fermé.')); }
+    return morceaux.length ? morceaux.join(' · ') : 'Tout est éteint et fermé.';
+  }
+
+  function resumePiece(p) {
+    var l = 0, m = 0, autres = [];
+    for (var i = 0; i < p.eids.length; i++) {
+      var eid = p.eids[i];
+      if (noms[eid].groupe || !estActif(eid)) { continue; }
+      if (domaine(eid) === 'light') { l++; } else if (domaine(eid) === 'media_player') { m++; } else {
+        autres.push(noms[eid].nom + ' ' + libelleEtat(eid).toLowerCase());
+      }
+    }
+    var t = [];
+    if (l) { t.push(l > 1 ? l + ' lumières' : '1 lumière'); }
+    if (m) { t.push(m > 1 ? m + ' écrans' : '1 écran'); }
+    t = t.concat(autres);
+    return { actif: t.length > 0, texte: t.length ? t.join(' · ') : 'Éteint' };
+  }
+
+  function cameraRecente() {
+    var meilleur = null, date = null;
+    for (var i = 0; i < (maison.cameras || []).length; i++) {
+      var cam = maison.cameras[i];
+      var d = lireDateIso((etats[cam.entity_id] || {}).state);
+      if (d && (!date || d > date)) { date = d; meilleur = cam; }
+    }
+    return meilleur;
+  }
+
+  function debitInternet() {
+    var e = etats[(maison.infos || {}).internet];
+    if (!e || isNaN(parseFloat(e.state))) { return '—'; }
+    var v = parseFloat(e.state);
+    var u = e.unit_of_measurement || 'kB/s';
+    var mbits = u === 'kB/s' ? v * 8 / 1000 : (u === 'MB/s' ? v * 8 : v);
+    return '↓ ' + (mbits < 10 ? mbits.toFixed(1) : Math.round(mbits)).toString().replace('.', ',') + ' Mbit/s';
+  }
+
+  function soleil() {
+    var e = etats[(maison.infos || {}).soleil];
+    if (!e) { return null; }
+    var leve = e.state === 'above_horizon';
+    var d = lireDateIso(leve ? e.next_setting : e.next_rising);
+    if (!d) { return null; }
+    return { ico: leve ? '🌇' : '🌅', texte: (leve ? 'Coucher ' : 'Lever ') + deux(d.getHours()) + ':' + deux(d.getMinutes()) };
+  }
+
+  function allerA(niveauId, pieceId) {
+    vue = niveauId;
+    dessiner();
+    var cible = pieceId ? $(pieceId) : null;
+    if (cible) { window.scrollTo(0, cible.offsetTop - 100); }
+  }
+
+  function puce(ico, libelle, fn) {
+    var c = el('div', 'puce');
+    c.appendChild(el('span', 'ico', ico));
+    var t = el('div', 'txt');
+    var v = el('div', 'val', '…');
+    t.appendChild(v);
+    t.appendChild(el('div', 'lib', libelle));
+    c.appendChild(t);
+    if (fn) { c.addEventListener('click', fn); c.className += ' lien'; }
+    return { el: c, val: v, ico: c.firstChild };
+  }
+
+  function pieceDe(eid) {
+    for (var i = 0; i < PIECES.length; i++) {
+      if (PIECES[i].eids.indexOf(eid) >= 0) { return PIECES[i]; }
+    }
+    return null;
   }
 
   function vueAccueil(c) {
-    var h = el('div', 'horloge'); h.id = 'horloge'; c.appendChild(h);
-    var d = el('div', 'date'); d.id = 'date'; c.appendChild(d);
+    recap = { pieces: [] };
+    var haut = el('div', 'heros');
 
-    var ps = el('div', 'piece');
-    ps.appendChild(el('h2', '', 'Scènes'));
-    var ts = el('div', 'tuiles');
-    for (var i = 0; i < maison.scenes.length; i++) {
-      ts.appendChild(creerTuile(maison.scenes[i], 'Toucher pour activer'));
+    var bienvenue = el('div', 'carte bienvenue');
+    recap.salut = el('div', 'salut');
+    bienvenue.appendChild(recap.salut);
+    var h = el('div', 'horloge'); h.id = 'horloge'; bienvenue.appendChild(h);
+    var d = el('div', 'date'); d.id = 'date'; bienvenue.appendChild(d);
+    recap.resume = el('div', 'resume');
+    bienvenue.appendChild(recap.resume);
+    haut.appendChild(bienvenue);
+
+    if (maison.cameras && maison.cameras.length) {
+      var cam = el('div', 'carte cam-heros');
+      recap.camImg = el('img', '');
+      cam.appendChild(recap.camImg);
+      recap.camLeg = el('div', 'legende');
+      cam.appendChild(recap.camLeg);
+      cam.addEventListener('click', function () { vue = 'cameras'; dessiner(); });
+      haut.appendChild(cam);
     }
-    ps.appendChild(ts);
-    c.appendChild(ps);
+    c.appendChild(haut);
 
-    var pa = el('div', 'piece');
-    pa.appendChild(el('h2', '', 'Allumé ou ouvert en ce moment'));
-    var ta = el('div', 'tuiles'); ta.id = 'allumes';
-    pa.appendChild(ta);
-    c.appendChild(pa);
+    var puces = el('div', 'puces');
+    recap.lumieres = puce('💡', 'Lumières');
+    recap.ecrans = puce('📺', 'Écrans');
+    puces.appendChild(recap.lumieres.el);
+    puces.appendChild(recap.ecrans.el);
+    recap.covers = [];
+    for (var eid in noms) {
+      if (noms.hasOwnProperty(eid) && domaine(eid) === 'cover') {
+        (function (id) {
+          var p = pieceDe(id);
+          var pc = puce(noms[id].icone || '🚪', noms[id].nom, function () { allerA(p.niveau, p.id); });
+          pc.eid = id;
+          recap.covers.push(pc);
+          puces.appendChild(pc.el);
+        })(eid);
+      }
+    }
+    if ((maison.infos || {}).internet) { recap.internet = puce('📶', 'Internet'); puces.appendChild(recap.internet.el); }
+    if ((maison.infos || {}).soleil) { recap.soleil = puce('🌅', 'Soleil'); puces.appendChild(recap.soleil.el); }
+    c.appendChild(puces);
+
+    c.appendChild(el('h2', 'titre', 'Scènes'));
+    var sc = el('div', 'scenes');
+    for (var i = 0; i < maison.scenes.length; i++) {
+      (function (scene) {
+        var b = el('div', 'scene-btn');
+        b.appendChild(el('span', 'ico', scene.icone));
+        b.appendChild(document.createTextNode(scene.nom));
+        b.addEventListener('click', function () {
+          b.className = 'scene-btn appui';
+          setTimeout(function () { b.className = 'scene-btn'; }, 600);
+          agir({ entity_id: scene.entity_id, action: 'activer' });
+          message('Scène « ' + scene.nom + ' »', true);
+        });
+        sc.appendChild(b);
+      })(maison.scenes[i]);
+    }
+    c.appendChild(sc);
+
+    c.appendChild(el('h2', 'titre', 'Pièces'));
+    var grille = el('div', 'grille-pieces');
+    for (i = 0; i < PIECES.length; i++) {
+      (function (p) {
+        var niv = niveauParId(p.niveau);
+        var carte = el('div', 'carte-piece');
+        var ico = el('div', 'rond', p.icone);
+        carte.appendChild(ico);
+        var t = el('div', 'txt');
+        t.appendChild(el('div', 'nom', p.nom));
+        var etat = el('div', 'etat', '…');
+        t.appendChild(etat);
+        carte.appendChild(t);
+        var badge = el('div', 'badge', niv.nom);
+        badge.style.color = niv.couleur;
+        carte.appendChild(badge);
+        carte.addEventListener('click', function () { allerA(p.niveau, p.id); });
+        recap.pieces.push({ p: p, carte: carte, etat: etat });
+        grille.appendChild(carte);
+      })(PIECES[i]);
+    }
+    c.appendChild(grille);
+  }
+
+  function majRecap() {
+    if (!recap) { return; }
+    var heure = new Date().getHours();
+    recap.salut.textContent = heure >= 18 || heure < 5 ? 'Bonsoir' : 'Bonjour';
+    var resume = resumeMaison();
+    recap.resume.textContent = resume;
+    recap.resume.className = 'resume' + (resume.indexOf('Tout est') === 0 ? ' calme' : '');
+
+    var l = compter(function (e) { return domaine(e) === 'light' && estActif(e); });
+    var lt = compter(function (e) { return domaine(e) === 'light'; });
+    recap.lumieres.val.textContent = l + ' / ' + lt;
+    recap.lumieres.el.className = 'puce' + (l ? ' on' : '');
+    var m = compter(function (e) { return domaine(e) === 'media_player' && estActif(e); });
+    recap.ecrans.val.textContent = m ? pluriel(m, 'allumé') : 'Éteints';
+    recap.ecrans.el.className = 'puce' + (m ? ' media' : '');
+    for (var i = 0; i < recap.covers.length; i++) {
+      var pc = recap.covers[i];
+      var lib = libelleEtat(pc.eid);
+      pc.val.textContent = lib;
+      pc.el.className = 'puce lien' + (lib !== 'Fermé' && lib !== 'injoignable' && lib !== '…' ? ' alerte' : '');
+    }
+    if (recap.internet) { recap.internet.val.textContent = debitInternet(); }
+    if (recap.soleil) {
+      var so = soleil();
+      recap.soleil.val.textContent = so ? so.texte : '—';
+      if (so) { recap.soleil.ico.textContent = so.ico; }
+    }
+
+    if (recap.camImg) {
+      var cam = cameraRecente() || maison.cameras[0];
+      if (recap.camEid !== cam.entity_id) {
+        recap.camEid = cam.entity_id;
+        recap.camImg.src = urlImage(cam.entity_id);
+        imagesCam = [{ img: recap.camImg, eid: cam.entity_id }];
+      }
+      recap.camLeg.textContent = cam.icone + ' ' + cam.nom + ' · ' + libelleMouvement(cam.entity_id);
+    }
+
+    for (i = 0; i < recap.pieces.length; i++) {
+      var r = recap.pieces[i];
+      var res = resumePiece(r.p);
+      r.etat.textContent = res.texte;
+      r.carte.className = 'carte-piece' + (res.actif ? ' on' : '');
+    }
+  }
+
+  function niveauParId(id) {
+    for (var i = 0; i < maison.niveaux.length; i++) {
+      if (maison.niveaux[i].id === id) { return maison.niveaux[i]; }
+    }
+    return null;
   }
 
   function vueNiveau(c, niveau) {
@@ -294,7 +489,8 @@
     for (i = 0; i < niveau.pieces.length; i++) {
       var p = niveau.pieces[i];
       var bloc = el('div', 'piece');
-      bloc.appendChild(el('h2', '', p.nom));
+      bloc.id = 'piece-' + niveau.id + '-' + i;
+      bloc.appendChild(el('h2', '', (p.icone ? p.icone + ' ' : '') + p.nom));
       var ts = el('div', 'tuiles');
       for (j = 0; j < p.equipements.length; j++) {
         var t = creerTuile(p.equipements[j]);
@@ -387,7 +583,7 @@
     dessinerOnglets();
     var c = $('contenu');
     c.innerHTML = '';
-    signatureAllumes = null;
+    recap = null;
     if (vue === 'accueil') { vueAccueil(c); } else if (vue === 'cameras') { vueCameras(c); } else {
       for (var i = 0; i < maison.niveaux.length; i++) {
         if (maison.niveaux[i].id === vue) { vueNiveau(c, maison.niveaux[i]); }
@@ -424,8 +620,11 @@
           var p = m.niveaux[i].pieces[j];
           for (var k = 0; k < p.equipements.length; k++) {
             var eq = p.equipements[k];
-            noms[eq.entity_id] = { nom: eq.nom, icone: eq.icone, piece: p.nom, confirmer: !!eq.confirmer };
+            noms[eq.entity_id] = { nom: eq.nom, icone: eq.icone, piece: p.nom, confirmer: !!eq.confirmer,
+              groupe: !!eq.groupe };
           }
+          PIECES.push({ id: 'piece-' + m.niveaux[i].id + '-' + j, nom: p.nom, icone: p.icone || '•',
+            niveau: m.niveaux[i].id, eids: p.equipements.map(function (e) { return e.entity_id; }) });
         }
       }
       dessiner();

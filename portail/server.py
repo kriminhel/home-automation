@@ -56,7 +56,8 @@ ACTIONS_NIVEAU = {
     "tout_ouvrir": ("cover", "open_cover"),
     "tout_fermer": ("cover", "close_cover"),
 }
-ATTRS_UTILES = ("friendly_name", "current_position", "volume_level", "source", "media_title")
+ATTRS_UTILES = ("friendly_name", "current_position", "volume_level", "source", "media_title",
+                "unit_of_measurement", "next_rising", "next_setting")
 
 
 def charger_maison():
@@ -78,6 +79,11 @@ def entites_de(maison, niveau_id=None):
 def cameras_de(maison):
     """entity_id des caméras déclarées (lecture d'image seulement, aucune action)."""
     return [c["entity_id"] for c in maison.get("cameras", [])]
+
+
+def infos_de(maison):
+    """entity_id affichés sur le récapitulatif (Freebox, soleil…) : lecture seule."""
+    return list(maison.get("infos", {}).values())
 
 
 def entites_sensibles(maison):
@@ -193,7 +199,7 @@ CACHE = CacheEtats()
 def etats(maison):
     tous = CACHE.lire()
     res = {}
-    for eid in entites_de(maison) + cameras_de(maison):
+    for eid in entites_de(maison) + cameras_de(maison) + infos_de(maison):
         e = tous.get(eid)
         if e is None:
             res[eid] = {"state": "absent"}

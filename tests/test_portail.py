@@ -204,10 +204,16 @@ class TestPortail(unittest.TestCase):
         code, _ = self.post({"entity_id": eid, "action": "basculer"})
         self.assertEqual(code, 400)
 
-    def test_etats_incluent_les_cameras(self):
+    def test_etats_incluent_les_cameras_et_infos(self):
         etats = json.loads(self.get("/api/etats")[1])
-        for eid in server.cameras_de(server.charger_maison()):
+        maison = server.charger_maison()
+        for eid in server.cameras_de(maison) + server.infos_de(maison):
             self.assertIn(eid, etats)
+
+    def test_infos_en_lecture_seule(self):
+        for eid in server.infos_de(server.charger_maison()):
+            code, _ = self.post({"entity_id": eid, "action": "basculer"})
+            self.assertEqual(code, 400)
 
     def test_ha_injoignable(self):
         ancien = server.HA_URL

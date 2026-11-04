@@ -17,6 +17,10 @@
       "icone": "🌙"
     }
   ],
+  "infos": {
+    "internet": "sensor.freebox_download_speed",
+    "soleil": "sun.sun"
+  },
   "cameras": [
     {
       "entity_id": "image.visiophone_entree_derniere_image_du_mouvement",
@@ -48,6 +52,7 @@
       "pieces": [
         {
           "nom": "Salon",
+          "icone": "🛋",
           "equipements": [
             {
               "entity_id": "light.salon",
@@ -63,6 +68,7 @@
         },
         {
           "nom": "Salle à manger",
+          "icone": "🍽",
           "equipements": [
             {
               "entity_id": "light.salle_a_manger",
@@ -73,6 +79,7 @@
         },
         {
           "nom": "Cuisine",
+          "icone": "🍳",
           "equipements": [
             {
               "entity_id": "light.cuisine",
@@ -83,6 +90,7 @@
         },
         {
           "nom": "Entrée et couloir",
+          "icone": "🚪",
           "equipements": [
             {
               "entity_id": "light.entree",
@@ -98,6 +106,7 @@
         },
         {
           "nom": "Buanderie et garage",
+          "icone": "🚗",
           "equipements": [
             {
               "entity_id": "light.buanderie",
@@ -119,6 +128,7 @@
         },
         {
           "nom": "Chambre parentale",
+          "icone": "🛏",
           "equipements": [
             {
               "entity_id": "light.chambre_parentale",
@@ -144,6 +154,7 @@
         },
         {
           "nom": "Chambre d'Alia",
+          "icone": "🧸",
           "equipements": [
             {
               "entity_id": "light.chambre_alia",
@@ -154,6 +165,7 @@
         },
         {
           "nom": "Chambre de Naïm",
+          "icone": "🎮",
           "equipements": [
             {
               "entity_id": "light.chambre_naim",
@@ -174,6 +186,7 @@
         },
         {
           "nom": "Chambre d'Amel",
+          "icone": "📚",
           "equipements": [
             {
               "entity_id": "light.chambre_amel",
@@ -189,6 +202,7 @@
         },
         {
           "nom": "Salle de bain et WC enfants",
+          "icone": "🛁",
           "equipements": [
             {
               "entity_id": "light.sdb_enfants",
@@ -204,11 +218,13 @@
         },
         {
           "nom": "Extérieur",
+          "icone": "🌳",
           "equipements": [
             {
               "entity_id": "light.facade_jardin",
               "nom": "Toute la façade jardin",
-              "icone": "🌳"
+              "icone": "🌳",
+              "groupe": true
             },
             {
               "entity_id": "light.jardin_1",
@@ -247,6 +263,7 @@
       "pieces": [
         {
           "nom": "Salle de jeux",
+          "icone": "🕹",
           "equipements": [
             {
               "entity_id": "light.salle_de_jeux",

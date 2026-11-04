@@ -154,7 +154,7 @@ mur de caméras en direct permanent sur l'iPad (trop lourd pour iOS 9), suivi d'
 
 - ⚠️ Pièce de chacun des 12 volets (pour la tablette).
 - ⚠️ Portail Nice : modèle de la télécommande (FLO2R-S, ON2… = code tournant) et de la carte du moteur.
-- ⚠️ Codes de vérification des caméras salon et salle de jeux ; code du garage refusé en local (401) : chiffrement / mot de passe personnalisé ?
+- ⚠️ Codes de vérification des caméras salon et salle de jeux ; code du garage refusé en local (401) sans chiffrement personnalisé : retester après changement de la carte microSD et redémarrage ; comparer avec les C6N.
 - ⚠️ Salle de bain de l'étage : quelle solution (§6 bis) ?
 - ⚠️ Commune de la maison (pour les heures de lever et de coucher du soleil ; HA est réglé par défaut sur Amsterdam).
 - ⚠️ Faut-il un code PIN pour le garage ?

@@ -21,10 +21,16 @@ léger servi par le serveur. Détails : [`docs/PRD.md`](docs/PRD.md).
 | J4 — TV Xiaomi/Philips, Freebox, Tuya, garage | 🔄 | Broadlink, Freebox, toutes les TV intégrées et renommées ; reste Tuya, garage |
 | J5 — Scènes/automatisations réelles, test 7 jours | 📋 | |
 
+## Achats
+Liste cumulative : [`docs/ACHATS.md`](docs/ACHATS.md) — Karim achète tout quand elle est complète. **À mettre à jour dès qu'un besoin matériel apparaît.**
+
 ## Blocages / décisions pendantes
 Voir `docs/PRD.md` §10 (référence de la télécommande Came, garage, pièces, Philips, commune).
 
 ## Changelog
+### 2026-11-04 — Liste d'achats
+- `docs/ACHATS.md` créé (ESPSomfy-RTS, Shelly 1 Mini Gen3, contact garage) ; portail et EZVIZ ajoutés au PRD.
+
 ### 2026-11-04 — Garage et diagnostic volets
 - Garage Came (TOP code fixe) : 3 codes appris et rejoués, `cover.garage` dans HA, tuile avec confirmation, exclu des actions groupées.
 - Volets : émetteurs Somfy RTS (433,42 MHz, code tournant) → Broadlink et Loratap SC500W inadaptés ; solution ESPSomfy-RTS.

@@ -2,7 +2,7 @@
 
 > PRD du projet **et** prompt de référence à donner à Claude en début de session.
 > Les points `⚠️` attendent une réponse de Karim avant de coder la partie concernée.
-> État d'avancement : [`PROJECT_STATE.md`](../PROJECT_STATE.md).
+> État d'avancement : [`PROJECT_STATE.md`](../PROJECT_STATE.md) · Matériel à acheter : [`docs/ACHATS.md`](ACHATS.md) (à tenir à jour à chaque session).
 
 ## 1. Objectif
 
@@ -52,6 +52,9 @@ Scan réseau du 04/11/2026 : [`docs/scan-report.md`](scan-report.md).
 | 📡 Box | **Freebox** v8 | 192.168.1.254 | `freebox` (débits, appels, Wi-Fi) | ✅ intégrée 04/11 (Wi-Fi et redémarrage volontairement absents de la tablette) |
 | 🔌 Tuya / Smart Life | « Passerelle ZigBee » (Tuya + HomeKit « Gateway-type c ») + 1 autre appareil Tuya | 192.168.1.145 / .155 | `homekit_controller` (local) ou `tuya` (cloud) | ⚠️ cloud déconnecté ; appairage HomeKit possible avec le code à 8 chiffres de la passerelle |
 | 🔊 Audio | Enceinte Spotify Connect | 192.168.1.157 | `spotify` | hors V1 |
+| 🚧 Portail | ⚠️ marque / motorisation / télécommande ? (pilotable aujourd'hui depuis le visiophone EZVIZ) | ⚠️ | Broadlink si télécommande à code fixe, sinon intégration EZVIZ | 📋 à identifier |
+| 🔔 Visiophone | **EZVIZ** (ouvre le portail) | ⚠️ | `ezviz` (compte EZVIZ) | 📋 à intégrer |
+| 📷 Caméras | **EZVIZ** (intérieur) | ⚠️ | `ezviz` + flux RTSP local | 📋 à intégrer (pas de flux continu sur l'iPad) |
 | 🖥️ NAS | Synology DS216se | 192.168.1.134 | `synology_dsm` | hors V1 |
 
 Règle : on n'intègre **que ce qui est confirmé**. Aucune entité inventée.
@@ -119,12 +122,12 @@ ampoule connectée (sans travaux, mais l'interrupteur doit rester allumé).
 
 ## 7. Périmètre
 
-**V1** : lumières IPX800 · volets via Broadlink (si apprenables) · TV Xiaomi, Philips et
-boîtier · Freebox · garage (selon matériel) · portail tablette par niveau · scènes · iPad en
-kiosque.
+**V1** : lumières IPX800 · volets (ESPSomfy-RTS) · TV Xiaomi, Philips, boîtier, Apple TV ·
+Freebox · garage · portail · visiophone EZVIZ (image fixe à la sonnerie, ouverture du portail
+avec confirmation) · portail tablette par niveau · scènes · iPad en kiosque.
 
 **Hors V1** : accès depuis l'extérieur (Cloudflare, Nabu Casa), assistants vocaux, plan 3D,
-caméras, suivi d'énergie, NAS.
+flux vidéo continus des caméras sur l'iPad (trop lourd pour iOS 9), suivi d'énergie, NAS.
 
 ## 8. Critères d'acceptation
 
@@ -151,7 +154,8 @@ caméras, suivi d'énergie, NAS.
 
 - ⚠️ Pièce de chacun des 12 volets (pour la tablette).
 - ⚠️ Rôle du 4e bouton de la télécommande garage.
-- ⚠️ Commande du matériel ESPSomfy-RTS.
+- ⚠️ Portail : marque de la motorisation, type de télécommande (le 4e bouton de la TOP du garage ?).
+- ⚠️ Modèles du visiophone et des caméras EZVIZ ; compte EZVIZ disponible pour HA.
 - ⚠️ Salle de bain de l'étage : quelle solution (§6 bis) ?
 - ⚠️ Commune de la maison (pour les heures de lever et de coucher du soleil ; HA est réglé par défaut sur Amsterdam).
 - ⚠️ Faut-il un code PIN pour le garage ?

@@ -37,3 +37,6 @@ Home Assistant ne s'y affiche pas, d'où ce portail servi par le serveur sur le 
 
 ## Tests
 `python3 -m unittest discover -s tests -v` (faux Home Assistant intégré).
+
+## Achats
+Tout besoin de matériel découvert en session s'ajoute à `docs/ACHATS.md` (article, usage, prix vérifié, lien, statut).

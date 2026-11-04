@@ -39,8 +39,8 @@ Scan réseau du 04/11/2026 : [`docs/scan-report.md`](scan-report.md).
 
 | Catégorie | Équipement | Adresse | Intégration HA | Statut |
 |-----------|-----------|---------|----------------|--------|
-| 💡 Lumières | Salon, spots salon, cuisine, chambre, salle de bain (relais 1-5) | IPX800 V3 · 192.168.1.250 | `rest_command` + `light.template` | ✅ en service |
-| 💡 Lumières | Relais 6 à 8 | IPX800 V3 | idem | ⚠️ à quoi sont-ils reliés ? |
+| 💡 Lumières | 21 relais nommés dans l'IPX800 (salon, salle à manger, cuisine, entrée, couloir, buanderie, garage, chambres parentale / Alia / Naïm / Amel, dressing, SDB parentale, SdB et WC enfants, salle de jeux, façade jardin ×4, côté rue) | IPX800 V3 (24 relais, 192.168.1.250) | `light.template` → script en file → `preset.htm?setN` | ✅ en service 04/11 · relais libres : 8, 23, 24 |
+| 💡 Salle de bain étage | Pas de relais | — | voir §6 bis | 📋 solution à choisir |
 | 🎛️ Télécommande universelle | Broadlink **RM4 Pro** (IR + RF 433 MHz) | 192.168.1.64 | `broadlink` → `remote.broadlink` | ✅ intégré 04/11, codes à apprendre |
 | 🪟 Volets | Moteurs **Came**, télécommandes RF | via Broadlink | `remote.send_command` + `cover.template` | 📋 test d'apprentissage à faire (§6) |
 | 🚪 Garage | Porte de garage, marque inconnue | ⚠️ | ⚠️ | 📋 à identifier |
@@ -66,7 +66,7 @@ Règle : on n'intègre **que ce qui est confirmé**. Aucune entité inventée.
 | 🛏 **Étage** | `#43A047` | Salle de jeux, salle de bain, chambre d'amis |
 
 Pièces confirmées le 04/11. Une pièce n'apparaît sur la tablette que lorsqu'elle a au moins un équipement.
-⚠️ Supposé : le relais « Chambre » est la chambre parentale, le relais « Salle de bain » est celle de l'étage.
+Noms et pièces des relais relevés dans l'interface de l'IPX800 le 04/11.
 
 - Une **section par pièce**, toujours dans l'ordre lumières → volets → médias → autres.
 - En tête de chaque niveau : **Tout éteindre**, **Ouvrir / Fermer les volets du niveau**.
@@ -100,6 +100,16 @@ connexion depuis le serveur. Le blocage venait de l'appli, pas de l'appareil.
 4. Si le code n'est pas apprenable : piloter les moteurs autrement (récepteur Came compatible,
    module filaire sur l'IPX800 ou module Zigbee). Décision à prendre après le test.
 5. Le RM4 Pro sert aussi de télécommande **infrarouge** pour ce qui n'est pas pilotable en IP.
+
+## 6 bis. Salle de bain de l'étage (pas de relais)
+
+Recommandé : **micromodule Shelly 1 Mini Gen3** (≈ 15 €) dans la boîte de l'interrupteur
+existant (neutre nécessaire ; sinon Shelly 1L ou Dimmer sans neutre). Pilotage local en Wi-Fi,
+intégration `shelly` native, l'interrupteur mural continue de marcher. Pose par un électricien
+ou courant coupé au tableau.
+Alternatives : tirer un câble jusqu'à un relais libre de l'IPX800 (8, 23, 24 : le plus robuste,
+mais travaux) · module Zigbee (selon la passerelle Tuya ou une clé Zigbee sur le serveur) ·
+ampoule connectée (sans travaux, mais l'interrupteur doit rester allumé).
 
 ## 7. Périmètre
 
@@ -135,6 +145,6 @@ caméras, suivi d'énergie, NAS.
 
 - ⚠️ Référence de la télécommande Came des volets ; nombre de volets et pièces.
 - ⚠️ Porte de garage : marque du moteur et de la télécommande ?
-- ⚠️ Relais 4 « Chambre » = chambre parentale ? Relais 5 « Salle de bain » = étage ou RDC ? À quoi servent les relais 6 à 8 ?
+- ⚠️ Salle de bain de l'étage : quelle solution (§6 bis) ?
 - ⚠️ Commune de la maison (pour les heures de lever et de coucher du soleil ; HA est réglé par défaut sur Amsterdam).
 - ⚠️ Faut-il un code PIN pour le garage ?

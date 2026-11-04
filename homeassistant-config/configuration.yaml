@@ -18,7 +18,7 @@ http:
     - ::1
 
 # ============================================
-# IPX800 V3 - LUMIÈRES (21 relais câblés sur 32 ; 8 et 23-32 libres)
+# IPX800 V3 - LUMIÈRES (24 relais : 21 câblés, 8 / 23 / 24 libres)
 # ============================================
 # URLs dans secrets.yaml : ipx800_status_url, ipx800_relay_url
 
@@ -30,8 +30,9 @@ rest_command:
     password: !secret ipx800_password
     timeout: 5
 
-# L'IPX800 perd des ordres reçus en même temps (testé le 04/11 : 2 sur 10 perdus).
-# Toutes les commandes passent donc par ce script en file d'attente, un ordre à la fois.
+# Toutes les commandes de relais passent par ce script en file d'attente (un ordre à la
+# fois, ~0,2 s chacun) pour ménager le petit serveur web de l'IPX800.
+# NB : l'IPX800 n'a que 24 relais (carte + 2 extensions) ; 25 à 32 n'existent pas.
 script:
   ipx800_relais:
     alias: IPX800 - commander un relais

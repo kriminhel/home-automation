@@ -1,47 +1,37 @@
 # PROJECT_STATE.md — Portail domotique tablette
 
 ## Métadonnées
-- **Repo** : github.com/kriminhel/home-automation
-- **Stack** : Home Assistant (Docker), YAML Lovelace, HACS (Mushroom, card-mod, button-card, browser_mod, kiosk-mode), IPX800 V3, Tuya/Loratap, Broadlink, Mosquitto
-- **Déploiement** : `docker-compose up -d` sur le serveur local (Watchtower pour les mises à jour)
-- **Dernière mise à jour** : 2026-11-01
+- **Repo** : github.com/kriminhel/home-automation (dépôt unique ; sorti de betanalyst-pro le 04/11/2026)
+- **Serveur** : pcdomotique (192.168.1.37), `~/home-automation`, `docker compose up -d`
+- **Stack** : Home Assistant (Docker), portail Python standard + HTML/JS ES5, IPX800 V3, Broadlink RM4 Pro
+- **Dernière mise à jour** : 2026-11-04
 
-## PRD — Objectif du projet
-Piloter tous les équipements de la maison (lumières, volets, TV, garage, médias…) depuis un vieil
-iPad, via un portail Home Assistant coloré et intuitif, avec un onglet par niveau de la maison et
-toute action courante en 2 touchers maximum.
-Lien PRD complet : [`docs/PRD.md`](docs/PRD.md) · Règles UI : [`.claude/skills/ha-tablet-dashboard/SKILL.md`](.claude/skills/ha-tablet-dashboard/SKILL.md)
+## Objectif
+Piloter toute la maison depuis un iPad sous iOS 9, en 2 touchers maximum, via un portail
+léger servi par le serveur. Détails : [`docs/PRD.md`](docs/PRD.md).
 
 ## Features — Statut
-| Feature | Statut | Branch | Notes |
-|---------|--------|--------|-------|
-| Socle Docker + config HA initiale | ✅ Done | main | Commit initial |
-| PRD + skill design + script de scan | 🔄 En cours | main | Cette session |
-| J0 — Inventaire des équipements (scan) | 📋 À faire | — | `python3 scripts/scan-network.py` sur le LAN |
-| J1 — Test vieil iPad (compatibilité frontend) | 📋 À faire | — | Modèle et version iOS à fournir |
-| J2 — Correctifs socle (nginx/, IP IPX800 → secrets, GPS) | 📋 À faire | — | |
-| J3 — Intégrations (TV, box, audio, Tuya, Broadlink volets) | 📋 À faire | — | Modèle Broadlink à identifier |
-| J4 — Dashboard par niveau + thème | 📋 À faire | — | Niveaux et pièces à fournir |
-| J5 — Scènes, automatisations, test 7 jours | 📋 À faire | — | |
+| Feature | Statut | Notes |
+|---------|--------|-------|
+| J0 — Inventaire réseau | ✅ | `docs/scan-report.md` (04/11) |
+| J1 — Choix iPad | ✅ | iOS 9 → portail léger (plan B) |
+| J2 — Dépôt unique + config nettoyée | ✅ | betanalyst-pro n'héberge plus la domotique |
+| J2 — Portail tablette (lumières, scènes) | 🔄 | En attente du jeton `HA_TOKEN` |
+| J3 — Broadlink / volets Came | 📋 | Test RF avec `scripts/broadlink-rf.py`, télécommande en main |
+| J4 — TV Xiaomi/Philips, Freebox, Tuya, garage | 📋 | |
+| J5 — Scènes/automatisations réelles, test 7 jours | 📋 | |
 
-## Session en cours
-- **Objectif** : rédiger le PRD (sous forme de prompt), outiller le scan réseau, définir les règles UI
-- **Fichiers modifiés** : `docs/PRD.md`, `scripts/scan-network.py`, `.claude/skills/ha-tablet-dashboard/SKILL.md`, `PROJECT_STATE.md`
-- **Tests effectués** : le script de scan s'exécute sans erreur et détecte un service simulé (port 8001 → TV Samsung)
+## Blocages / décisions pendantes
+Voir `docs/PRD.md` §10 (référence de la télécommande Came, garage, pièces, Philips, commune).
 
 ## Changelog
-### 2026-11-01 — Niveaux et architecture
-- PRD : 2 niveaux (RDC, Étage) ; architecture « serveur + iPad simple navigateur » explicitée
+### 2026-11-04 — Ménage et portail iOS 9
+- Dépôt unique `home-automation` ; suppression des guides et scripts obsolètes (Windows, Mosquitto, nginx, Cloudflare, Watchtower, Lovelace et plan 3D).
+- Config HA : IPX800 dans les secrets, `default_config`, journaux ramenés à `warning` (le debug avait produit un journal de 131 Mo), lumières marquées « indisponibles » si l'IPX800 ne répond pas, automatisations fantômes retirées.
+- Portail tablette `portail/` (ES5, port 8124), 11 tests.
+- Scan réseau : Broadlink RM4 Pro, TV Xiaomi, boîtier Xiaomi, Freebox, passerelle Tuya Zigbee, NAS Synology.
+- Script `scripts/broadlink-rf.py` (apprentissage RF hors de l'appli Broadlink).
+- PRD réécrit.
 
 ### 2026-11-01 — PRD et outillage
-- Ajout du PRD/prompt de référence `docs/PRD.md`
-- Ajout du script d'inventaire réseau `scripts/scan-network.py` (SSDP, mDNS, Broadlink, Tuya, ports TCP)
-- Ajout de la skill projet `ha-tablet-dashboard` (navigation par niveau, code couleur, recettes YAML)
-
-## Blocages / Décisions pendantes
-- ✅ Niveaux : RDC + Étage. Pièces de chaque niveau à préciser
-- ✅ Architecture : Home Assistant sur le serveur uniquement, l'iPad n'affiche que la page web (Safari)
-- Modèle de l'iPad et version d'iOS (détermine le choix entre frontend HA natif et le plan B léger)
-- Modèle du Broadlink (RF 433 MHz nécessaire pour les volets ?) et marque des moteurs de volets
-- Marques et modèles des TV et de la box / du décodeur
-- `docker-compose.yml` référence `nginx/nginx.conf`, qui n'existe pas
+- Premier PRD tablette, script de scan, skill dashboard (remplacée le 04/11).

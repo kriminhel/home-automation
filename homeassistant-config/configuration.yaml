@@ -1,151 +1,45 @@
 # ============================================
 # HOME ASSISTANT - Configuration principale
 # ============================================
+# Position, langue et fuseau : réglés dans l'interface
+# (Paramètres > Système > Général), stockés dans .storage/core.config.
 
 homeassistant:
-  name: Ma Maison
-  latitude: 48.8566  # Paris - À modifier
-  longitude: 2.3522
-  elevation: 0
-  unit_system: metric
-  time_zone: Europe/Paris
-  country: FR
-
-  # Personnalisation interface
   customize: !include customize.yaml
 
-# ============================================
-# INTERFACE & SÉCURITÉ
-# ============================================
+# Intégrations standard (interface, historique, soleil, sauvegardes…)
+default_config:
 
-# Interface Lovelace (UI moderne)
-lovelace:
-  mode: yaml
-  resources: !include lovelace/resources.yaml
-  dashboards:
-    lovelace-tablet:
-      mode: yaml
-      title: Tablette
-      icon: mdi:tablet
-      show_in_sidebar: true
-      filename: lovelace/tablet.yaml
-
-# Authentification
+# Le portail tablette (port 8124) passe par localhost
 http:
   use_x_forwarded_for: true
   trusted_proxies:
     - 127.0.0.1
     - ::1
-  cors_allowed_origins:
-    - https://google.com
-    - https://www.home-assistant.io
 
 # ============================================
-# IPX800 V3 - LUMIÈRES
+# IPX800 V3 - LUMIÈRES (relais 1 à 8)
 # ============================================
+# URLs dans secrets.yaml : ipx800_status_url, ipx800_relay_url
 
-# Intégration IPX800 (via REST API)
 rest_command:
   ipx800_set_relay:
-    url: "http://192.168.1.250/preset.htm?led{{ relay }}={{ '1' if state else '0' }}"
+    url: !secret ipx800_relay_url
     method: GET
     username: !secret ipx800_user
     password: !secret ipx800_password
+    timeout: 5
 
-# Définition des lumières
-light:
-  # Salon
-  - platform: template
-    lights:
-      salon_principale:
-        friendly_name: "Lumière Salon Principale"
-        value_template: "{{ states('sensor.ipx800_relay_1') == 'on' }}"
-        turn_on:
-          service: rest_command.ipx800_set_relay
-          data:
-            relay: 1
-            state: true
-        turn_off:
-          service: rest_command.ipx800_set_relay
-          data:
-            relay: 1
-            state: false
-
-      salon_spots:
-        friendly_name: "Spots Salon"
-        value_template: "{{ states('sensor.ipx800_relay_2') == 'on' }}"
-        turn_on:
-          service: rest_command.ipx800_set_relay
-          data:
-            relay: 2
-            state: true
-        turn_off:
-          service: rest_command.ipx800_set_relay
-          data:
-            relay: 2
-            state: false
-
-  # Cuisine
-  - platform: template
-    lights:
-      cuisine:
-        friendly_name: "Lumière Cuisine"
-        value_template: "{{ states('sensor.ipx800_relay_3') == 'on' }}"
-        turn_on:
-          service: rest_command.ipx800_set_relay
-          data:
-            relay: 3
-            state: true
-        turn_off:
-          service: rest_command.ipx800_set_relay
-          data:
-            relay: 3
-            state: false
-
-  # Chambre
-  - platform: template
-    lights:
-      chambre:
-        friendly_name: "Lumière Chambre"
-        value_template: "{{ states('sensor.ipx800_relay_4') == 'on' }}"
-        turn_on:
-          service: rest_command.ipx800_set_relay
-          data:
-            relay: 4
-            state: true
-        turn_off:
-          service: rest_command.ipx800_set_relay
-          data:
-            relay: 4
-            state: false
-
-  # Salle de bain
-  - platform: template
-    lights:
-      salle_de_bain:
-        friendly_name: "Lumière Salle de Bain"
-        value_template: "{{ states('sensor.ipx800_relay_5') == 'on' }}"
-        turn_on:
-          service: rest_command.ipx800_set_relay
-          data:
-            relay: 5
-            state: true
-        turn_off:
-          service: rest_command.ipx800_set_relay
-          data:
-            relay: 5
-            state: false
-
-# Polling état IPX800 (toutes les 5 secondes)
-# cmd=10 = entrées digitales (IN), cmd=20 = sorties relais (OUT)
+# Lecture de l'état des relais toutes les 5 s (cmd=20 = sorties relais)
 sensor:
   - platform: rest
     name: ipx800_status
-    resource: "http://192.168.1.250/api/xdevices.json?cmd=20"
+    resource: !secret ipx800_status_url
     username: !secret ipx800_user
     password: !secret ipx800_password
     authentication: basic
     scan_interval: 5
+    timeout: 4
     value_template: "OK"
     json_attributes:
       - OUT1
@@ -157,240 +51,108 @@ sensor:
       - OUT7
       - OUT8
 
-  # Extraction état relais individuels (depuis les attributs OUT1-OUT8)
+light:
   - platform: template
-    sensors:
-      ipx800_relay_1:
-        friendly_name: "État Relais 1 - Salon"
-        value_template: >
-          {% if state_attr('sensor.ipx800_status', 'OUT1') is not none %}
-            {{ 'on' if state_attr('sensor.ipx800_status', 'OUT1') == 1 else 'off' }}
-          {% else %}
-            unavailable
-          {% endif %}
+    lights:
+      salon_principale:
+        friendly_name: "Salon"
+        unique_id: ipx800_relais_1
+        availability_template: "{{ state_attr('sensor.ipx800_status', 'OUT1') is not none }}"
+        value_template: "{{ state_attr('sensor.ipx800_status', 'OUT1') | int(0) == 1 }}"
+        turn_on:
+          service: rest_command.ipx800_set_relay
+          data: { relay: 1, state: true }
+        turn_off:
+          service: rest_command.ipx800_set_relay
+          data: { relay: 1, state: false }
 
-      ipx800_relay_2:
-        friendly_name: "État Relais 2 - Spots Salon"
-        value_template: >
-          {% if state_attr('sensor.ipx800_status', 'OUT2') is not none %}
-            {{ 'on' if state_attr('sensor.ipx800_status', 'OUT2') == 1 else 'off' }}
-          {% else %}
-            unavailable
-          {% endif %}
+      salon_spots:
+        friendly_name: "Spots salon"
+        unique_id: ipx800_relais_2
+        availability_template: "{{ state_attr('sensor.ipx800_status', 'OUT2') is not none }}"
+        value_template: "{{ state_attr('sensor.ipx800_status', 'OUT2') | int(0) == 1 }}"
+        turn_on:
+          service: rest_command.ipx800_set_relay
+          data: { relay: 2, state: true }
+        turn_off:
+          service: rest_command.ipx800_set_relay
+          data: { relay: 2, state: false }
 
-      ipx800_relay_3:
-        friendly_name: "État Relais 3 - Cuisine"
-        value_template: >
-          {% if state_attr('sensor.ipx800_status', 'OUT3') is not none %}
-            {{ 'on' if state_attr('sensor.ipx800_status', 'OUT3') == 1 else 'off' }}
-          {% else %}
-            unavailable
-          {% endif %}
+      cuisine:
+        friendly_name: "Cuisine"
+        unique_id: ipx800_relais_3
+        availability_template: "{{ state_attr('sensor.ipx800_status', 'OUT3') is not none }}"
+        value_template: "{{ state_attr('sensor.ipx800_status', 'OUT3') | int(0) == 1 }}"
+        turn_on:
+          service: rest_command.ipx800_set_relay
+          data: { relay: 3, state: true }
+        turn_off:
+          service: rest_command.ipx800_set_relay
+          data: { relay: 3, state: false }
 
-      ipx800_relay_4:
-        friendly_name: "État Relais 4 - Chambre"
-        value_template: >
-          {% if state_attr('sensor.ipx800_status', 'OUT4') is not none %}
-            {{ 'on' if state_attr('sensor.ipx800_status', 'OUT4') == 1 else 'off' }}
-          {% else %}
-            unavailable
-          {% endif %}
+      chambre:
+        friendly_name: "Chambre"
+        unique_id: ipx800_relais_4
+        availability_template: "{{ state_attr('sensor.ipx800_status', 'OUT4') is not none }}"
+        value_template: "{{ state_attr('sensor.ipx800_status', 'OUT4') | int(0) == 1 }}"
+        turn_on:
+          service: rest_command.ipx800_set_relay
+          data: { relay: 4, state: true }
+        turn_off:
+          service: rest_command.ipx800_set_relay
+          data: { relay: 4, state: false }
 
-      ipx800_relay_5:
-        friendly_name: "État Relais 5 - Salle de Bain"
-        value_template: >
-          {% if state_attr('sensor.ipx800_status', 'OUT5') is not none %}
-            {{ 'on' if state_attr('sensor.ipx800_status', 'OUT5') == 1 else 'off' }}
-          {% else %}
-            unavailable
-          {% endif %}
+      salle_de_bain:
+        friendly_name: "Salle de bain"
+        unique_id: ipx800_relais_5
+        availability_template: "{{ state_attr('sensor.ipx800_status', 'OUT5') is not none }}"
+        value_template: "{{ state_attr('sensor.ipx800_status', 'OUT5') | int(0) == 1 }}"
+        turn_on:
+          service: rest_command.ipx800_set_relay
+          data: { relay: 5, state: true }
+        turn_off:
+          service: rest_command.ipx800_set_relay
+          data: { relay: 5, state: false }
 
-      ipx800_relay_6:
-        friendly_name: "État Relais 6"
-        value_template: >
-          {% if state_attr('sensor.ipx800_status', 'OUT6') is not none %}
-            {{ 'on' if state_attr('sensor.ipx800_status', 'OUT6') == 1 else 'off' }}
-          {% else %}
-            unavailable
-          {% endif %}
-
-      ipx800_relay_7:
-        friendly_name: "État Relais 7"
-        value_template: >
-          {% if state_attr('sensor.ipx800_status', 'OUT7') is not none %}
-            {{ 'on' if state_attr('sensor.ipx800_status', 'OUT7') == 1 else 'off' }}
-          {% else %}
-            unavailable
-          {% endif %}
-
-      ipx800_relay_8:
-        friendly_name: "État Relais 8"
-        value_template: >
-          {% if state_attr('sensor.ipx800_status', 'OUT8') is not none %}
-            {{ 'on' if state_attr('sensor.ipx800_status', 'OUT8') == 1 else 'off' }}
-          {% else %}
-            unavailable
-          {% endif %}
+# Relais 6 à 8 : à affecter (voir docs/PRD.md §4)
 
 # ============================================
-# TUYA / LORATAP - VOLETS & GARAGE
-# ============================================
-
-# L'intégration Tuya se configure via l'interface web
-# Voir étapes ci-dessous
-
-# ============================================
-# GROUPES & ZONES
-# ============================================
-
-# Organisation par pièces
-group:
-  salon:
-    name: Salon
-    entities:
-      - light.salon_principale
-      - light.salon_spots
-
-  toutes_les_lumieres:
-    name: Toutes les Lumières
-    entities:
-      - light.salon_principale
-      - light.salon_spots
-      - light.cuisine
-      - light.chambre
-      - light.salle_de_bain
-
-# ============================================
-# SCÈNES
+# SCÈNES (lumières uniquement tant que volets/TV ne sont pas intégrés)
 # ============================================
 
 scene:
   - name: Tout éteindre
     icon: mdi:power-off
     entities:
-      light.salon_principale:
-        state: off
-      light.salon_spots:
-        state: off
-      light.cuisine:
-        state: off
-      light.chambre:
-        state: off
-      light.salle_de_bain:
-        state: off
+      light.salon_principale: "off"
+      light.salon_spots: "off"
+      light.cuisine: "off"
+      light.chambre: "off"
+      light.salle_de_bain: "off"
 
   - name: Mode Soirée
-    icon: mdi:movie-open
+    icon: mdi:sofa
     entities:
-      light.salon_principale:
-        state: on
-      light.salon_spots:
-        state: off
-      light.cuisine:
-        state: off
-      light.chambre:
-        state: off
+      light.salon_principale: "on"
+      light.salon_spots: "off"
+      light.cuisine: "off"
+      light.chambre: "off"
 
   - name: Mode Nuit
     icon: mdi:weather-night
     entities:
-      light.salon_principale:
-        state: off
-      light.salon_spots:
-        state: off
-      light.cuisine:
-        state: off
-      light.chambre:
-        state: on
-        brightness: 30
+      light.salon_principale: "off"
+      light.salon_spots: "off"
+      light.cuisine: "off"
+      light.salle_de_bain: "off"
+      light.chambre: "on"
 
-  - name: Départ Maison
-    icon: mdi:home-export-outline
-    entities:
-      light.salon_principale:
-        state: off
-      light.salon_spots:
-        state: off
-      light.cuisine:
-        state: off
-      light.chambre:
-        state: off
-      light.salle_de_bain:
-        state: off
-      # Les volets se ferment automatiquement
-      cover.volet_salon:
-        state: closed
-      cover.volet_chambre:
-        state: closed
-
-# ============================================
-# AUTOMATISATIONS
-# ============================================
-
+# Les automatisations sont créées au fur et à mesure des intégrations
+# (J5). Celles du début visaient des volets et un garage inexistants.
 automation: !include automations.yaml
 
-# ============================================
-# SCRIPTS
-# ============================================
-
-script:
-  fermer_tous_volets:
-    alias: Fermer tous les volets
-    sequence:
-      - service: cover.close_cover
-        target:
-          entity_id: all
-
-  ouvrir_tous_volets:
-    alias: Ouvrir tous les volets
-    sequence:
-      - service: cover.open_cover
-        target:
-          entity_id: all
-
-# ============================================
-# HISTORIQUE & LOGS
-# ============================================
-
-# Enregistrement des historiques
 recorder:
-  db_url: sqlite:////config/home-assistant_v2.db
   purge_keep_days: 7
-  include:
-    entities:
-      - light.salon_principale
-      - light.salon_spots
-      - light.cuisine
-      - light.chambre
-      - light.salle_de_bain
 
-# Historique graphique
-history:
-
-# Journal système
 logger:
   default: warning
-  logs:
-    homeassistant.components.rest: debug
-    homeassistant.components.tuya: debug
-
-# ============================================
-# MODULES COMPLÉMENTAIRES
-# ============================================
-
-# Découverte automatique d'appareils
-discovery:
-
-# Gestionnaire de configuration
-config:
-
-# Application mobile
-mobile_app:
-
-# Text-to-speech
-tts:
-  - platform: google_translate
-    language: 'fr'
-
-# Sun (lever/coucher soleil pour automatisations)
-sun:

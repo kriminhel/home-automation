@@ -1,0 +1,51 @@
+{
+  "nom": "Maison",
+  "scenes": [
+    { "entity_id": "scene.tout_eteindre", "nom": "Tout éteindre", "icone": "⏻" },
+    { "entity_id": "scene.mode_soiree", "nom": "Soirée", "icone": "🛋" },
+    { "entity_id": "scene.mode_nuit", "nom": "Nuit", "icone": "🌙" }
+  ],
+  "niveaux": [
+    {
+      "id": "rdc",
+      "nom": "RDC",
+      "icone": "🛋",
+      "couleur": "#FB8C00",
+      "pieces": [
+        {
+          "nom": "Salon",
+          "equipements": [
+            { "entity_id": "light.salon_principale", "nom": "Plafonnier", "icone": "💡" },
+            { "entity_id": "light.salon_spots", "nom": "Spots", "icone": "💡" }
+          ]
+        },
+        {
+          "nom": "Cuisine",
+          "equipements": [
+            { "entity_id": "light.cuisine", "nom": "Plafonnier", "icone": "💡" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "etage",
+      "nom": "Étage",
+      "icone": "🛏",
+      "couleur": "#43A047",
+      "pieces": [
+        {
+          "nom": "Chambre",
+          "equipements": [
+            { "entity_id": "light.chambre", "nom": "Plafonnier", "icone": "💡" }
+          ]
+        },
+        {
+          "nom": "Salle de bain",
+          "equipements": [
+            { "entity_id": "light.salle_de_bain", "nom": "Plafonnier", "icone": "💡" }
+          ]
+        }
+      ]
+    }
+  ]
+}

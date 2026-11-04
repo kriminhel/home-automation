@@ -55,3 +55,12 @@ Thumbs.db
 tmp/
 temp/
 *.tmp
+homeassistant-config/.HA_VERSION
+homeassistant-config/.ha_run.lock
+homeassistant-config/blueprints/
+homeassistant-config/custom_components/
+homeassistant-config/deps/
+homeassistant-config/tts/
+homeassistant-config/www/community/
+homeassistant-config/home-assistant.log*
+__pycache__/

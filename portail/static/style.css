@@ -1,0 +1,88 @@
+/* Portail tablette — compatible Safari iOS 9 : pas de variables CSS ni de grid, flexbox préfixé. */
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { margin: 0; padding: 0; height: 100%; }
+body {
+  font-family: -apple-system, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 20px; background: #EEF0F4; color: #1C1F26;
+  -webkit-user-select: none; user-select: none; -webkit-touch-callout: none;
+}
+body.nuit { background: #12141A; color: #E6E8EE; }
+
+/* Barre du haut : onglets toujours visibles */
+#barre {
+  position: fixed; top: 0; left: 0; right: 0; height: 84px; z-index: 10;
+  display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center;
+  padding: 0 12px; background: #FFFFFF; box-shadow: 0 2px 6px rgba(0,0,0,.12);
+}
+body.nuit #barre { background: #1E2129; }
+#onglets { display: -webkit-flex; display: flex; -webkit-flex: 1; flex: 1; }
+.onglet {
+  min-width: 150px; height: 64px; margin-right: 10px; padding: 0 18px; border-radius: 14px;
+  display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center;
+  -webkit-justify-content: center; justify-content: center;
+  font-size: 22px; font-weight: 600; color: #5A6070; background: #E3E6EC; border-bottom: 6px solid transparent;
+}
+body.nuit .onglet { background: #2A2E38; color: #A8AEBC; }
+.onglet .ico { font-size: 26px; margin-right: 10px; }
+.onglet.actif { color: #FFFFFF; }
+#horloge-mini { font-size: 28px; font-weight: 600; margin: 0 16px; }
+#liaison { width: 18px; height: 18px; border-radius: 9px; background: #9AA0AC; }
+#liaison.ok { background: #43A047; }
+#liaison.ko { background: #E53935; }
+
+#contenu { padding: 100px 16px 24px; }
+.attente { font-size: 24px; text-align: center; margin-top: 60px; }
+
+/* En-tête de niveau à la couleur du niveau */
+.entete {
+  border-radius: 16px; color: #FFFFFF; padding: 16px 20px; margin-bottom: 16px;
+  display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center;
+  -webkit-flex-wrap: wrap; flex-wrap: wrap;
+}
+.entete h1 { margin: 0; font-size: 32px; -webkit-flex: 1; flex: 1; }
+.rapide {
+  min-width: 64px; min-height: 64px; margin: 4px 0 4px 10px; padding: 0 20px; border-radius: 14px;
+  border: 0; font-size: 20px; font-weight: 600; color: #1C1F26; background: rgba(255,255,255,.9);
+}
+
+/* Pièces et tuiles */
+.piece { margin-bottom: 18px; }
+.piece h2 { font-size: 22px; margin: 6px 4px 10px; opacity: .75; }
+.tuiles { display: -webkit-flex; display: flex; -webkit-flex-wrap: wrap; flex-wrap: wrap; }
+.tuile {
+  width: 210px; min-height: 130px; margin: 0 12px 12px 0; padding: 14px 16px; border-radius: 18px;
+  background: #FFFFFF; border-left: 8px solid #C9CDD6; box-shadow: 0 1px 4px rgba(0,0,0,.08);
+  display: -webkit-flex; display: flex; -webkit-flex-direction: column; flex-direction: column;
+  -webkit-justify-content: space-between; justify-content: space-between;
+}
+body.nuit .tuile { background: #232731; box-shadow: none; }
+.tuile .ico { font-size: 40px; line-height: 44px; }
+.tuile .nom { font-size: 20px; font-weight: 600; }
+.tuile .etat { font-size: 17px; opacity: .7; }
+.tuile.appui { opacity: .6; }
+.tuile.indispo { opacity: .45; }
+
+/* États allumé / ouvert : couleur vive par catégorie */
+.tuile.light.on, .tuile.switch.on { background: #FFC107; border-left-color: #FF8F00; color: #1C1F26; }
+.tuile.cover.open { background: #42A5F5; border-left-color: #1565C0; color: #FFFFFF; }
+.tuile.media_player.on { background: #8E24AA; border-left-color: #4A148C; color: #FFFFFF; }
+.tuile.scene { border-left-color: #3949AB; }
+
+.boutons { display: -webkit-flex; display: flex; margin-top: 8px; }
+.boutons button {
+  -webkit-flex: 1; flex: 1; min-height: 56px; margin-right: 6px; border: 0; border-radius: 12px;
+  font-size: 22px; background: rgba(0,0,0,.08); color: inherit;
+}
+.boutons button:last-child { margin-right: 0; }
+
+/* Accueil */
+.horloge { font-size: 88px; font-weight: 300; line-height: 1; }
+.date { font-size: 26px; opacity: .7; margin: 6px 0 22px; text-transform: capitalize; }
+.vide { font-size: 20px; opacity: .6; margin: 4px 4px 18px; }
+
+#message {
+  position: fixed; left: 50%; bottom: 24px; width: 600px; margin-left: -300px; z-index: 20;
+  padding: 18px 22px; border-radius: 14px; background: #E53935; color: #FFFFFF;
+  font-size: 20px; text-align: center; display: none;
+}
+#message.info { background: #323843; }

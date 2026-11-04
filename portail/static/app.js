@@ -628,6 +628,8 @@
             niveau: m.niveaux[i].id, eids: p.equipements.map(function (e) { return e.entity_id; }) });
         }
       }
+      var ancre = (window.location.hash || '').replace('#', '');  // lien direct : /#rdc, /#cameras…
+      if (ancre === 'cameras' || niveauParId(ancre)) { vue = ancre; }
       dessiner();
       lireEtats();
       setInterval(lireEtats, 2000);

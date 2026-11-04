@@ -52,9 +52,9 @@ Scan réseau du 04/11/2026 : [`docs/scan-report.md`](scan-report.md).
 | 📡 Box | **Freebox** v8 | 192.168.1.254 | `freebox` (débits, appels, Wi-Fi) | ✅ intégrée 04/11 (Wi-Fi et redémarrage volontairement absents de la tablette) |
 | 🔌 Tuya / Smart Life | « Passerelle ZigBee » (Tuya + HomeKit « Gateway-type c ») + 1 autre appareil Tuya | 192.168.1.145 / .155 | `homekit_controller` (local) ou `tuya` (cloud) | ⚠️ cloud déconnecté ; appairage HomeKit possible avec le code à 8 chiffres de la passerelle |
 | 🔊 Audio | Enceinte Spotify Connect | 192.168.1.157 | `spotify` | hors V1 |
-| 🚧 Portail | ⚠️ marque / motorisation / télécommande ? (pilotable aujourd'hui depuis le visiophone EZVIZ) | ⚠️ | Broadlink si télécommande à code fixe, sinon intégration EZVIZ | 📋 à identifier |
+| 🚧 Portail | Motorisation **Nice**, télécommandes Nice (code tournant probable) ; s'ouvre déjà depuis le visiophone EZVIZ | — | 1) intégration `ezviz` si elle sait ouvrir ; 2) sinon Shelly 1 (contact sec) sur l'entrée « pas à pas » de la carte Nice | 📋 test EZVIZ d'abord |
 | 🔔 Visiophone | **EZVIZ** (ouvre le portail) | ⚠️ | `ezviz` (compte EZVIZ) | 📋 à intégrer |
-| 📷 Caméras | **EZVIZ** (intérieur) | ⚠️ | `ezviz` + flux RTSP local | 📋 à intégrer (pas de flux continu sur l'iPad) |
+| 📷 Caméras | **EZVIZ** (intérieur) | ⚠️ | `ezviz` + flux RTSP local | 📋 à intégrer : image fixe dans les tuiles, **direct (MJPEG) quand on touche une caméra**, une seule à la fois, coupé après 2 min |
 | 🖥️ NAS | Synology DS216se | 192.168.1.134 | `synology_dsm` | hors V1 |
 
 Règle : on n'intègre **que ce qui est confirmé**. Aucune entité inventée.
@@ -127,7 +127,7 @@ Freebox · garage · portail · visiophone EZVIZ (image fixe à la sonnerie, ouv
 avec confirmation) · portail tablette par niveau · scènes · iPad en kiosque.
 
 **Hors V1** : accès depuis l'extérieur (Cloudflare, Nabu Casa), assistants vocaux, plan 3D,
-flux vidéo continus des caméras sur l'iPad (trop lourd pour iOS 9), suivi d'énergie, NAS.
+mur de caméras en direct permanent sur l'iPad (trop lourd pour iOS 9), suivi d'énergie, NAS.
 
 ## 8. Critères d'acceptation
 
@@ -153,8 +153,7 @@ flux vidéo continus des caméras sur l'iPad (trop lourd pour iOS 9), suivi d'é
 ## 10. Questions ouvertes
 
 - ⚠️ Pièce de chacun des 12 volets (pour la tablette).
-- ⚠️ Rôle du 4e bouton de la télécommande garage.
-- ⚠️ Portail : marque de la motorisation, type de télécommande (le 4e bouton de la TOP du garage ?).
+- ⚠️ Portail Nice : modèle de la télécommande (FLO2R-S, ON2… = code tournant) et de la carte du moteur.
 - ⚠️ Modèles du visiophone et des caméras EZVIZ ; compte EZVIZ disponible pour HA.
 - ⚠️ Salle de bain de l'étage : quelle solution (§6 bis) ?
 - ⚠️ Commune de la maison (pour les heures de lever et de coucher du soleil ; HA est réglé par défaut sur Amsterdam).

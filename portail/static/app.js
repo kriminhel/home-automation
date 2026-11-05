@@ -605,11 +605,15 @@
     droite.appendChild(sc);
     haut.appendChild(droite);
     c.appendChild(haut);
+  }
 
-    // Pièces : cartes photo (photo de la pièce si fournie, sinon pictogramme sur fond dégradé)
+  // Pièces d'un niveau : cartes photo (photo de la pièce si fournie, sinon pictogramme sur fond dégradé)
+  function cartesPieces(c, niveauId) {
+    var i;
     c.appendChild(el('h2', 'titre', 'Pièces'));
     var carrousel = el('div', 'carrousel');
     for (i = 0; i < PIECES.length; i++) {
+      if (PIECES[i].niveau !== niveauId) { continue; }
       (function (p, n) {
         var carte = el('div', 'carte-photo');
         var img = el('div', 'photo teinte' + (n % 6));
@@ -661,6 +665,12 @@
       rp.statut.textContent = res.actif ? res.texte : 'Tout éteint';
       rp.statut.className = 'statut' + (res.actif ? ' on' : '');
     }
+    for (i = 0; i < recap.pieces.length; i++) {
+      var r = recap.pieces[i], rs = resumePiece(r.p);
+      r.etat.textContent = rs.texte;
+      r.carte.className = 'carte-photo' + (rs.actif ? ' on' : '');
+      r.marche.className = 'bouton-rond marche' + (rs.actif ? ' on' : '');
+    }
     if (!recap.meteo) { return; }
     var m = meteo();
     recap.meteo.innerHTML = '';
@@ -682,12 +692,6 @@
     var net = en && !isNaN(parseFloat(en.state)) ? parseFloat(en.state) * 8 / 1000 : 0;   // kB/s -> Mbit/s
     recap.statNet.val.innerHTML = '<b>' + (net < 10 ? net.toFixed(1) : Math.round(net)).toString().replace('.', ',') + '</b><span> Mbit/s</span>';
     recap.statNet.courbe.innerHTML = courbe(historique.internet);
-    for (i = 0; i < recap.pieces.length; i++) {
-      var r = recap.pieces[i], rs = resumePiece(r.p);
-      r.etat.textContent = rs.texte;
-      r.carte.className = 'carte-photo' + (rs.actif ? ' on' : '');
-      r.marche.className = 'bouton-rond marche' + (rs.actif ? ' on' : '');
-    }
   }
 
   /* ---------- agenda ---------- */
@@ -1138,8 +1142,11 @@
     }
     c.appendChild(ent);
     if (niveau.plan) {
+      // Plan 3D puis cartes photo des pièces du niveau (les commandes sont dans le plan et dans chaque carte)
       c.appendChild(carteplan(niveau));
-      c.appendChild(el('h2', 'titre', 'Toutes les commandes'));
+      recap = { pieces: [], profils: [] };
+      cartesPieces(c, niveau.id);
+      return;
     }
 
     for (i = 0; i < niveau.pieces.length; i++) {

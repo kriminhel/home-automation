@@ -4,7 +4,7 @@
 - **Repo** : github.com/kriminhel/home-automation (dépôt unique ; sorti de betanalyst-pro le 04/11/2026)
 - **Serveur** : pcdomotique (192.168.1.37), `~/home-automation`, `docker compose up -d`
 - **Stack** : Home Assistant (Docker), portail Python standard + HTML/JS ES5, IPX800 V3, Broadlink RM4 Pro
-- **Dernière mise à jour** : 2026-11-04
+- **Dernière mise à jour** : 2026-11-05 (tout fusionné dans `main` ; serveur sur `main`)
 
 ## Objectif
 Piloter toute la maison depuis un iPad sous iOS 9, en 2 touchers maximum, via un portail
@@ -28,7 +28,18 @@ Liste cumulative : [`docs/ACHATS.md`](docs/ACHATS.md) — Karim achète tout qua
 ## Blocages / décisions pendantes
 Voir `docs/PRD.md` §10 (référence de la télécommande Came, garage, pièces, Philips, commune).
 
+## À reprendre (prochaine session)
+1. **Automatismes d'arrivée** : appli Home Assistant sur l'iPhone de Karim ; lumières terrasse si nuit ; portail Nice = Shelly à acheter ; garage par notification/Siri avec confirmation (jamais 100 % auto). Phrase de Karim coupée après « … allume les lumières de la terrasse et » : lui demander la suite.
+2. **Contrôle parental Freebox Pop** : relancer `scripts/freebox-autoriser.py` sur le serveur quand Karim dit « go », valider dans Freebox Connect / Freebox OS, cocher « Contrôle parental » + « Paramètres de la Freebox » ; puis profils par enfant et boutons Wi-Fi par pièce (`wifiPiece` = attente).
+3. **Agenda** : brancher iCloud ou Google (au choix de Karim).
+4. **Batterie des téléphones** dans les profils (appli compagnon HA).
+5. **Caméra garage** : nouveau code de chiffrement d'image à créer par Karim → `EZVIZ_CODES` dans `.env` (Karim l'écrit lui-même).
+
 ## Changelog
+### 2026-11-05 (matin) — Accueil et plans
+- Accueil : agenda tout en haut, carte « Lumières » retirée, bouton « Tout éteindre » en haut à droite (scène `scene.tout_eteindre`), météo dans le rond de la barre latérale à la place du logo.
+- Niveaux : la liste « Toutes les commandes » est retirée ; les cartes photo des pièces du niveau sont sous le plan 3D (retirées de l'accueil).
+- Plan RDC : WC enfants entre la porte d'entrée et la SdB (`light.wc_enfants`, ampoule séparée de la SdB) ; entrée dessinée en L (`poly`).
 ### 2026-11-05 — Agenda, navigation, couloir
 - Agenda local HA `calendar.famille` : carte sur l'accueil + ajout d'événements depuis la tablette (`/api/agenda`). iCloud / Google à brancher ensuite (ajouter l'entité dans `maison.json` → `agendas`).
 - Glisser pour changer de vue ; pictogrammes arrondis ; vue 3D globale supprimée ; barre latérale façon référence ; police Plus Jakarta Sans ; avatars (privés, serveur seulement).

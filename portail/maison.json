@@ -490,11 +490,23 @@
                 100
               ]
             ],
-            "icones": [
+            "entites": [
+              "light.sdb_enfants"
+            ]
+          },
+          {
+            "piece": "Salle de bain et WC enfants",
+            "nom": "WC",
+            "rects": [
               [
-                "light.sdb_enfants",
-                "light.wc_enfants"
+                640,
+                100,
+                90,
+                100
               ]
+            ],
+            "entites": [
+              "light.wc_enfants"
             ]
           },
           {
@@ -502,10 +514,16 @@
             "nom": "Entrée",
             "rects": [
               [
-                640,
+                730,
                 100,
+                70,
+                100
+              ],
+              [
+                640,
+                200,
                 160,
-                320
+                220
               ]
             ],
             "ouvert_vers": [
@@ -754,19 +772,19 @@
           {
             "t": "lavabo",
             "x": 660,
-            "y": 115,
+            "y": 78,
             "face": "droite"
           },
           {
             "t": "wc",
-            "x": 780,
-            "y": 115,
-            "face": "haut"
+            "x": 685,
+            "y": 118,
+            "face": "bas"
           },
           {
             "t": "console",
             "x": 655,
-            "y": 290,
+            "y": 300,
             "face": "droite",
             "w": 60,
             "d": 20
@@ -992,16 +1010,16 @@
           {
             "t": "portemanteau",
             "x": 648,
-            "y": 170,
+            "y": 375,
             "face": "droite",
-            "w": 80
+            "w": 70
           },
           {
             "t": "banc",
-            "x": 720,
-            "y": 110,
-            "face": "bas",
-            "w": 70
+            "x": 786,
+            "y": 163,
+            "face": "gauche",
+            "w": 48
           },
           {
             "t": "transat",
@@ -1104,12 +1122,23 @@
           {
             "type": "porte",
             "a": [
-              700,
+              752,
               100
             ],
             "b": [
-              730,
+              782,
               100
+            ]
+          },
+          {
+            "type": "porte",
+            "a": [
+              730,
+              150
+            ],
+            "b": [
+              730,
+              180
             ]
           },
           {

@@ -70,3 +70,6 @@ docs/codes-rf.json
 
 # Photos personnelles (avatars…) : seulement sur le serveur, jamais sur GitHub (dépôt public)
 portail/static/prive/
+
+# Jeton d'application Freebox (secret)
+freebox_token.json

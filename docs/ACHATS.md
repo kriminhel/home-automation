@@ -16,9 +16,9 @@
 | 4 | Contact d'ouverture filaire (capteur magnétique NF/NO) | Connaître l'**état réel de la porte de garage** (entrée libre de l'IPX800) + alerte « garage ouvert la nuit » | 1 | ~5 € | à préciser | ❓ optionnel |
 | 5 | **Shelly 1 Mini Gen3** (contact sec) dans le coffret du moteur **Nice**, sur l'entrée « pas à pas » | Piloter le **portail** depuis la tablette, sans dépendre de la radio à code tournant | 1 | 13,99 € | [Shelly](https://www.shelly.com/fr/products/shop/shelly-1-mini-gen3) | ✅ l'intégration EZVIZ n'expose pas l'ouverture du portail (HP7 testé le 04/11) — ⚠️ vérifier le modèle de la carte Nice (entrée « pas à pas » / SbS) |
 | 6 | **Carte microSD « endurance » 128 Go** (SanDisk High Endurance ou Samsung PRO Endurance), chez un revendeur sérieux | Caméra **garage** H8c : carte actuelle en erreur ; la carte de rechange testée le 04/11 est contrefaite / défectueuse (capacité annoncée 537 Go puis 2,1 To, partitions incohérentes) | 1 | ~15-20 € | Fnac, Darty, boutique officielle | ✅ |
-| 7 | **Tablette murale** (iPad reconditionné avec facture, ou tablette Android ~10") + support mural et chargeur | Afficher le portail ; l'iPad du marché est bloqué par le **verrouillage d'activation iCloud** de son ancien propriétaire | 1 | ~100-150 € | Back Market, Fnac (avec facture) | ⚠️ seulement si le vendeur ne peut pas libérer l'iPad (icloud.com → Localiser → Supprimer de mon compte) ; ou réutiliser un appareil déjà à la maison |
+| 7 | **Tablette murale ~10-11"** : iPad reconditionné récent (iPad 9e/10e génération, avec facture) **ou** tablette Android (Samsung Galaxy Tab A9+ / Lenovo Tab M11) + **support mural** + chargeur avec câble long | Afficher le portail et la **3D complète** en fluide : l'iPad mini actuel (A1432, iOS 9) n'a que la 3D allégée, et l'iPad du marché est bloqué iCloud | 1 | ~150-250 € (tablette) + ~20-30 € (support) | Back Market, Fnac, Darty, Boulanger (avec facture) | ✅ validé le 05/11 — **Android + appli Fully Kiosk Browser** recommandé pour un écran mural (allumage auto, écran toujours actif) |
 
-**Total validé à ce jour : ~80-100 €** (lignes 1, 2, 3, 5 et 6) · **+ ~100-150 €** si la tablette (ligne 7) est à remplacer.
+**Total validé à ce jour : ~250-380 €** (lignes 1, 2, 3, 5, 6 et 7 ; prix à revérifier au moment de commander).
 
 ## À jeter / ne pas utiliser
 

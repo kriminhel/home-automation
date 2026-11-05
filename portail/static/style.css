@@ -38,6 +38,13 @@ body.nuit #contenu { opacity: .9; }
   -webkit-flex-shrink: 0; flex-shrink: 0;
 }
 #nav .logo .picto { width: 32px; height: 32px; }
+#nav .meteo-nav {
+  width: 72px; height: 72px; border-radius: 36px; color: #141416; -webkit-flex-direction: column; flex-direction: column;
+  background: -webkit-linear-gradient(135deg, #E6C67E, #A8823E); background: linear-gradient(135deg, #E6C67E, #A8823E);
+  box-shadow: 0 6px 18px rgba(201,164,92,.3);
+}
+#nav .meteo-nav .picto { width: 28px; height: 28px; }
+#nav .meteo-nav .temp { font-size: 16px; font-weight: 700; line-height: 18px; margin-top: 1px; }
 .nav-item {
   position: relative; width: 104px; height: 84px; color: #77736B; -webkit-flex-shrink: 0; flex-shrink: 0;
   display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; -webkit-justify-content: center; justify-content: center;
@@ -70,8 +77,13 @@ body.nuit #contenu { opacity: .9; }
   background: rgba(10,10,11,.88); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
 }
 #ligne-date { -webkit-flex: 1; flex: 1; font-size: 19px; color: #CFC8BA; letter-spacing: .3px; }
-#meteo-haut { font-size: 19px; color: #F1ECE2; margin-right: 18px; }
-#meteo-haut span { margin-left: 6px; vertical-align: middle; }
+#tout-eteindre {
+  height: 46px; padding: 0 20px 0 14px; margin-right: 18px; border-radius: 23px; border: 1px solid rgba(201,164,92,.55);
+  background: #141416; color: #E6C67E; font: inherit; font-size: 16px; font-weight: 700;
+  display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center;
+}
+#tout-eteindre .picto { width: 22px; height: 22px; margin-right: 8px; }
+#tout-eteindre.appui { background: #C9A45C; color: #141416; }
 #liaison { width: 12px; height: 12px; border-radius: 6px; background: #5A564F; }
 #liaison.ok { background: #C9A45C; box-shadow: 0 0 10px rgba(201,164,92,.8); }
 #liaison.ko { background: #D8695B; box-shadow: 0 0 10px rgba(216,105,91,.8); }
@@ -118,6 +130,7 @@ h2.titre, .piece h2 {
 .stats { display: -webkit-flex; display: flex; margin-bottom: 14px; }
 .stat { -webkit-flex: 1; flex: 1; padding: 18px 20px 0; overflow: hidden; height: 196px; }
 .stat:first-child { margin-right: 14px; }
+.stat:only-child { margin-right: 0; height: 168px; }
 .stat-titre { font-size: 17px; font-weight: 700; }
 .stat-titre .picto { margin-right: 8px; }
 .stat-val { margin-top: 10px; }

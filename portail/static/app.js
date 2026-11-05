@@ -260,9 +260,11 @@
   function dessinerOnglets() {
     var zone = $('nav');
     zone.innerHTML = '';
-    var logo = el('div', 'logo');
-    logo.appendChild(picto('navMaison'));
+    var logo = el('div', 'logo meteo-nav');
+    logo.id = 'meteo-nav';
+    logo.addEventListener('click', function () { vue = 'accueil'; dessiner(); });
     zone.appendChild(logo);
+    majMeteoHaut();
     var liste = niveaux();
     for (var i = 0; i < liste.length; i++) {
       (function (n) {
@@ -535,14 +537,32 @@
     haut.appendChild(heros);
 
     var droite = el('div', 'acc-droite');
+    var i;
+    if (maison.agendas && maison.agendas.length) {
+      var ag = el('div', 'carte agenda');
+      var ta = el('div', 'carte-tete');
+      var h3 = el('h3', '');
+      h3.appendChild(picto('agenda', 'or'));
+      h3.appendChild(el('span', '', 'Agenda'));
+      ta.appendChild(h3);
+      var ajout = el('span', 'lien ajout');
+      ajout.appendChild(picto('plus'));
+      ajout.appendChild(el('span', '', 'Ajouter'));
+      ajout.addEventListener('click', formulaireEvenement);
+      ta.appendChild(ajout);
+      ag.appendChild(ta);
+      recap.agenda = el('div', 'evenements');
+      ag.appendChild(recap.agenda);
+      droite.appendChild(ag);
+      afficherAgenda();
+      chargerAgenda();
+    }
+
     var stats = el('div', 'stats');
-    recap.statLum = carteStat('Lumières', 'ampoule');
     recap.statNet = carteStat('Internet', 'wifi');
-    stats.appendChild(recap.statLum.el);
     stats.appendChild(recap.statNet.el);
     droite.appendChild(stats);
 
-    var i;
     if (maison.habitants && maison.habitants.length) {
       var fam = el('div', 'carte famille');
       var tf = el('div', 'carte-tete');
@@ -568,28 +588,9 @@
       droite.appendChild(fam);
     }
 
-    if (maison.agendas && maison.agendas.length) {
-      var ag = el('div', 'carte agenda');
-      var ta = el('div', 'carte-tete');
-      var h3 = el('h3', '');
-      h3.appendChild(picto('agenda', 'or'));
-      h3.appendChild(el('span', '', 'Agenda'));
-      ta.appendChild(h3);
-      var ajout = el('span', 'lien ajout');
-      ajout.appendChild(picto('plus'));
-      ajout.appendChild(el('span', '', 'Ajouter'));
-      ajout.addEventListener('click', formulaireEvenement);
-      ta.appendChild(ajout);
-      ag.appendChild(ta);
-      recap.agenda = el('div', 'evenements');
-      ag.appendChild(recap.agenda);
-      droite.appendChild(ag);
-      afficherAgenda();
-      chargerAgenda();
-    }
-
     var sc = el('div', 'scenes');
     for (i = 0; i < maison.scenes.length; i++) {
+      if (maison.scenes[i].entity_id === SCENE_ETEINDRE) { continue; }
       (function (scene) {
         var b = el('div', 'scene-btn', scene.nom);
         b.addEventListener('click', function () {
@@ -634,14 +635,19 @@
     c.appendChild(carrousel);
   }
 
+  // Météo dans le rond en haut de la barre latérale (à la place du logo)
   function majMeteoHaut() {
-    var z = $('meteo-haut');
+    var z = $('meteo-nav');
     if (!z) { return; }
     var m = meteo();
+    var cle = m ? m.picto + m.temp : '';
+    if (z.getAttribute('data-cle') === cle) { return; }
+    z.setAttribute('data-cle', cle);
     z.innerHTML = '';
-    if (!m) { return; }
-    z.appendChild(picto(m.picto, 'or'));
-    z.appendChild(el('span', '', m.temp));
+    if (!m) { z.appendChild(picto('navSoleil')); return; }
+    z.setAttribute('title', m.texte);
+    z.appendChild(picto(m.picto));
+    z.appendChild(el('span', 'temp', m.temp));
   }
 
   function majRecap() {
@@ -664,7 +670,6 @@
       recap.meteo.appendChild(el('span', 'cond', m.texte + (m.humidite !== undefined ? ' · ' + m.humidite + ' % d’humidité' : '')));
     }
     var l = compter(function (e) { return domaine(e) === 'light' && estActif(e); });
-    var lt = compter(function (e) { return domaine(e) === 'light'; });
     var me = compter(function (e) { return domaine(e) === 'media_player' && estActif(e); });
     recap.chipLum.textContent = pluriel(l, 'lumière') + (l > 1 ? ' allumées' : ' allumée');
     recap.chipEcr.textContent = me ? pluriel(me, 'écran') + (me > 1 ? ' allumés' : ' allumé') : 'Écrans éteints';
@@ -673,8 +678,6 @@
       if (noms.hasOwnProperty(eid) && domaine(eid) === 'cover') { recap.chipGar.textContent = 'Garage · ' + libelleEtat(eid).toLowerCase(); }
     }
     recap.chipGar.className = 'chip' + (recap.chipGar.textContent && recap.chipGar.textContent.indexOf('fermé') < 0 ? ' alerte' : '');
-    recap.statLum.val.innerHTML = '<b>' + l + '</b><span> / ' + lt + ' allumées</span>';
-    recap.statLum.courbe.innerHTML = courbe(historique.lumieres);
     var en = etats[(maison.infos || {}).internet];
     var net = en && !isNaN(parseFloat(en.state)) ? parseFloat(en.state) * 8 / 1000 : 0;   // kB/s -> Mbit/s
     recap.statNet.val.innerHTML = '<b>' + (net < 10 ? net.toFixed(1) : Math.round(net)).toString().replace('.', ',') + '</b><span> Mbit/s</span>';
@@ -1225,6 +1228,31 @@
     c.appendChild(zone);
   }
 
+  // Bouton « Tout éteindre » du bandeau (page d'accueil) : scène HA si déclarée, sinon lumières de chaque niveau
+  var SCENE_ETEINDRE = 'scene.tout_eteindre';
+  function boutonEteindre() {
+    var b = $('tout-eteindre');
+    if (!b) { return; }
+    b.style.display = vue === 'accueil' ? '' : 'none';
+    if (b.getAttribute('data-pret')) { return; }
+    b.setAttribute('data-pret', '1');
+    b.innerHTML = '';
+    b.appendChild(picto('marche'));
+    b.appendChild(el('span', '', 'Tout éteindre'));
+    b.addEventListener('click', function () {
+      var aScene = false, i;
+      for (i = 0; i < maison.scenes.length; i++) { if (maison.scenes[i].entity_id === SCENE_ETEINDRE) { aScene = true; } }
+      if (aScene) { agir({ entity_id: SCENE_ETEINDRE, action: 'activer' }); } else {
+        for (i = 0; i < maison.niveaux.length; i++) { agir({ niveau: maison.niveaux[i].id, action: 'tout_eteindre' }); }
+      }
+      for (var eid in etats) { if (etats.hasOwnProperty(eid) && domaine(eid) === 'light') { etats[eid].state = 'off'; } }
+      majToutesTuiles();
+      b.className = 'appui';
+      setTimeout(function () { b.className = ''; }, 700);
+      message('Extinction de toute la maison…', true);
+    });
+  }
+
   function dessiner() {
     tuiles = {};
     legendesCam = {};
@@ -1235,6 +1263,7 @@
     var plein = $('plein');
     if (plein) { document.body.removeChild(plein); }
     dessinerOnglets();
+    boutonEteindre();
     var c = $('contenu');
     c.innerHTML = '';
     recap = null;

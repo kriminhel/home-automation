@@ -1,64 +1,43 @@
-# ============================================
-# PERSONNALISATION DES ENTITÉS
-# ============================================
-
-# Lumières
-light.salon_principale:
-  friendly_name: "Lumière Salon Principale"
-  icon: mdi:ceiling-light
-
-light.salon_spots:
-  friendly_name: "Spots Salon"
-  icon: mdi:track-light
-
+# Icônes des lumières IPX800 (les noms sont dans configuration.yaml)
+light.salon:
+  icon: mdi:sofa
+light.salle_a_manger:
+  icon: mdi:silverware-fork-knife
 light.cuisine:
-  friendly_name: "Lumière Cuisine"
+  icon: mdi:countertop
+light.chambre_amel:
+  icon: mdi:bed
+light.chambre_naim:
+  icon: mdi:bed
+light.salle_de_jeux:
+  icon: mdi:gamepad-variant
+light.jardin_1:
+  icon: mdi:outdoor-lamp
+light.dressing:
+  icon: mdi:hanger
+light.sdb_parentale:
+  icon: mdi:shower
+light.chambre_parentale:
+  icon: mdi:bed-king
+light.couloir_buanderie:
   icon: mdi:ceiling-light
-
-light.chambre:
-  friendly_name: "Lumière Chambre"
-  icon: mdi:ceiling-light
-
-light.salle_de_bain:
-  friendly_name: "Lumière Salle de Bain"
-  icon: mdi:ceiling-light
-
-# Volets
-cover.volet_salon:
-  friendly_name: "Volet Salon"
-  icon: mdi:window-shutter
-  device_class: shutter
-
-cover.volet_cuisine:
-  friendly_name: "Volet Cuisine"
-  icon: mdi:window-shutter
-  device_class: shutter
-
-cover.volet_chambre:
-  friendly_name: "Volet Chambre"
-  icon: mdi:window-shutter
-  device_class: shutter
-
-cover.volet_sdb:
-  friendly_name: "Volet Salle de Bain"
-  icon: mdi:window-shutter
-  device_class: shutter
-
-# Garage
-cover.garage:
-  friendly_name: "Porte de Garage"
-  icon: mdi:garage-variant
-  device_class: garage
-
-# Scènes
-scene.tout_eteindre:
-  icon: mdi:power-off
-
-scene.mode_soiree:
-  icon: mdi:movie-open
-
-scene.mode_nuit:
-  icon: mdi:weather-night
-
-scene.depart_maison:
-  icon: mdi:home-export-outline
+light.entree:
+  icon: mdi:door
+light.chambre_alia:
+  icon: mdi:bed
+light.wc_enfants:
+  icon: mdi:toilet
+light.sdb_enfants:
+  icon: mdi:shower
+light.jardin_2:
+  icon: mdi:outdoor-lamp
+light.jardin_3:
+  icon: mdi:outdoor-lamp
+light.facade_rue:
+  icon: mdi:outdoor-lamp
+light.jardin_4:
+  icon: mdi:outdoor-lamp
+light.garage:
+  icon: mdi:garage
+light.buanderie:
+  icon: mdi:washing-machine

@@ -1,151 +1,63 @@
 # ============================================
 # HOME ASSISTANT - Configuration principale
 # ============================================
+# Position, langue et fuseau : réglés dans l'interface
+# (Paramètres > Système > Général), stockés dans .storage/core.config.
 
 homeassistant:
-  name: Ma Maison
-  latitude: 48.8566  # Paris - À modifier
-  longitude: 2.3522
-  elevation: 0
-  unit_system: metric
-  time_zone: Europe/Paris
-  country: FR
-
-  # Personnalisation interface
   customize: !include customize.yaml
 
-# ============================================
-# INTERFACE & SÉCURITÉ
-# ============================================
+# Intégrations standard (interface, historique, soleil, sauvegardes…)
+default_config:
 
-# Interface Lovelace (UI moderne)
-lovelace:
-  mode: yaml
-  resources: !include lovelace/resources.yaml
-  dashboards:
-    lovelace-tablet:
-      mode: yaml
-      title: Tablette
-      icon: mdi:tablet
-      show_in_sidebar: true
-      filename: lovelace/tablet.yaml
-
-# Authentification
+# Le portail tablette (port 8124) passe par localhost
 http:
   use_x_forwarded_for: true
   trusted_proxies:
     - 127.0.0.1
     - ::1
-  cors_allowed_origins:
-    - https://google.com
-    - https://www.home-assistant.io
 
 # ============================================
-# IPX800 V3 - LUMIÈRES
+# IPX800 V3 - LUMIÈRES (24 relais : 21 câblés, 8 / 23 / 24 libres)
 # ============================================
+# URLs dans secrets.yaml : ipx800_status_url, ipx800_relay_url
 
-# Intégration IPX800 (via REST API)
 rest_command:
   ipx800_set_relay:
-    url: "http://192.168.1.250/preset.htm?led{{ relay }}={{ '1' if state else '0' }}"
+    url: !secret ipx800_relay_url
     method: GET
     username: !secret ipx800_user
     password: !secret ipx800_password
+    timeout: 5
 
-# Définition des lumières
-light:
-  # Salon
-  - platform: template
-    lights:
-      salon_principale:
-        friendly_name: "Lumière Salon Principale"
-        value_template: "{{ states('sensor.ipx800_relay_1') == 'on' }}"
-        turn_on:
-          service: rest_command.ipx800_set_relay
-          data:
-            relay: 1
-            state: true
-        turn_off:
-          service: rest_command.ipx800_set_relay
-          data:
-            relay: 1
-            state: false
+# Toutes les commandes de relais passent par ce script en file d'attente (un ordre à la
+# fois, ~0,2 s chacun) pour ménager le petit serveur web de l'IPX800.
+# NB : l'IPX800 n'a que 24 relais (carte + 2 extensions) ; 25 à 32 n'existent pas.
+script:
+  ipx800_relais:
+    alias: IPX800 - commander un relais
+    mode: queued
+    max: 64
+    fields:
+      relay: { description: "N° du relais (1-32)" }
+      state: { description: "1 = allumer, 0 = éteindre" }
+    sequence:
+      - service: rest_command.ipx800_set_relay
+        data:
+          relay: "{{ relay }}"
+          state: "{{ state }}"
 
-      salon_spots:
-        friendly_name: "Spots Salon"
-        value_template: "{{ states('sensor.ipx800_relay_2') == 'on' }}"
-        turn_on:
-          service: rest_command.ipx800_set_relay
-          data:
-            relay: 2
-            state: true
-        turn_off:
-          service: rest_command.ipx800_set_relay
-          data:
-            relay: 2
-            state: false
-
-  # Cuisine
-  - platform: template
-    lights:
-      cuisine:
-        friendly_name: "Lumière Cuisine"
-        value_template: "{{ states('sensor.ipx800_relay_3') == 'on' }}"
-        turn_on:
-          service: rest_command.ipx800_set_relay
-          data:
-            relay: 3
-            state: true
-        turn_off:
-          service: rest_command.ipx800_set_relay
-          data:
-            relay: 3
-            state: false
-
-  # Chambre
-  - platform: template
-    lights:
-      chambre:
-        friendly_name: "Lumière Chambre"
-        value_template: "{{ states('sensor.ipx800_relay_4') == 'on' }}"
-        turn_on:
-          service: rest_command.ipx800_set_relay
-          data:
-            relay: 4
-            state: true
-        turn_off:
-          service: rest_command.ipx800_set_relay
-          data:
-            relay: 4
-            state: false
-
-  # Salle de bain
-  - platform: template
-    lights:
-      salle_de_bain:
-        friendly_name: "Lumière Salle de Bain"
-        value_template: "{{ states('sensor.ipx800_relay_5') == 'on' }}"
-        turn_on:
-          service: rest_command.ipx800_set_relay
-          data:
-            relay: 5
-            state: true
-        turn_off:
-          service: rest_command.ipx800_set_relay
-          data:
-            relay: 5
-            state: false
-
-# Polling état IPX800 (toutes les 5 secondes)
-# cmd=10 = entrées digitales (IN), cmd=20 = sorties relais (OUT)
+# Lecture de l'état des 32 relais toutes les 5 s (cmd=20 = sorties relais)
+# Commande : preset.htm?setN=1/0 (l'ancienne syntaxe ledN ne marche que pour 1 à 8)
 sensor:
   - platform: rest
     name: ipx800_status
-    resource: "http://192.168.1.250/api/xdevices.json?cmd=20"
+    resource: !secret ipx800_status_url
     username: !secret ipx800_user
     password: !secret ipx800_password
     authentication: basic
     scan_interval: 5
+    timeout: 4
     value_template: "OK"
     json_attributes:
       - OUT1
@@ -156,241 +68,430 @@ sensor:
       - OUT6
       - OUT7
       - OUT8
+      - OUT9
+      - OUT10
+      - OUT11
+      - OUT12
+      - OUT13
+      - OUT14
+      - OUT15
+      - OUT16
+      - OUT17
+      - OUT18
+      - OUT19
+      - OUT20
+      - OUT21
+      - OUT22
+      - OUT23
+      - OUT24
+      - OUT25
+      - OUT26
+      - OUT27
+      - OUT28
+      - OUT29
+      - OUT30
+      - OUT31
+      - OUT32
 
-  # Extraction état relais individuels (depuis les attributs OUT1-OUT8)
+light:
   - platform: template
-    sensors:
-      ipx800_relay_1:
-        friendly_name: "État Relais 1 - Salon"
-        value_template: >
-          {% if state_attr('sensor.ipx800_status', 'OUT1') is not none %}
-            {{ 'on' if state_attr('sensor.ipx800_status', 'OUT1') == 1 else 'off' }}
-          {% else %}
-            unavailable
-          {% endif %}
+    lights:
+      salon:
+        friendly_name: "Salon"
+        unique_id: ipx800_v3_relais_1
+        availability_template: "{{ state_attr('sensor.ipx800_status', 'OUT1') is not none }}"
+        value_template: "{{ state_attr('sensor.ipx800_status', 'OUT1') | int(0) == 1 }}"
+        turn_on:
+          service: script.ipx800_relais
+          data: { relay: 1, state: 1 }
+        turn_off:
+          service: script.ipx800_relais
+          data: { relay: 1, state: 0 }
 
-      ipx800_relay_2:
-        friendly_name: "État Relais 2 - Spots Salon"
-        value_template: >
-          {% if state_attr('sensor.ipx800_status', 'OUT2') is not none %}
-            {{ 'on' if state_attr('sensor.ipx800_status', 'OUT2') == 1 else 'off' }}
-          {% else %}
-            unavailable
-          {% endif %}
+      salle_a_manger:
+        friendly_name: "Salle à manger"
+        unique_id: ipx800_v3_relais_2
+        availability_template: "{{ state_attr('sensor.ipx800_status', 'OUT2') is not none }}"
+        value_template: "{{ state_attr('sensor.ipx800_status', 'OUT2') | int(0) == 1 }}"
+        turn_on:
+          service: script.ipx800_relais
+          data: { relay: 2, state: 1 }
+        turn_off:
+          service: script.ipx800_relais
+          data: { relay: 2, state: 0 }
 
-      ipx800_relay_3:
-        friendly_name: "État Relais 3 - Cuisine"
-        value_template: >
-          {% if state_attr('sensor.ipx800_status', 'OUT3') is not none %}
-            {{ 'on' if state_attr('sensor.ipx800_status', 'OUT3') == 1 else 'off' }}
-          {% else %}
-            unavailable
-          {% endif %}
+      cuisine:
+        friendly_name: "Cuisine"
+        unique_id: ipx800_v3_relais_3
+        availability_template: "{{ state_attr('sensor.ipx800_status', 'OUT3') is not none }}"
+        value_template: "{{ state_attr('sensor.ipx800_status', 'OUT3') | int(0) == 1 }}"
+        turn_on:
+          service: script.ipx800_relais
+          data: { relay: 3, state: 1 }
+        turn_off:
+          service: script.ipx800_relais
+          data: { relay: 3, state: 0 }
 
-      ipx800_relay_4:
-        friendly_name: "État Relais 4 - Chambre"
-        value_template: >
-          {% if state_attr('sensor.ipx800_status', 'OUT4') is not none %}
-            {{ 'on' if state_attr('sensor.ipx800_status', 'OUT4') == 1 else 'off' }}
-          {% else %}
-            unavailable
-          {% endif %}
+      chambre_amel:
+        friendly_name: "Chambre Amel"
+        unique_id: ipx800_v3_relais_4
+        availability_template: "{{ state_attr('sensor.ipx800_status', 'OUT4') is not none }}"
+        value_template: "{{ state_attr('sensor.ipx800_status', 'OUT4') | int(0) == 1 }}"
+        turn_on:
+          service: script.ipx800_relais
+          data: { relay: 4, state: 1 }
+        turn_off:
+          service: script.ipx800_relais
+          data: { relay: 4, state: 0 }
 
-      ipx800_relay_5:
-        friendly_name: "État Relais 5 - Salle de Bain"
-        value_template: >
-          {% if state_attr('sensor.ipx800_status', 'OUT5') is not none %}
-            {{ 'on' if state_attr('sensor.ipx800_status', 'OUT5') == 1 else 'off' }}
-          {% else %}
-            unavailable
-          {% endif %}
+      chambre_naim:
+        friendly_name: "Chambre Naïm"
+        unique_id: ipx800_v3_relais_5
+        availability_template: "{{ state_attr('sensor.ipx800_status', 'OUT5') is not none }}"
+        value_template: "{{ state_attr('sensor.ipx800_status', 'OUT5') | int(0) == 1 }}"
+        turn_on:
+          service: script.ipx800_relais
+          data: { relay: 5, state: 1 }
+        turn_off:
+          service: script.ipx800_relais
+          data: { relay: 5, state: 0 }
 
-      ipx800_relay_6:
-        friendly_name: "État Relais 6"
-        value_template: >
-          {% if state_attr('sensor.ipx800_status', 'OUT6') is not none %}
-            {{ 'on' if state_attr('sensor.ipx800_status', 'OUT6') == 1 else 'off' }}
-          {% else %}
-            unavailable
-          {% endif %}
+      salle_de_jeux:
+        friendly_name: "Salle de jeux"
+        unique_id: ipx800_v3_relais_6
+        availability_template: "{{ state_attr('sensor.ipx800_status', 'OUT6') is not none }}"
+        value_template: "{{ state_attr('sensor.ipx800_status', 'OUT6') | int(0) == 1 }}"
+        turn_on:
+          service: script.ipx800_relais
+          data: { relay: 6, state: 1 }
+        turn_off:
+          service: script.ipx800_relais
+          data: { relay: 6, state: 0 }
 
-      ipx800_relay_7:
-        friendly_name: "État Relais 7"
-        value_template: >
-          {% if state_attr('sensor.ipx800_status', 'OUT7') is not none %}
-            {{ 'on' if state_attr('sensor.ipx800_status', 'OUT7') == 1 else 'off' }}
-          {% else %}
-            unavailable
-          {% endif %}
+      jardin_1:
+        friendly_name: "Façade jardin 1"
+        unique_id: ipx800_v3_relais_7
+        availability_template: "{{ state_attr('sensor.ipx800_status', 'OUT7') is not none }}"
+        value_template: "{{ state_attr('sensor.ipx800_status', 'OUT7') | int(0) == 1 }}"
+        turn_on:
+          service: script.ipx800_relais
+          data: { relay: 7, state: 1 }
+        turn_off:
+          service: script.ipx800_relais
+          data: { relay: 7, state: 0 }
 
-      ipx800_relay_8:
-        friendly_name: "État Relais 8"
-        value_template: >
-          {% if state_attr('sensor.ipx800_status', 'OUT8') is not none %}
-            {{ 'on' if state_attr('sensor.ipx800_status', 'OUT8') == 1 else 'off' }}
-          {% else %}
-            unavailable
-          {% endif %}
+      dressing:
+        friendly_name: "Dressing"
+        unique_id: ipx800_v3_relais_9
+        availability_template: "{{ state_attr('sensor.ipx800_status', 'OUT9') is not none }}"
+        value_template: "{{ state_attr('sensor.ipx800_status', 'OUT9') | int(0) == 1 }}"
+        turn_on:
+          service: script.ipx800_relais
+          data: { relay: 9, state: 1 }
+        turn_off:
+          service: script.ipx800_relais
+          data: { relay: 9, state: 0 }
+
+      sdb_parentale:
+        friendly_name: "SDB parentale"
+        unique_id: ipx800_v3_relais_10
+        availability_template: "{{ state_attr('sensor.ipx800_status', 'OUT10') is not none }}"
+        value_template: "{{ state_attr('sensor.ipx800_status', 'OUT10') | int(0) == 1 }}"
+        turn_on:
+          service: script.ipx800_relais
+          data: { relay: 10, state: 1 }
+        turn_off:
+          service: script.ipx800_relais
+          data: { relay: 10, state: 0 }
+
+      chambre_parentale:
+        friendly_name: "Chambre parentale"
+        unique_id: ipx800_v3_relais_11
+        availability_template: "{{ state_attr('sensor.ipx800_status', 'OUT11') is not none }}"
+        value_template: "{{ state_attr('sensor.ipx800_status', 'OUT11') | int(0) == 1 }}"
+        turn_on:
+          service: script.ipx800_relais
+          data: { relay: 11, state: 1 }
+        turn_off:
+          service: script.ipx800_relais
+          data: { relay: 11, state: 0 }
+
+      couloir_buanderie:
+        friendly_name: "Couloir buanderie"
+        unique_id: ipx800_v3_relais_12
+        availability_template: "{{ state_attr('sensor.ipx800_status', 'OUT12') is not none }}"
+        value_template: "{{ state_attr('sensor.ipx800_status', 'OUT12') | int(0) == 1 }}"
+        turn_on:
+          service: script.ipx800_relais
+          data: { relay: 12, state: 1 }
+        turn_off:
+          service: script.ipx800_relais
+          data: { relay: 12, state: 0 }
+
+      entree:
+        friendly_name: "Entrée"
+        unique_id: ipx800_v3_relais_13
+        availability_template: "{{ state_attr('sensor.ipx800_status', 'OUT13') is not none }}"
+        value_template: "{{ state_attr('sensor.ipx800_status', 'OUT13') | int(0) == 1 }}"
+        turn_on:
+          service: script.ipx800_relais
+          data: { relay: 13, state: 1 }
+        turn_off:
+          service: script.ipx800_relais
+          data: { relay: 13, state: 0 }
+
+      chambre_alia:
+        friendly_name: "Chambre Alia"
+        unique_id: ipx800_v3_relais_14
+        availability_template: "{{ state_attr('sensor.ipx800_status', 'OUT14') is not none }}"
+        value_template: "{{ state_attr('sensor.ipx800_status', 'OUT14') | int(0) == 1 }}"
+        turn_on:
+          service: script.ipx800_relais
+          data: { relay: 14, state: 1 }
+        turn_off:
+          service: script.ipx800_relais
+          data: { relay: 14, state: 0 }
+
+      wc_enfants:
+        friendly_name: "WC enfants"
+        unique_id: ipx800_v3_relais_15
+        availability_template: "{{ state_attr('sensor.ipx800_status', 'OUT15') is not none }}"
+        value_template: "{{ state_attr('sensor.ipx800_status', 'OUT15') | int(0) == 1 }}"
+        turn_on:
+          service: script.ipx800_relais
+          data: { relay: 15, state: 1 }
+        turn_off:
+          service: script.ipx800_relais
+          data: { relay: 15, state: 0 }
+
+      sdb_enfants:
+        friendly_name: "Salle de bain enfants"
+        unique_id: ipx800_v3_relais_16
+        availability_template: "{{ state_attr('sensor.ipx800_status', 'OUT16') is not none }}"
+        value_template: "{{ state_attr('sensor.ipx800_status', 'OUT16') | int(0) == 1 }}"
+        turn_on:
+          service: script.ipx800_relais
+          data: { relay: 16, state: 1 }
+        turn_off:
+          service: script.ipx800_relais
+          data: { relay: 16, state: 0 }
+
+      jardin_2:
+        friendly_name: "Façade jardin 2"
+        unique_id: ipx800_v3_relais_17
+        availability_template: "{{ state_attr('sensor.ipx800_status', 'OUT17') is not none }}"
+        value_template: "{{ state_attr('sensor.ipx800_status', 'OUT17') | int(0) == 1 }}"
+        turn_on:
+          service: script.ipx800_relais
+          data: { relay: 17, state: 1 }
+        turn_off:
+          service: script.ipx800_relais
+          data: { relay: 17, state: 0 }
+
+      jardin_3:
+        friendly_name: "Façade jardin 3"
+        unique_id: ipx800_v3_relais_18
+        availability_template: "{{ state_attr('sensor.ipx800_status', 'OUT18') is not none }}"
+        value_template: "{{ state_attr('sensor.ipx800_status', 'OUT18') | int(0) == 1 }}"
+        turn_on:
+          service: script.ipx800_relais
+          data: { relay: 18, state: 1 }
+        turn_off:
+          service: script.ipx800_relais
+          data: { relay: 18, state: 0 }
+
+      facade_rue:
+        friendly_name: "Extérieur côté rue"
+        unique_id: ipx800_v3_relais_19
+        availability_template: "{{ state_attr('sensor.ipx800_status', 'OUT19') is not none }}"
+        value_template: "{{ state_attr('sensor.ipx800_status', 'OUT19') | int(0) == 1 }}"
+        turn_on:
+          service: script.ipx800_relais
+          data: { relay: 19, state: 1 }
+        turn_off:
+          service: script.ipx800_relais
+          data: { relay: 19, state: 0 }
+
+      jardin_4:
+        friendly_name: "Façade jardin 4"
+        unique_id: ipx800_v3_relais_20
+        availability_template: "{{ state_attr('sensor.ipx800_status', 'OUT20') is not none }}"
+        value_template: "{{ state_attr('sensor.ipx800_status', 'OUT20') | int(0) == 1 }}"
+        turn_on:
+          service: script.ipx800_relais
+          data: { relay: 20, state: 1 }
+        turn_off:
+          service: script.ipx800_relais
+          data: { relay: 20, state: 0 }
+
+      garage:
+        friendly_name: "Garage"
+        unique_id: ipx800_v3_relais_21
+        availability_template: "{{ state_attr('sensor.ipx800_status', 'OUT21') is not none }}"
+        value_template: "{{ state_attr('sensor.ipx800_status', 'OUT21') | int(0) == 1 }}"
+        turn_on:
+          service: script.ipx800_relais
+          data: { relay: 21, state: 1 }
+        turn_off:
+          service: script.ipx800_relais
+          data: { relay: 21, state: 0 }
+
+      buanderie:
+        friendly_name: "Buanderie"
+        unique_id: ipx800_v3_relais_22
+        availability_template: "{{ state_attr('sensor.ipx800_status', 'OUT22') is not none }}"
+        value_template: "{{ state_attr('sensor.ipx800_status', 'OUT22') | int(0) == 1 }}"
+        turn_on:
+          service: script.ipx800_relais
+          data: { relay: 22, state: 1 }
+        turn_off:
+          service: script.ipx800_relais
+          data: { relay: 22, state: 0 }
+
+  # Toute la façade jardin en une tuile
+  - platform: group
+    name: Façade jardin
+    unique_id: groupe_facade_jardin
+    entities: [light.jardin_1, light.jardin_2, light.jardin_3, light.jardin_4]
 
 # ============================================
-# TUYA / LORATAP - VOLETS & GARAGE
+# PORTE DE GARAGE - Came TOP à code fixe, rejouée par le Broadlink RM4 Pro
 # ============================================
+# Codes appris avec scripts/broadlink-rf.py, rangés dans secrets.yaml (jamais dans git).
 
-# L'intégration Tuya se configure via l'interface web
-# Voir étapes ci-dessous
+# État déduit du dernier ordre envoyé PAR HA (ouvrir → ouvert, fermer → fermé,
+# stop dans la minute qui suit un ordre → entrouvert). Les manœuvres faites à la
+# télécommande ou au bouton mural ne sont pas vues.
+input_select:
+  garage_dernier_ordre:
+    name: Garage - état déduit
+    icon: mdi:garage
+    options: ["fermé", "entrouvert", "ouvert"]
+
+cover:
+  - platform: template
+    covers:
+      garage:
+        friendly_name: "Porte de garage"
+        unique_id: garage_came_broadlink
+        device_class: garage
+        position_template: >
+          {{ {'ouvert': 100, 'entrouvert': 50, 'fermé': 0}.get(states('input_select.garage_dernier_ordre'), 0) }}
+        open_cover:
+          - service: remote.send_command
+            target: { entity_id: remote.broadlink }
+            data: { command: !secret garage_code_ouvrir }
+          - service: input_select.select_option
+            target: { entity_id: input_select.garage_dernier_ordre }
+            data: { option: "ouvert" }
+        stop_cover:
+          - service: remote.send_command
+            target: { entity_id: remote.broadlink }
+            data: { command: !secret garage_code_stop }
+          # Porte en mouvement seulement si le dernier ordre date de moins d'une minute
+          - if:
+              - condition: template
+                value_template: >
+                  {{ states('input_select.garage_dernier_ordre') != 'entrouvert' and
+                     (now() - states.input_select.garage_dernier_ordre.last_changed).total_seconds() < 60 }}
+            then:
+              - service: input_select.select_option
+                target: { entity_id: input_select.garage_dernier_ordre }
+                data: { option: "entrouvert" }
+        close_cover:
+          - service: remote.send_command
+            target: { entity_id: remote.broadlink }
+            data: { command: !secret garage_code_fermer }
+          - service: input_select.select_option
+            target: { entity_id: input_select.garage_dernier_ordre }
+            data: { option: "fermé" }
 
 # ============================================
-# GROUPES & ZONES
-# ============================================
-
-# Organisation par pièces
-group:
-  salon:
-    name: Salon
-    entities:
-      - light.salon_principale
-      - light.salon_spots
-
-  toutes_les_lumieres:
-    name: Toutes les Lumières
-    entities:
-      - light.salon_principale
-      - light.salon_spots
-      - light.cuisine
-      - light.chambre
-      - light.salle_de_bain
-
-# ============================================
-# SCÈNES
+# SCÈNES (lumières)
 # ============================================
 
 scene:
   - name: Tout éteindre
     icon: mdi:power-off
     entities:
-      light.salon_principale:
-        state: off
-      light.salon_spots:
-        state: off
-      light.cuisine:
-        state: off
-      light.chambre:
-        state: off
-      light.salle_de_bain:
-        state: off
+      light.salon: "off"
+      light.salle_a_manger: "off"
+      light.cuisine: "off"
+      light.chambre_amel: "off"
+      light.chambre_naim: "off"
+      light.salle_de_jeux: "off"
+      light.dressing: "off"
+      light.sdb_parentale: "off"
+      light.chambre_parentale: "off"
+      light.couloir_buanderie: "off"
+      light.entree: "off"
+      light.chambre_alia: "off"
+      light.wc_enfants: "off"
+      light.sdb_enfants: "off"
+      light.garage: "off"
+      light.buanderie: "off"
+      light.jardin_1: "off"
+      light.jardin_2: "off"
+      light.jardin_3: "off"
+      light.facade_rue: "off"
+      light.jardin_4: "off"
 
   - name: Mode Soirée
-    icon: mdi:movie-open
+    icon: mdi:sofa
     entities:
-      light.salon_principale:
-        state: on
-      light.salon_spots:
-        state: off
-      light.cuisine:
-        state: off
-      light.chambre:
-        state: off
+      light.salon: "on"
+      light.salle_a_manger: "on"
+      light.cuisine: "off"
+      light.chambre_amel: "off"
+      light.chambre_naim: "off"
+      light.salle_de_jeux: "off"
+      light.dressing: "off"
+      light.sdb_parentale: "off"
+      light.chambre_parentale: "off"
+      light.couloir_buanderie: "off"
+      light.entree: "off"
+      light.chambre_alia: "off"
+      light.wc_enfants: "off"
+      light.sdb_enfants: "off"
+      light.garage: "off"
+      light.buanderie: "off"
+      light.jardin_1: "off"
+      light.jardin_2: "off"
+      light.jardin_3: "off"
+      light.facade_rue: "off"
+      light.jardin_4: "off"
 
   - name: Mode Nuit
     icon: mdi:weather-night
     entities:
-      light.salon_principale:
-        state: off
-      light.salon_spots:
-        state: off
-      light.cuisine:
-        state: off
-      light.chambre:
-        state: on
-        brightness: 30
+      light.salon: "off"
+      light.salle_a_manger: "off"
+      light.cuisine: "off"
+      light.chambre_amel: "off"
+      light.chambre_naim: "off"
+      light.salle_de_jeux: "off"
+      light.dressing: "off"
+      light.sdb_parentale: "off"
+      light.chambre_parentale: "on"
+      light.couloir_buanderie: "off"
+      light.entree: "off"
+      light.chambre_alia: "off"
+      light.wc_enfants: "off"
+      light.sdb_enfants: "off"
+      light.garage: "off"
+      light.buanderie: "off"
+      light.jardin_1: "off"
+      light.jardin_2: "off"
+      light.jardin_3: "off"
+      light.facade_rue: "off"
+      light.jardin_4: "off"
 
-  - name: Départ Maison
-    icon: mdi:home-export-outline
-    entities:
-      light.salon_principale:
-        state: off
-      light.salon_spots:
-        state: off
-      light.cuisine:
-        state: off
-      light.chambre:
-        state: off
-      light.salle_de_bain:
-        state: off
-      # Les volets se ferment automatiquement
-      cover.volet_salon:
-        state: closed
-      cover.volet_chambre:
-        state: closed
-
-# ============================================
-# AUTOMATISATIONS
-# ============================================
-
+# Les automatisations sont créées au fur et à mesure des intégrations
+# (J5). Celles du début visaient des volets et un garage inexistants.
 automation: !include automations.yaml
 
-# ============================================
-# SCRIPTS
-# ============================================
-
-script:
-  fermer_tous_volets:
-    alias: Fermer tous les volets
-    sequence:
-      - service: cover.close_cover
-        target:
-          entity_id: all
-
-  ouvrir_tous_volets:
-    alias: Ouvrir tous les volets
-    sequence:
-      - service: cover.open_cover
-        target:
-          entity_id: all
-
-# ============================================
-# HISTORIQUE & LOGS
-# ============================================
-
-# Enregistrement des historiques
 recorder:
-  db_url: sqlite:////config/home-assistant_v2.db
   purge_keep_days: 7
-  include:
-    entities:
-      - light.salon_principale
-      - light.salon_spots
-      - light.cuisine
-      - light.chambre
-      - light.salle_de_bain
 
-# Historique graphique
-history:
-
-# Journal système
 logger:
   default: warning
-  logs:
-    homeassistant.components.rest: debug
-    homeassistant.components.tuya: debug
-
-# ============================================
-# MODULES COMPLÉMENTAIRES
-# ============================================
-
-# Découverte automatique d'appareils
-discovery:
-
-# Gestionnaire de configuration
-config:
-
-# Application mobile
-mobile_app:
-
-# Text-to-speech
-tts:
-  - platform: google_translate
-    language: 'fr'
-
-# Sun (lever/coucher soleil pour automatisations)
-sun:

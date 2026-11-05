@@ -1,0 +1,1504 @@
+{
+  "nom": "Maison",
+  "lieu": "Saint-Aubin-lès-Elbeuf",
+  "photo": "maison.jpg",
+  "scenes": [
+    {
+      "entity_id": "scene.tout_eteindre",
+      "nom": "Tout éteindre",
+      "icone": "⏻"
+    },
+    {
+      "entity_id": "scene.mode_soiree",
+      "nom": "Soirée",
+      "icone": "🛋"
+    },
+    {
+      "entity_id": "scene.mode_nuit",
+      "nom": "Nuit",
+      "icone": "🌙"
+    }
+  ],
+  "infos": {
+    "internet": "sensor.freebox_download_speed",
+    "soleil": "sun.sun",
+    "meteo": "weather.forecast_maison"
+  },
+  "agendas": [
+    {
+      "entity_id": "calendar.famille",
+      "nom": "Famille",
+      "couleur": "#C9A45C",
+      "ecriture": true
+    }
+  ],
+  "habitants": [
+    {
+      "nom": "Karim",
+      "pieces": [
+        "Chambre parentale"
+      ],
+      "avatar": "prive/karim.jpg"
+    },
+    {
+      "nom": "Samia",
+      "pieces": [
+        "Chambre parentale"
+      ],
+      "avatar": "prive/samia.jpg"
+    },
+    {
+      "nom": "Alia",
+      "pieces": [
+        "Chambre d'Alia"
+      ],
+      "avatar": "prive/alia.jpg"
+    },
+    {
+      "nom": "Naïm",
+      "pieces": [
+        "Chambre de Naïm"
+      ],
+      "avatar": "prive/naim.jpg"
+    },
+    {
+      "nom": "Amel",
+      "pieces": [
+        "Chambre d'Amel"
+      ],
+      "avatar": "prive/amel.jpg"
+    }
+  ],
+  "cameras": [
+    {
+      "entity_id": "image.visiophone_entree_derniere_image_du_mouvement",
+      "nom": "Visiophone entrée",
+      "icone": "🔔"
+    },
+    {
+      "entity_id": "image.garage_derniere_image_du_mouvement",
+      "nom": "Garage",
+      "icone": "🚗"
+    },
+    {
+      "entity_id": "image.salon_derniere_image_du_mouvement",
+      "nom": "Salon",
+      "icone": "🛋"
+    },
+    {
+      "entity_id": "image.salle_de_jeux_derniere_image_du_mouvement",
+      "nom": "Salle de jeux",
+      "icone": "🎮"
+    }
+  ],
+  "niveaux": [
+    {
+      "id": "rdc",
+      "nom": "RDC",
+      "icone": "🛋",
+      "couleur": "#FB8C00",
+      "pieces": [
+        {
+          "nom": "Salon",
+          "icone": "🛋",
+          "photo": "salon.jpg",
+          "equipements": [
+            {
+              "entity_id": "light.salon",
+              "nom": "Plafonnier",
+              "icone": "💡"
+            },
+            {
+              "entity_id": "media_player.tv_salon",
+              "nom": "TV Xiaomi",
+              "icone": "📺"
+            }
+          ]
+        },
+        {
+          "nom": "Salle à manger",
+          "icone": "🍽",
+          "photo": "salle-a-manger.jpg",
+          "equipements": [
+            {
+              "entity_id": "light.salle_a_manger",
+              "nom": "Plafonnier",
+              "icone": "💡"
+            }
+          ]
+        },
+        {
+          "nom": "Cuisine",
+          "icone": "🍳",
+          "photo": "cuisine.jpg",
+          "equipements": [
+            {
+              "entity_id": "light.cuisine",
+              "nom": "Plafonnier",
+              "icone": "💡"
+            }
+          ]
+        },
+        {
+          "nom": "Entrée",
+          "icone": "🚪",
+          "photo": "entree.jpg",
+          "equipements": [
+            {
+              "entity_id": "light.entree",
+              "nom": "Entrée",
+              "icone": "💡"
+            }
+          ]
+        },
+        {
+          "nom": "Couloir buanderie",
+          "icone": "🚪",
+          "photo": "entree.jpg",
+          "equipements": [
+            {
+              "entity_id": "light.couloir_buanderie",
+              "nom": "Couloir",
+              "icone": "💡"
+            }
+          ]
+        },
+        {
+          "nom": "Buanderie et garage",
+          "icone": "🚗",
+          "photo": "garage.jpg",
+          "equipements": [
+            {
+              "entity_id": "light.buanderie",
+              "nom": "Buanderie",
+              "icone": "💡"
+            },
+            {
+              "entity_id": "light.garage",
+              "nom": "Garage",
+              "icone": "💡"
+            },
+            {
+              "entity_id": "cover.garage",
+              "nom": "Porte de garage",
+              "icone": "🚗",
+              "confirmer": true
+            }
+          ]
+        },
+        {
+          "nom": "Chambre parentale",
+          "icone": "🛏",
+          "photo": "parents.jpg",
+          "equipements": [
+            {
+              "entity_id": "light.chambre_parentale",
+              "nom": "Plafonnier",
+              "icone": "💡"
+            },
+            {
+              "entity_id": "light.dressing",
+              "nom": "Dressing",
+              "icone": "💡"
+            },
+            {
+              "entity_id": "light.sdb_parentale",
+              "nom": "Salle de bain",
+              "icone": "💡"
+            },
+            {
+              "entity_id": "media_player.boitier_chambre_parentale",
+              "nom": "Boîtier TV",
+              "icone": "📺"
+            }
+          ]
+        },
+        {
+          "nom": "Chambre d'Alia",
+          "icone": "🧸",
+          "photo": "alia.jpg",
+          "equipements": [
+            {
+              "entity_id": "light.chambre_alia",
+              "nom": "Plafonnier",
+              "icone": "💡"
+            }
+          ]
+        },
+        {
+          "nom": "Chambre de Naïm",
+          "icone": "🎮",
+          "photo": "naim.jpg",
+          "equipements": [
+            {
+              "entity_id": "light.chambre_naim",
+              "nom": "Plafonnier",
+              "icone": "💡"
+            },
+            {
+              "entity_id": "media_player.tv_naim",
+              "nom": "TV Philips",
+              "icone": "📺"
+            },
+            {
+              "entity_id": "light.ambilight_naim",
+              "nom": "Ambilight",
+              "icone": "🌈"
+            }
+          ]
+        },
+        {
+          "nom": "Chambre d'Amel",
+          "icone": "📚",
+          "photo": "amel.jpg",
+          "equipements": [
+            {
+              "entity_id": "light.chambre_amel",
+              "nom": "Plafonnier",
+              "icone": "💡"
+            },
+            {
+              "entity_id": "media_player.apple_tv_amel",
+              "nom": "Apple TV",
+              "icone": "📺"
+            }
+          ]
+        },
+        {
+          "nom": "Salle de bain et WC enfants",
+          "icone": "🛁",
+          "photo": "bain.jpg",
+          "equipements": [
+            {
+              "entity_id": "light.sdb_enfants",
+              "nom": "Salle de bain",
+              "icone": "💡"
+            },
+            {
+              "entity_id": "light.wc_enfants",
+              "nom": "WC",
+              "icone": "💡"
+            }
+          ]
+        },
+        {
+          "nom": "Extérieur",
+          "icone": "🌳",
+          "photo": "exterieur.jpg",
+          "equipements": [
+            {
+              "entity_id": "light.facade_jardin",
+              "nom": "Toute la façade jardin",
+              "icone": "🌳",
+              "groupe": true
+            },
+            {
+              "entity_id": "light.jardin_1",
+              "nom": "Jardin 1",
+              "icone": "🏮"
+            },
+            {
+              "entity_id": "light.jardin_2",
+              "nom": "Jardin 2",
+              "icone": "🏮"
+            },
+            {
+              "entity_id": "light.jardin_3",
+              "nom": "Jardin 3",
+              "icone": "🏮"
+            },
+            {
+              "entity_id": "light.jardin_4",
+              "nom": "Jardin 4",
+              "icone": "🏮"
+            },
+            {
+              "entity_id": "light.facade_rue",
+              "nom": "Petite terrasse",
+              "icone": "🏮"
+            }
+          ]
+        }
+      ],
+      "plan": {
+        "largeur": 1110,
+        "hauteur": 640,
+        "zones": [
+          {
+            "piece": "Buanderie et garage",
+            "nom": "Garage",
+            "entites": [
+              "light.garage",
+              "cover.garage"
+            ],
+            "rects": [
+              [
+                0,
+                0,
+                300,
+                190
+              ]
+            ]
+          },
+          {
+            "piece": "Buanderie et garage",
+            "nom": "Buanderie",
+            "entites": [
+              "light.buanderie"
+            ],
+            "rects": [
+              [
+                0,
+                190,
+                300,
+                50
+              ]
+            ]
+          },
+          {
+            "piece": "Chambre parentale",
+            "nom": "Dressing",
+            "entites": [
+              "light.dressing"
+            ],
+            "rects": [
+              [
+                0,
+                240,
+                230,
+                110
+              ]
+            ]
+          },
+          {
+            "nom": "Couloir",
+            "rects": [
+              [
+                230,
+                240,
+                70,
+                180
+              ]
+            ],
+            "piece": "Couloir buanderie"
+          },
+          {
+            "piece": "Chambre parentale",
+            "nom": "Parentale",
+            "entites": [
+              "light.chambre_parentale",
+              "media_player.boitier_chambre_parentale"
+            ],
+            "rects": [
+              [
+                0,
+                350,
+                175,
+                290
+              ]
+            ]
+          },
+          {
+            "piece": "Chambre parentale",
+            "nom": "SdB",
+            "entites": [
+              "light.sdb_parentale"
+            ],
+            "rects": [
+              [
+                175,
+                350,
+                55,
+                290
+              ]
+            ]
+          },
+          {
+            "piece": "Extérieur",
+            "type": "exterieur",
+            "nom": "Terrasse",
+            "rects": [
+              [
+                300,
+                0,
+                340,
+                330
+              ]
+            ],
+            "entites": [
+              "light.jardin_1",
+              "light.jardin_2",
+              "light.jardin_3",
+              "light.jardin_4"
+            ],
+            "icones": [
+              [
+                "light.jardin_1",
+                "light.jardin_2",
+                "light.jardin_3",
+                "light.jardin_4"
+              ]
+            ]
+          },
+          {
+            "piece": "Salle à manger",
+            "rects": [
+              [
+                300,
+                330,
+                340,
+                90
+              ]
+            ],
+            "espace": "sejour",
+            "mur": "#E9E5DD"
+          },
+          {
+            "piece": "Cuisine",
+            "rects": [
+              [
+                230,
+                420,
+                230,
+                220
+              ]
+            ],
+            "espace": "sejour",
+            "mur": "#2B2D32"
+          },
+          {
+            "piece": "Salon",
+            "rects": [
+              [
+                460,
+                420,
+                540,
+                220
+              ]
+            ],
+            "espace": "sejour",
+            "mur": "brique"
+          },
+          {
+            "piece": "Salle de bain et WC enfants",
+            "nom": "SdB enfants",
+            "rects": [
+              [
+                640,
+                0,
+                160,
+                100
+              ]
+            ],
+            "entites": [
+              "light.sdb_enfants"
+            ]
+          },
+          {
+            "piece": "Salle de bain et WC enfants",
+            "nom": "WC",
+            "rects": [
+              [
+                640,
+                100,
+                90,
+                100
+              ]
+            ],
+            "entites": [
+              "light.wc_enfants"
+            ]
+          },
+          {
+            "piece": "Entrée",
+            "nom": "Entrée",
+            "poly": [
+              [
+                730,
+                100
+              ],
+              [
+                800,
+                100
+              ],
+              [
+                800,
+                420
+              ],
+              [
+                640,
+                420
+              ],
+              [
+                640,
+                200
+              ],
+              [
+                730,
+                200
+              ]
+            ],
+            "ouvert_vers": [
+              "Salon",
+              "Salle à manger"
+            ],
+            "mur": "#AEB9C4"
+          },
+          {
+            "piece": "Chambre d'Alia",
+            "nom": "Alia",
+            "rects": [
+              [
+                800,
+                0,
+                200,
+                140
+              ]
+            ]
+          },
+          {
+            "piece": "Chambre de Naïm",
+            "nom": "Naïm",
+            "rects": [
+              [
+                800,
+                140,
+                200,
+                140
+              ]
+            ],
+            "icones": [
+              [
+                "light.chambre_naim"
+              ]
+            ]
+          },
+          {
+            "piece": "Chambre d'Amel",
+            "nom": "Amel",
+            "rects": [
+              [
+                800,
+                280,
+                200,
+                140
+              ]
+            ]
+          },
+          {
+            "piece": "Extérieur",
+            "type": "exterieur",
+            "nom": "Petite terrasse",
+            "rects": [
+              [
+                1000,
+                470,
+                110,
+                170
+              ]
+            ],
+            "entites": [
+              "light.facade_rue"
+            ]
+          }
+        ],
+        "cameras": [
+          {
+            "entity_id": "image.garage_derniere_image_du_mouvement",
+            "pos": [
+              20,
+              20
+            ]
+          }
+        ],
+        "meubles": [
+          {
+            "t": "voiture",
+            "x": 150,
+            "y": 100,
+            "face": "haut",
+            "w": 88,
+            "d": 176
+          },
+          {
+            "t": "plante",
+            "x": 280,
+            "y": 170,
+            "face": "bas"
+          },
+          {
+            "t": "lavelinge",
+            "x": 25,
+            "y": 215,
+            "face": "haut"
+          },
+          {
+            "t": "lavelinge",
+            "x": 65,
+            "y": 215,
+            "face": "haut"
+          },
+          {
+            "t": "comptoir",
+            "x": 150,
+            "y": 222,
+            "face": "haut",
+            "w": 80,
+            "d": 30,
+            "couleur": "#17181C",
+            "plan": "bois"
+          },
+          {
+            "t": "armoire",
+            "x": 115,
+            "y": 258,
+            "face": "bas",
+            "w": 210,
+            "d": 28
+          },
+          {
+            "t": "tapis",
+            "x": 115,
+            "y": 310,
+            "face": "bas",
+            "w": 120,
+            "d": 50,
+            "couleur": "#6B5A7A"
+          },
+          {
+            "t": "escalier",
+            "x": 265,
+            "y": 330,
+            "face": "haut",
+            "w": 60,
+            "d": 170
+          },
+          {
+            "t": "lit",
+            "x": 70,
+            "y": 480,
+            "face": "droite",
+            "w": 90,
+            "d": 115,
+            "drap": "#B9A48A",
+            "double": true
+          },
+          {
+            "t": "tv",
+            "x": 170,
+            "y": 480,
+            "face": "gauche",
+            "w": 70,
+            "entite": "media_player.boitier_chambre_parentale"
+          },
+          {
+            "t": "tapis",
+            "x": 95,
+            "y": 580,
+            "face": "bas",
+            "w": 110,
+            "d": 50,
+            "couleur": "#4A4F63"
+          },
+          {
+            "t": "plante",
+            "x": 20,
+            "y": 625,
+            "face": "bas"
+          },
+          {
+            "t": "douche",
+            "x": 202,
+            "y": 605,
+            "face": "haut",
+            "w": 46,
+            "d": 56
+          },
+          {
+            "t": "lavabo",
+            "x": 202,
+            "y": 375,
+            "face": "bas"
+          },
+          {
+            "t": "wc",
+            "x": 202,
+            "y": 495,
+            "face": "gauche"
+          },
+          {
+            "t": "comptoir",
+            "x": 345,
+            "y": 620,
+            "face": "haut",
+            "w": 220,
+            "d": 36,
+            "plaque": true,
+            "couleur": "#17181C",
+            "plan": "bois"
+          },
+          {
+            "t": "frigous",
+            "x": 256,
+            "y": 452,
+            "face": "droite"
+          },
+          {
+            "t": "comptoir",
+            "x": 250,
+            "y": 530,
+            "face": "droite",
+            "w": 110,
+            "d": 36,
+            "couleur": "#17181C",
+            "plan": "bois"
+          },
+          {
+            "t": "ilotbois",
+            "x": 372,
+            "y": 512,
+            "face": "bas",
+            "w": 120,
+            "d": 60
+          },
+          {
+            "t": "plante",
+            "x": 315,
+            "y": 405,
+            "face": "bas"
+          },
+          {
+            "t": "plante",
+            "x": 625,
+            "y": 405,
+            "face": "bas"
+          },
+          {
+            "t": "baignoire",
+            "x": 720,
+            "y": 25,
+            "face": "bas",
+            "w": 130,
+            "d": 42
+          },
+          {
+            "t": "lavabo",
+            "x": 660,
+            "y": 78,
+            "face": "droite"
+          },
+          {
+            "t": "wc",
+            "x": 685,
+            "y": 118,
+            "face": "bas"
+          },
+          {
+            "t": "console",
+            "x": 655,
+            "y": 300,
+            "face": "droite",
+            "w": 60,
+            "d": 20
+          },
+          {
+            "t": "plante",
+            "x": 785,
+            "y": 405,
+            "face": "bas"
+          },
+          {
+            "t": "lit",
+            "x": 945,
+            "y": 60,
+            "face": "gauche",
+            "w": 60,
+            "d": 105,
+            "drap": "#E79BB8"
+          },
+          {
+            "t": "tv",
+            "x": 806,
+            "y": 70,
+            "face": "droite",
+            "w": 60
+          },
+          {
+            "t": "ps5",
+            "x": 820,
+            "y": 105,
+            "face": "droite"
+          },
+          {
+            "t": "tapis",
+            "x": 870,
+            "y": 70,
+            "face": "bas",
+            "w": 70,
+            "d": 70,
+            "couleur": "#D9D1C2"
+          },
+          {
+            "t": "lit",
+            "x": 945,
+            "y": 210,
+            "face": "gauche",
+            "w": 60,
+            "d": 105,
+            "drap": "#3E6FD8"
+          },
+          {
+            "t": "tv",
+            "x": 806,
+            "y": 205,
+            "face": "droite",
+            "w": 70,
+            "entite": "media_player.tv_naim",
+            "ambilight": "light.ambilight_naim"
+          },
+          {
+            "t": "fauteuil",
+            "x": 850,
+            "y": 240,
+            "face": "gauche",
+            "couleur": "#C0303A"
+          },
+          {
+            "t": "lit",
+            "x": 945,
+            "y": 350,
+            "face": "gauche",
+            "w": 60,
+            "d": 105,
+            "drap": "#8BC6A0"
+          },
+          {
+            "t": "tv",
+            "x": 806,
+            "y": 345,
+            "face": "droite",
+            "w": 60,
+            "entite": "media_player.apple_tv_amel"
+          },
+          {
+            "t": "bureau",
+            "x": 870,
+            "y": 292,
+            "face": "bas",
+            "w": 80,
+            "d": 34
+          },
+          {
+            "t": "biblio",
+            "x": 870,
+            "y": 410,
+            "face": "haut",
+            "w": 80
+          },
+          {
+            "t": "tablejardin",
+            "x": 470,
+            "y": 175,
+            "face": "bas"
+          },
+          {
+            "t": "transat",
+            "x": 360,
+            "y": 60,
+            "face": "bas"
+          },
+          {
+            "t": "transat",
+            "x": 410,
+            "y": 60,
+            "face": "bas"
+          },
+          {
+            "t": "arbre",
+            "x": 600,
+            "y": 45,
+            "face": "bas"
+          },
+          {
+            "t": "plante",
+            "x": 315,
+            "y": 315,
+            "face": "bas"
+          },
+          {
+            "t": "plante",
+            "x": 625,
+            "y": 315,
+            "face": "bas"
+          },
+          {
+            "t": "tablerustique",
+            "x": 470,
+            "y": 376,
+            "face": "bas",
+            "w": 176,
+            "d": 50,
+            "chaises": 6
+          },
+          {
+            "t": "tv",
+            "x": 991,
+            "y": 470,
+            "face": "gauche",
+            "w": 110,
+            "entite": "media_player.tv_salon",
+            "meuble": "industriel"
+          },
+          {
+            "t": "canape",
+            "x": 762,
+            "y": 532,
+            "face": "droite",
+            "w": 160,
+            "d": 46,
+            "couleur": "#16171B"
+          },
+          {
+            "t": "canape",
+            "x": 830,
+            "y": 617,
+            "face": "haut",
+            "w": 118,
+            "d": 44,
+            "couleur": "#16171B"
+          },
+          {
+            "t": "tablebasseronde",
+            "x": 878,
+            "y": 522,
+            "face": "bas"
+          },
+          {
+            "t": "tapis",
+            "x": 870,
+            "y": 525,
+            "face": "bas",
+            "w": 150,
+            "d": 135,
+            "couleur": "#D9D1C2"
+          },
+          {
+            "t": "plante",
+            "x": 478,
+            "y": 625,
+            "face": "bas"
+          },
+          {
+            "t": "colonne",
+            "x": 254,
+            "y": 496,
+            "face": "droite",
+            "couleur": "#17181C"
+          },
+          {
+            "t": "aquarium",
+            "x": 500,
+            "y": 626,
+            "face": "haut"
+          },
+          {
+            "t": "papasan",
+            "x": 960,
+            "y": 600,
+            "face": "gauche"
+          },
+          {
+            "t": "monstera",
+            "x": 980,
+            "y": 520,
+            "face": "gauche"
+          },
+          {
+            "t": "plante",
+            "x": 984,
+            "y": 436,
+            "face": "bas"
+          },
+          {
+            "t": "portemanteau",
+            "x": 648,
+            "y": 375,
+            "face": "droite",
+            "w": 70
+          },
+          {
+            "t": "banc",
+            "x": 786,
+            "y": 163,
+            "face": "gauche",
+            "w": 48
+          },
+          {
+            "t": "transat",
+            "x": 1060,
+            "y": 540,
+            "face": "gauche"
+          },
+          {
+            "t": "plante",
+            "x": 1090,
+            "y": 485,
+            "face": "bas"
+          },
+          {
+            "t": "plante",
+            "x": 1090,
+            "y": 625,
+            "face": "bas"
+          }
+        ],
+        "ouvertures": [
+          {
+            "type": "garage",
+            "a": [
+              40,
+              0
+            ],
+            "b": [
+              260,
+              0
+            ],
+            "entite": "cover.garage"
+          },
+          {
+            "type": "porte",
+            "a": [
+              200,
+              190
+            ],
+            "b": [
+              232,
+              190
+            ]
+          },
+          {
+            "type": "porte",
+            "a": [
+              248,
+              240
+            ],
+            "b": [
+              280,
+              240
+            ]
+          },
+          {
+            "type": "porte",
+            "a": [
+              230,
+              276
+            ],
+            "b": [
+              230,
+              308
+            ]
+          },
+          {
+            "type": "porte",
+            "a": [
+              118,
+              350
+            ],
+            "b": [
+              150,
+              350
+            ]
+          },
+          {
+            "type": "porte",
+            "a": [
+              175,
+              380
+            ],
+            "b": [
+              175,
+              406
+            ]
+          },
+          {
+            "type": "porte",
+            "a": [
+              300,
+              356
+            ],
+            "b": [
+              300,
+              400
+            ]
+          },
+          {
+            "type": "porte",
+            "a": [
+              752,
+              100
+            ],
+            "b": [
+              782,
+              100
+            ]
+          },
+          {
+            "type": "porte",
+            "a": [
+              730,
+              150
+            ],
+            "b": [
+              730,
+              180
+            ]
+          },
+          {
+            "type": "porte",
+            "a": [
+              800,
+              104
+            ],
+            "b": [
+              800,
+              136
+            ]
+          },
+          {
+            "type": "porte",
+            "a": [
+              800,
+              190
+            ],
+            "b": [
+              800,
+              222
+            ]
+          },
+          {
+            "type": "porte",
+            "a": [
+              800,
+              328
+            ],
+            "b": [
+              800,
+              360
+            ]
+          },
+          {
+            "type": "porte",
+            "a": [
+              640,
+              214
+            ],
+            "b": [
+              640,
+              262
+            ],
+            "exterieure": true
+          },
+          {
+            "type": "baie",
+            "a": [
+              1000,
+              528
+            ],
+            "b": [
+              1000,
+              630
+            ]
+          },
+          {
+            "type": "baie",
+            "a": [
+              340,
+              330
+            ],
+            "b": [
+              452,
+              330
+            ]
+          },
+          {
+            "type": "baie",
+            "a": [
+              498,
+              330
+            ],
+            "b": [
+              612,
+              330
+            ]
+          },
+          {
+            "type": "baie",
+            "a": [
+              880,
+              640
+            ],
+            "b": [
+              988,
+              640
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "etage",
+      "nom": "Étage",
+      "icone": "🛏",
+      "couleur": "#43A047",
+      "pieces": [
+        {
+          "nom": "Salle de jeux",
+          "icone": "🕹",
+          "photo": "jeux.jpg",
+          "equipements": [
+            {
+              "entity_id": "light.salle_de_jeux",
+              "nom": "Plafonnier",
+              "icone": "💡"
+            }
+          ]
+        }
+      ],
+      "plan": {
+        "largeur": 520,
+        "hauteur": 380,
+        "position3d": {
+          "x": 180,
+          "y": 230,
+          "altitude": 108
+        },
+        "zones": [
+          {
+            "type": "decor",
+            "nom": "Escalier",
+            "rects": [
+              [
+                0,
+                0,
+                150,
+                220
+              ]
+            ]
+          },
+          {
+            "type": "decor",
+            "nom": "Salle de bain",
+            "rects": [
+              [
+                0,
+                220,
+                150,
+                160
+              ]
+            ]
+          },
+          {
+            "piece": "Salle de jeux",
+            "poly": [
+              [
+                150,
+                0
+              ],
+              [
+                520,
+                0
+              ],
+              [
+                520,
+                190
+              ],
+              [
+                360,
+                190
+              ],
+              [
+                360,
+                380
+              ],
+              [
+                150,
+                380
+              ]
+            ],
+            "label": [
+              300,
+              150
+            ]
+          },
+          {
+            "type": "decor",
+            "nom": "Chambre d'amis",
+            "rects": [
+              [
+                360,
+                190,
+                160,
+                190
+              ]
+            ]
+          }
+        ],
+        "meubles": [
+          {
+            "t": "escalier",
+            "x": 75,
+            "y": 110,
+            "face": "bas",
+            "w": 70,
+            "d": 180
+          },
+          {
+            "t": "douche",
+            "x": 30,
+            "y": 345,
+            "face": "haut",
+            "w": 50,
+            "d": 56
+          },
+          {
+            "t": "lavabo",
+            "x": 120,
+            "y": 240,
+            "face": "bas"
+          },
+          {
+            "t": "wc",
+            "x": 120,
+            "y": 350,
+            "face": "haut"
+          },
+          {
+            "t": "billard",
+            "x": 265,
+            "y": 95,
+            "face": "bas",
+            "w": 150,
+            "d": 82
+          },
+          {
+            "t": "arcade",
+            "x": 500,
+            "y": 40,
+            "face": "gauche"
+          },
+          {
+            "t": "arcade",
+            "x": 500,
+            "y": 95,
+            "face": "gauche",
+            "couleur": "#C0303A"
+          },
+          {
+            "t": "arcade",
+            "x": 500,
+            "y": 150,
+            "face": "gauche",
+            "couleur": "#2D7BD8"
+          },
+          {
+            "t": "canape",
+            "x": 255,
+            "y": 355,
+            "face": "haut",
+            "w": 150,
+            "d": 44,
+            "couleur": "#3A2F5A"
+          },
+          {
+            "t": "tv",
+            "x": 255,
+            "y": 198,
+            "face": "bas",
+            "w": 100
+          },
+          {
+            "t": "pouf",
+            "x": 205,
+            "y": 280,
+            "face": "bas"
+          },
+          {
+            "t": "pouf",
+            "x": 300,
+            "y": 280,
+            "face": "bas",
+            "couleur": "#2D7BD8"
+          },
+          {
+            "t": "tapis",
+            "x": 255,
+            "y": 285,
+            "face": "bas",
+            "w": 180,
+            "d": 90,
+            "couleur": "#2E2A4A"
+          },
+          {
+            "t": "lit",
+            "x": 440,
+            "y": 320,
+            "face": "haut",
+            "w": 86,
+            "d": 110,
+            "drap": "#C9C2B4",
+            "double": true
+          },
+          {
+            "t": "plante",
+            "x": 505,
+            "y": 365,
+            "face": "bas"
+          },
+          {
+            "t": "armoire",
+            "x": 440,
+            "y": 205,
+            "face": "bas",
+            "w": 110,
+            "d": 26
+          }
+        ],
+        "ouvertures": [
+          {
+            "type": "porte",
+            "a": [
+              150,
+              56
+            ],
+            "b": [
+              150,
+              100
+            ]
+          },
+          {
+            "type": "porte",
+            "a": [
+              56,
+              220
+            ],
+            "b": [
+              88,
+              220
+            ]
+          },
+          {
+            "type": "porte",
+            "a": [
+              378,
+              190
+            ],
+            "b": [
+              410,
+              190
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

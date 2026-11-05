@@ -1,77 +1,25 @@
 services:
-  # ============================================
-  # HOME ASSISTANT - Hub central
-  # ============================================
+  # Hub domotique : intégrations, automatisations, scènes
   homeassistant:
     container_name: homeassistant
-    image: ghcr.io/home-assistant/home-assistant:stable
+    image: ghcr.io/home-assistant/home-assistant:2026.2.0  # version figée : mise à jour = décision explicite
     volumes:
       - ./homeassistant-config:/config
       - /etc/localtime:/etc/localtime:ro
-    restart: unless-stopped
-    network_mode: host
     environment:
       - TZ=Europe/Paris
-    labels:
-      - "com.centurylinklabs.watchtower.enable=true"
-
-  # ============================================
-  # MOSQUITTO - MQTT Broker (pour Loratap local)
-  # ============================================
-  mosquitto:
-    container_name: mosquitto
-    image: eclipse-mosquitto:latest
-    volumes:
-      - ./mosquitto/config:/mosquitto/config
-      - ./mosquitto/data:/mosquitto/data
-      - ./mosquitto/log:/mosquitto/log
-    ports:
-      - "1883:1883"
-      - "9001:9001"
+    network_mode: host
     restart: unless-stopped
 
-  # ============================================
-  # CLOUDFLARED - Tunnel sécurisé (accès distant)
-  # ============================================
-  cloudflared:
-    container_name: cloudflared
-    image: cloudflare/cloudflared:latest
-    command: tunnel --no-autoupdate run --token ${CLOUDFLARE_TOKEN}
+  # Portail tablette léger (vieux Safari iOS 9) : http://<serveur>:8124
+  portail:
+    container_name: portail-tablette
+    image: python:3.12-alpine
+    command: ["python", "-u", "/app/server.py"]
+    volumes:
+      - ./portail:/app:ro
+    env_file: .env
+    network_mode: host
     restart: unless-stopped
     depends_on:
       - homeassistant
-    environment:
-      - TUNNEL_TOKEN=${CLOUDFLARE_TOKEN}
-
-  # ============================================
-  # NGINX - Reverse Proxy (optionnel)
-  # ============================================
-  nginx:
-    container_name: nginx
-    image: nginx:alpine
-    volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./nginx/ssl:/etc/nginx/ssl:ro
-    ports:
-      - "443:443"
-      - "80:80"
-    restart: unless-stopped
-    depends_on:
-      - homeassistant
-
-  # ============================================
-  # WATCHTOWER - Auto-update containers
-  # ============================================
-  watchtower:
-    container_name: watchtower
-    image: containrrr/watchtower
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    environment:
-      - WATCHTOWER_CLEANUP=true
-      - WATCHTOWER_SCHEDULE=0 0 4 * * *
-    restart: unless-stopped
-
-networks:
-  default:
-    name: home-automation

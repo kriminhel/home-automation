@@ -23,3 +23,27 @@ services:
     restart: unless-stopped
     depends_on:
       - homeassistant
+
+  # Pont Matter : expose les lumières (et bientôt les volets) à la Google Home Mini.
+  # Tout reste local. Interface d'admin : http://<serveur>:8482 (réseau local seulement).
+  # Mise en route : docs/MATTER.md
+  # Démarré seulement si .env contient COMPOSE_PROFILES=matter (Home Assistant et le
+  # portail ne dépendent pas de lui).
+  matter-hub:
+    container_name: matter-hub
+    profiles: ["matter"]
+    image: ghcr.io/riddix/home-assistant-matter-hub:2.0.59  # version figée
+    environment:
+      - HAMH_HOME_ASSISTANT_URL=http://127.0.0.1:8123/
+      - HAMH_HOME_ASSISTANT_ACCESS_TOKEN=${MATTER_HA_TOKEN:-}
+      - HAMH_LOG_LEVEL=info
+      - HAMH_HTTP_PORT=8482
+      - HAMH_HTTP_AUTH_USERNAME=${MATTER_ADMIN_USER:-admin}
+      - HAMH_HTTP_AUTH_PASSWORD=${MATTER_ADMIN_PASSWORD:-}
+      - HAMH_HTTP_IP_WHITELIST=${MATTER_IP_WHITELIST:-192.168.1.0/24}
+    volumes:
+      - ./matter-hub:/data   # identité Matter + appairage Google : jamais dans git
+    network_mode: host       # obligatoire pour Matter (mDNS + IPv6)
+    restart: unless-stopped
+    depends_on:
+      - homeassistant

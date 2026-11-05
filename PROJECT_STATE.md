@@ -4,7 +4,7 @@
 - **Repo** : github.com/kriminhel/home-automation (dépôt unique ; sorti de betanalyst-pro le 04/11/2026)
 - **Serveur** : pcdomotique (192.168.1.37), `~/home-automation`, `docker compose up -d`
 - **Stack** : Home Assistant (Docker), portail Python standard + HTML/JS ES5, IPX800 V3, Broadlink RM4 Pro
-- **Dernière mise à jour** : 2026-11-04
+- **Dernière mise à jour** : 2026-11-05
 
 ## Objectif
 Piloter toute la maison depuis un iPad sous iOS 9, en 2 touchers maximum, via un portail
@@ -20,6 +20,7 @@ léger servi par le serveur. Détails : [`docs/PRD.md`](docs/PRD.md).
 | J3 — Garage / volets | 🔄 | Garage ✅ via Broadlink ; volets = Somfy RTS → ESPSomfy-RTS à commander |
 | J4 — TV Xiaomi/Philips, Freebox, Tuya, garage | 🔄 | Broadlink, Freebox, toutes les TV intégrées et renommées ; reste Tuya, garage |
 | J4 bis — Caméras sur la tablette | 🔄 | Onglet Caméras (dernière image de mouvement, cloud) ✅ ; direct local à tester sur les C6N, absent sur la H8c |
+| J4 ter — Voix Google Home Mini (Matter) | 🔄 | Code + tests prêts (05/11) ; à la maison : `docs/MATTER.md` étapes 1-6 |
 | J5 — Scènes/automatisations réelles, test 7 jours | 📋 | |
 
 ## Achats
@@ -29,6 +30,12 @@ Liste cumulative : [`docs/ACHATS.md`](docs/ACHATS.md) — Karim achète tout qua
 Voir `docs/PRD.md` §10 (référence de la télécommande Came, garage, pièces, Philips, commune).
 
 ## Changelog
+### 2026-11-05 — Commande vocale Google Home Mini (Matter)
+- Service `matter-hub` (home-assistant-matter-hub 2.0.59, fork RiDDiX maintenu) dans `docker-compose.yml`, profil `matter` (HA et portail démarrent même sans config Matter).
+- Pont « Maison - Google » versionné (`matter/pont-google.json`) : toutes les lumières + volets à venir ; **garage exclu** (vérifié par le script et les tests).
+- `scripts/matter-pont.py` : crée / met à jour le pont via son API, affiche le code d'appairage Google Home.
+- `tests/test_matter.py` (14 tests). Mise en route : `docs/MATTER.md` (utilisateur HA `matter`, `.env`, appairage).
+- Non testé en réel : Karim n'est pas à la maison ; la Home Mini n'a pas encore été vue par le scan.
 ### 2026-11-05 — Agenda, navigation, couloir
 - Agenda local HA `calendar.famille` : carte sur l'accueil + ajout d'événements depuis la tablette (`/api/agenda`). iCloud / Google à brancher ensuite (ajouter l'entité dans `maison.json` → `agendas`).
 - Glisser pour changer de vue ; pictogrammes arrondis ; vue 3D globale supprimée ; barre latérale façon référence ; police Plus Jakarta Sans ; avatars (privés, serveur seulement).

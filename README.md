@@ -14,12 +14,14 @@ sous iOS 9, le tout en Docker sur le serveur `pcdomotique`.
 ## Arborescence
 
 ```
-docker-compose.yml          Home Assistant + portail
+docker-compose.yml          Home Assistant + portail (+ pont Matter, profil « matter »)
 homeassistant-config/       Config HA versionnée (les données d'exécution sont ignorées par git)
 portail/                    Portail tablette : server.py (relais), maison.json, static/ (ES5)
 scripts/scan-network.py     Inventaire des appareils du réseau → docs/scan-report.md
 scripts/broadlink-rf.py     Apprentissage / test des codes RF du Broadlink (volets)
-tests/                      Tests du portail (faux Home Assistant)
+matter/pont-google.json     Entités exposées à la Google Home Mini (garage exclu)
+scripts/matter-pont.py      Crée / met à jour le pont Matter, affiche le code d'appairage
+tests/                      Tests du portail (faux Home Assistant) et du pont Matter
 ```
 
 ## Installation sur le serveur
@@ -33,6 +35,8 @@ docker compose up -d
 ```
 
 `HA_TOKEN` : dans Home Assistant, Profil → Sécurité → **Jetons d'accès longue durée**.
+
+Commande vocale (Google Home Mini) : voir [`docs/MATTER.md`](docs/MATTER.md).
 
 ## Mise à jour
 

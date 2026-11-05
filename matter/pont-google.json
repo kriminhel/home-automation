@@ -1,0 +1,22 @@
+{
+  "name": "Maison - Google",
+  "port": 5540,
+  "countryCode": "FR",
+  "icon": "light",
+  "featureFlags": {
+    "autoForceSync": true
+  },
+  "filter": {
+    "include": [
+      { "type": "domain", "value": "light" },
+      { "type": "domain", "value": "cover" }
+    ],
+    "exclude": [
+      { "type": "pattern", "value": "cover.garage*" },
+      { "type": "device_class", "value": "garage" },
+      { "type": "device_class", "value": "gate" },
+      { "type": "entity_category", "value": "config" },
+      { "type": "entity_category", "value": "diagnostic" }
+    ]
+  }
+}

@@ -32,6 +32,8 @@ Indicateurs de réussite :
 - Le portail garde le jeton Home Assistant côté serveur et n'accepte qu'une **liste blanche
   d'actions** sur les équipements déclarés dans `portail/maison.json`.
 - Tout tourne dans `~/home-automation` sur le serveur (`docker compose up -d`).
+- **Commande vocale** : Google Home Mini ⇄ **Matter (local)** ⇄ pont `matter-hub` (Docker) ⇄ Home Assistant.
+  Lumières exposées, volets à ajouter quand ils seront dans HA ; **porte de garage jamais exposée**. Voir [`docs/MATTER.md`](MATTER.md).
 
 ## 3. Inventaire des équipements
 
@@ -124,9 +126,10 @@ ampoule connectée (sans travaux, mais l'interrupteur doit rester allumé).
 
 **V1** : lumières IPX800 · volets (ESPSomfy-RTS) · TV Xiaomi, Philips, boîtier, Apple TV ·
 Freebox · garage · portail · visiophone EZVIZ (image fixe à la sonnerie, ouverture du portail
-avec confirmation) · portail tablette par niveau · scènes · iPad en kiosque.
+avec confirmation) · portail tablette par niveau · scènes · iPad en kiosque ·
+**commande vocale Google Home Mini (Matter local, lumières + volets, sans le garage)** — ajoutée le 05/11.
 
-**Hors V1** : accès depuis l'extérieur (Cloudflare, Nabu Casa), assistants vocaux, plan 3D,
+**Hors V1** : accès depuis l'extérieur (Cloudflare, Nabu Casa), assistants vocaux autres que Google Home Mini, plan 3D,
 mur de caméras en direct permanent sur l'iPad (trop lourd pour iOS 9), suivi d'énergie, NAS.
 
 ## 8. Critères d'acceptation
@@ -138,6 +141,7 @@ mur de caméras en direct permanent sur l'iPad (trop lourd pour iOS 9), suivi d'
 - [ ] Chaque TV s'allume, s'éteint et change de volume depuis la tablette.
 - [ ] `check_config` passe sans erreur ; `python3 -m unittest discover -s tests` passe.
 - [ ] L'iPad tient 7 jours sans intervention.
+- [ ] « Ok Google, allume / éteins <pièce> » marche pour chaque lumière ; idem volets ; le garage n'est **pas** pilotable à la voix.
 
 ## 9. Jalons
 
@@ -148,6 +152,7 @@ mur de caméras en direct permanent sur l'iPad (trop lourd pour iOS 9), suivi d'
 | J2 | Socle : dépôt unique, config nettoyée, HA relancé, portail lumières | 🔄 04/11 |
 | J3 | Radio : garage ✅ (Broadlink) ; volets via ESPSomfy-RTS | 🔄 matériel à commander |
 | J4 | TV Xiaomi / Philips, Freebox, Tuya, garage | 🔄 Broadlink, Freebox, TV salon et Philips faits le 04/11 |
+| J4 ter | Commande vocale Google Home Mini (pont Matter) | ✅ lumières 05/11 (testé à la voix) ; volets à ajouter |
 | J5 | Scènes et automatisations réelles (volets au coucher du soleil…), test 7 jours | 📋 |
 
 ## 10. Questions ouvertes
@@ -157,4 +162,4 @@ mur de caméras en direct permanent sur l'iPad (trop lourd pour iOS 9), suivi d'
 - ⚠️ Direct local des C6N (salon, salle de jeux) : activer le direct LAN avec le mot de passe du compte EZVIZ, puis vérifier le port 554. Garage H8c : pas de RTSP (firmware) ; microSD : les cartes de rechange sont contrefaites → carte endurance (ACHATS #6).
 - ⚠️ Salle de bain de l'étage : quelle solution (§6 bis) ?
 - ⚠️ Commune de la maison (pour les heures de lever et de coucher du soleil ; HA est réglé par défaut sur Amsterdam).
-- ⚠️ Faut-il un code PIN pour le garage ?
+- ⚠️ Faut-il un code PIN pour le garage ? (à la voix : garage exclu, décidé le 05/11)

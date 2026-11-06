@@ -81,9 +81,19 @@ class TestConfig(unittest.TestCase):
     def test_config_versionnee_valide(self):
         self.assertEqual(mp.verifier_config(CONFIG), [])
 
-    def test_lumieres_et_volets_inclus(self):
-        domaines = {r["value"] for r in CONFIG["filter"]["include"] if r["type"] == "domain"}
-        self.assertEqual(domaines, {"light", "cover"})
+    def test_lumieres_seules_incluses(self):
+        self.assertEqual(CONFIG["filter"]["include"], [{"type": "domain", "value": "light"}])
+
+    def test_nom_du_pont_appaire(self):
+        # Le script retrouve le pont par son nom : un autre nom en créerait un second
+        self.assertEqual(CONFIG["name"], "Maison")
+
+    def test_ambilight_exclu(self):
+        self.assertIn({"type": "pattern", "value": "light.ambilight_naim"},
+                      CONFIG["filter"]["exclude"])
+
+    def test_url_compatible_liste_blanche(self):
+        self.assertTrue(mp.URL_PONT.startswith("http://192.168.1."))
 
     def test_garage_toujours_exclu(self):
         exclus = CONFIG["filter"]["exclude"]
@@ -108,10 +118,6 @@ class TestConfig(unittest.TestCase):
     def test_port_alexa_google_5540(self):
         self.assertEqual(CONFIG["port"], 5540)
 
-    def test_dossier_appairage_ignore_par_git(self):
-        with open(os.path.join(RACINE, ".gitignore"), encoding="utf-8") as f:
-            self.assertIn("matter-hub/", f.read())
-
     def test_service_docker_compose(self):
         with open(os.path.join(RACINE, "docker-compose.yml"), encoding="utf-8") as f:
             compose = f.read()
@@ -119,8 +125,11 @@ class TestConfig(unittest.TestCase):
         self.assertIn("network_mode: host", bloc)
         self.assertRegex(bloc, r"home-assistant-matter-hub:\d+\.\d+\.\d+")  # version figée
         self.assertIn("HAMH_HTTP_AUTH_PASSWORD", bloc)
-        # Optionnel : un .env sans variables Matter ne doit pas bloquer HA et le portail
-        self.assertIn('profiles: ["matter"]', bloc)
+        # Réglages du pont qui fonctionne : ne pas perdre l'appairage ni le démarrage auto
+        self.assertIn("matter-hub-data:/data", bloc)
+        self.assertIn("${HA_TOKEN}", bloc)
+        self.assertIn("HAMH_MDNS_NETWORK_INTERFACE=wlp2s0", bloc)
+        self.assertNotIn("profiles:", bloc)
         self.assertNotIn(":?", compose)
         self.assertNotIn("latest", bloc.split("image:", 1)[1].split("\n", 1)[0])
 

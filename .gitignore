@@ -73,6 +73,3 @@ portail/static/prive/
 
 # Jeton d'application Freebox (secret)
 freebox_token.json
-
-# Pont Matter : clés de l'appairage Google (secret)
-matter-hub/

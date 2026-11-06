@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Crée ou met à jour le pont Matter « Maison - Google » à partir de matter/pont-google.json,
+Crée ou met à jour le pont Matter « Maison » à partir de matter/pont-google.json,
 puis affiche son état et le code d'appairage à saisir dans l'appli Google Home.
 
 À lancer sur le serveur (pcdomotique), une fois le conteneur matter-hub démarré :
@@ -25,6 +25,10 @@ CONFIG = os.path.join(RACINE, "matter", "pont-google.json")
 
 # Entités qui ne doivent JAMAIS être pilotables à la voix (sécurité : ouverture de la maison)
 INTERDITES = ["cover.garage"]
+
+# Adresse réseau du serveur et non 127.0.0.1 : la liste blanche du pont (192.168.1.0/24)
+# refuserait un appel en boucle locale.
+URL_PONT = "http://192.168.1.37:8482"
 
 
 def lire_env(chemin=os.path.join(RACINE, ".env")):
@@ -130,7 +134,7 @@ def afficher_etat(pont, nom):
         print(f"✅ Déjà appairé ({len(comm.get('fabrics') or [])} contrôleur(s)).")
     elif comm.get("manualPairingCode"):
         print("\n📱 Appli Google Home → + → Appareil → Nouvel appareil → Matter → "
-              "« Configurer sans QR code », puis saisir :")
+              "« Configurer sans QR code », puis saisir (sans tirets) :")
         print(f"\n      {comm['manualPairingCode']}\n")
         print(f"   (QR code : {comm.get('qrPairingCode')} — aussi affiché sur http://<serveur>:8482)")
     return 0
@@ -140,7 +144,7 @@ def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     ap.add_argument("--etat", action="store_true", help="afficher l'état sans rien modifier")
     ap.add_argument("--essai", action="store_true", help="afficher la config sans l'envoyer")
-    ap.add_argument("--url", default=None, help="URL du pont (défaut http://127.0.0.1:8482)")
+    ap.add_argument("--url", default=None, help=f"URL du pont (défaut {URL_PONT})")
     ap.add_argument("--config", default=CONFIG)
     args = ap.parse_args(argv)
 
@@ -158,7 +162,7 @@ def main(argv=None):
     if not env.get("MATTER_ADMIN_PASSWORD"):
         print("❌ MATTER_ADMIN_PASSWORD absent de .env (voir docs/MATTER.md)")
         return 2
-    pont = Pont(args.url or env.get("MATTER_URL", "http://127.0.0.1:8482"),
+    pont = Pont(args.url or env.get("MATTER_URL", URL_PONT),
                 env.get("MATTER_ADMIN_USER", "admin"), env["MATTER_ADMIN_PASSWORD"])
     if not args.etat:
         id_pont, action = pont.appliquer(config)

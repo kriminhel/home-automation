@@ -33,7 +33,7 @@ Indicateurs de réussite :
   d'actions** sur les équipements déclarés dans `portail/maison.json`.
 - Tout tourne dans `~/home-automation` sur le serveur (`docker compose up -d`).
 - **Commande vocale** : Google Home Mini ⇄ **Matter (local)** ⇄ pont `matter-hub` (Docker) ⇄ Home Assistant.
-  Lumières et volets exposés ; **porte de garage jamais exposée**. Voir [`docs/MATTER.md`](MATTER.md).
+  Lumières exposées, volets à ajouter quand ils seront dans HA ; **porte de garage jamais exposée**. Voir [`docs/MATTER.md`](MATTER.md).
 
 ## 3. Inventaire des équipements
 
@@ -152,7 +152,7 @@ mur de caméras en direct permanent sur l'iPad (trop lourd pour iOS 9), suivi d'
 | J2 | Socle : dépôt unique, config nettoyée, HA relancé, portail lumières | 🔄 04/11 |
 | J3 | Radio : garage ✅ (Broadlink) ; volets via ESPSomfy-RTS | 🔄 matériel à commander |
 | J4 | TV Xiaomi / Philips, Freebox, Tuya, garage | 🔄 Broadlink, Freebox, TV salon et Philips faits le 04/11 |
-| J4 ter | Commande vocale Google Home Mini (pont Matter) | 🔄 05/11 code prêt, appairage à faire à la maison |
+| J4 ter | Commande vocale Google Home Mini (pont Matter) | ✅ lumières 05/11 (testé à la voix) ; volets à ajouter |
 | J5 | Scènes et automatisations réelles (volets au coucher du soleil…), test 7 jours | 📋 |
 
 ## 10. Questions ouvertes

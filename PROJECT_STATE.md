@@ -4,7 +4,7 @@
 - **Repo** : github.com/kriminhel/home-automation (dépôt unique ; sorti de betanalyst-pro le 04/11/2026)
 - **Serveur** : pcdomotique (192.168.1.37), `~/home-automation`, `docker compose up -d`
 - **Stack** : Home Assistant (Docker), portail Python standard + HTML/JS ES5, IPX800 V3, Broadlink RM4 Pro
-- **Dernière mise à jour** : 2026-11-05 (tout fusionné dans `main` ; serveur sur `main`)
+- **Dernière mise à jour** : 2026-11-06 (commande vocale Google en service)
 
 ## Objectif
 Piloter toute la maison depuis un iPad sous iOS 9, en 2 touchers maximum, via un portail
@@ -20,7 +20,7 @@ léger servi par le serveur. Détails : [`docs/PRD.md`](docs/PRD.md).
 | J3 — Garage / volets | 🔄 | Garage ✅ via Broadlink ; volets = Somfy RTS → ESPSomfy-RTS à commander |
 | J4 — TV Xiaomi/Philips, Freebox, Tuya, garage | 🔄 | Broadlink, Freebox, toutes les TV intégrées et renommées ; reste Tuya, garage |
 | J4 bis — Caméras sur la tablette | 🔄 | Onglet Caméras (dernière image de mouvement, cloud) ✅ ; direct local à tester sur les C6N, absent sur la H8c |
-| J4 ter — Voix Google Home Mini (Matter) | 🔄 | Code + tests prêts (05/11) ; à la maison : `docs/MATTER.md` étapes 1-6 |
+| J4 ter — Voix Google Home Mini (Matter) | ✅ | Lumières testées à la voix le 05/11 ; volets à ajouter ; garage exclu |
 | J5 — Scènes/automatisations réelles, test 7 jours | 📋 | |
 
 ## Achats
@@ -38,11 +38,12 @@ Voir `docs/PRD.md` §10 (référence de la télécommande Came, garage, pièces,
 
 ## Changelog
 ### 2026-11-05 — Commande vocale Google Home Mini (Matter)
-- Service `matter-hub` (home-assistant-matter-hub 2.0.59, fork RiDDiX maintenu) dans `docker-compose.yml`, profil `matter` (HA et portail démarrent même sans config Matter).
-- Pont « Maison - Google » versionné (`matter/pont-google.json`) : toutes les lumières + volets à venir ; **garage exclu** (vérifié par le script et les tests).
+- Enceinte « Alia » (Google Home Mini, 192.168.1.23) intégrée à HA via Cast (`media_player.alia`) et hub Matter de Google Home.
+- Service `matter-hub` (home-assistant-matter-hub 2.0.59, fork RiDDiX maintenu) dans `docker-compose.yml`, volume `matter-hub-data`, jeton `HA_TOKEN`, annonces limitées à `wlp2s0`.
+- Pont « Maison » versionné (`matter/pont-google.json`) : 22 lumières (sans l'Ambilight) ; **garage exclu** (vérifié par le script et les tests).
 - `scripts/matter-pont.py` : crée / met à jour le pont via son API, affiche le code d'appairage Google Home.
-- `tests/test_matter.py` (14 tests). Mise en route : `docs/MATTER.md` (utilisateur HA `matter`, `.env`, appairage).
-- Non testé en réel : Karim n'est pas à la maison ; la Home Mini n'a pas encore été vue par le scan.
+- `tests/test_matter.py`. Fonctionnement et réinstallation : `docs/MATTER.md`.
+- Testé en réel : appairage Google Home et commandes vocales du salon validés par Karim.
 ### 2026-11-05 (matin) — Accueil et plans
 - Accueil : agenda tout en haut, carte « Lumières » retirée, bouton « Tout éteindre » en haut à droite (scène `scene.tout_eteindre`), météo dans le rond de la barre latérale à la place du logo.
 - Niveaux : la liste « Toutes les commandes » est retirée ; les cartes photo des pièces du niveau sont sous le plan 3D (retirées de l'accueil).

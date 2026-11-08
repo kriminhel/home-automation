@@ -25,7 +25,7 @@ léger servi par le serveur. Détails : [`docs/PRD.md`](docs/PRD.md).
 | « Dis Siri, ouvre le portail » | 🔄 | `script.ouvrir_portail` prêt (inactif sans Shelly) + guide raccourci (`docs/PORTAIL-SIRI.md`) ; attend le Shelly sur la carte Nice |
 | J5 — Scènes/automatisations réelles, test 7 jours | 🔄 | 08/11 : extérieur au coucher du soleil + extinction 23 h 30, alerte garage resté ouvert (annonce Google Home Mini) — `docs/AUTOMATISATIONS.md` ; test 7 jours à faire |
 | Internet des enfants (contrôle parental Freebox) | 🔄 | Code prêt 08/11 (`docs/INTERNET-ENFANTS.md`) ; à faire : profils Alia/Naïm/Amel dans Freebox Connect, `scripts/freebox-autoriser.py`, permission |
-| Agenda Google / iCloud | 📋 | Guide prêt (`docs/AGENDA.md`) ; Karim choisit iCloud ou Google et branche dans HA |
+| Agenda Google | 📋 | **Google retenu** (08/11) pour ajouter des rdv à la voix via la Google Home Mini ; guide `docs/AGENDA.md` (intégration Google Calendar dans HA + Voice Match) |
 | Batterie des téléphones | 📋 | Affichage prêt (`docs/TELEPHONES.md`) ; installer l'appli HA sur chaque téléphone |
 
 ## Achats
@@ -37,7 +37,7 @@ Voir `docs/PRD.md` §10 (référence de la télécommande Came, garage, pièces,
 ## À reprendre (prochaine session)
 1. **Portail / arrivée** : décidé le 08/11 → VPN Freebox + « Dis Siri, ouvre le portail » (confirmation, jamais automatique). Reste : installer le VPN, créer le raccourci, acheter / poser le Shelly (entrée OPEN de préférence). Lumières terrasse à l'arrivée la nuit : à reproposer. Phrase coupée « … allume les lumières de la terrasse et » : toujours à clarifier.
 2. **Contrôle parental Freebox** : code prêt (08/11). À la maison : créer les profils, `python3 scripts/freebox-autoriser.py`, cocher « Contrôle parental », `docker compose up -d portail` (`docs/INTERNET-ENFANTS.md`).
-3. **Agenda** : choisir iCloud (le plus simple) ou Google, brancher dans HA, me donner les entités (`docs/AGENDA.md`).
+3. **Agenda** : Google retenu (ajout à la voix). Brancher Google Calendar dans HA, activer Voice Match + résultats personnels sur l'enceinte, me donner les entités (`docs/AGENDA.md`).
 4. **Batterie des téléphones** : appli HA sur chaque téléphone, me donner les noms des capteurs (`docs/TELEPHONES.md`).
 6. **Synthèse vocale** : ajouter l'intégration Google Translate TTS (fr) pour que les alertes soient dites sur la Google Home Mini (`docs/AUTOMATISATIONS.md`).
 5. **Caméra garage** : nouveau code de chiffrement d'image à créer par Karim → `EZVIZ_CODES` dans `.env` (Karim l'écrit lui-même).

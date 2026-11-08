@@ -1,0 +1,17 @@
+{
+  "name": "Maison",
+  "port": 5540,
+  "filter": {
+    "include": [
+      { "type": "domain", "value": "light" }
+    ],
+    "exclude": [
+      { "type": "pattern", "value": "light.ambilight_naim" },
+      { "type": "pattern", "value": "cover.garage*" },
+      { "type": "device_class", "value": "garage" },
+      { "type": "device_class", "value": "gate" },
+      { "type": "entity_category", "value": "config" },
+      { "type": "entity_category", "value": "diagnostic" }
+    ]
+  }
+}

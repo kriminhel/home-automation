@@ -124,9 +124,11 @@ ampoule connectée (sans travaux, mais l'interrupteur doit rester allumé).
 
 **V1** : lumières IPX800 · volets (ESPSomfy-RTS) · TV Xiaomi, Philips, boîtier, Apple TV ·
 Freebox · garage · portail · visiophone EZVIZ (image fixe à la sonnerie, ouverture du portail
-avec confirmation) · portail tablette par niveau · scènes · iPad en kiosque.
+avec confirmation) · portail tablette par niveau · scènes · iPad en kiosque ·
+**accès depuis l'extérieur par le VPN WireGuard de la Freebox** ([`ACCES-DISTANT.md`](ACCES-DISTANT.md)) ·
+**« Dis Siri, ouvre le portail »** avec confirmation, jamais automatique ([`PORTAIL-SIRI.md`](PORTAIL-SIRI.md)) — décidés le 08/11.
 
-**Hors V1** : accès depuis l'extérieur (Cloudflare, Nabu Casa), assistants vocaux, plan 3D,
+**Hors V1** : accès extérieur par Cloudflare ou Nabu Casa (VPN Freebox retenu), ouverture automatique du portail ou du garage, plan 3D,
 mur de caméras en direct permanent sur l'iPad (trop lourd pour iOS 9), suivi d'énergie, NAS.
 
 ## 8. Critères d'acceptation

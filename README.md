@@ -19,7 +19,9 @@ homeassistant-config/       Config HA versionnée (les données d'exécution son
 portail/                    Portail tablette : server.py (relais), maison.json, static/ (ES5)
 scripts/scan-network.py     Inventaire des appareils du réseau → docs/scan-report.md
 scripts/broadlink-rf.py     Apprentissage / test des codes RF du Broadlink (volets)
-tests/                      Tests du portail (faux Home Assistant)
+tests/                      Tests du portail (faux Home Assistant) et garde-fous du script portail
+docs/ACCES-DISTANT.md       VPN WireGuard de la Freebox (accès depuis la 4G)
+docs/PORTAIL-SIRI.md        « Dis Siri, ouvre le portail » (raccourci iPhone + Shelly)
 ```
 
 ## Installation sur le serveur

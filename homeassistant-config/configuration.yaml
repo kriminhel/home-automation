@@ -34,6 +34,39 @@ rest_command:
 # fois, ~0,2 s chacun) pour ménager le petit serveur web de l'IPX800.
 # NB : l'IPX800 n'a que 24 relais (carte + 2 extensions) ; 25 à 32 n'existent pas.
 script:
+  # Portail Nice : impulsion sur la carte du moteur via un Shelly 1 Mini Gen3 (contact sec).
+  # Appelé par le raccourci « Dis Siri, ouvre le portail » (docs/PORTAIL-SIRI.md).
+  # Tant que le Shelly n'est pas posé (switch.portail_nice absent), prévient au lieu d'agir.
+  # Jamais exposé à la Google Home Mini ni déclenché automatiquement.
+  ouvrir_portail:
+    alias: Portail - ouvrir
+    icon: mdi:gate
+    mode: single
+    max_exceeded: silent
+    sequence:
+      - if:
+          - condition: template
+            value_template: "{{ states('switch.portail_nice') not in ['unknown', 'unavailable'] }}"
+        then:
+          - service: switch.turn_on
+            target: { entity_id: switch.portail_nice }
+          - delay: { seconds: 1 }
+          - service: switch.turn_off
+            target: { entity_id: switch.portail_nice }
+          - service: logbook.log
+            data: { name: Portail, message: "impulsion envoyée au moteur Nice" }
+          # Anti-rebond : une 2e demande dans les 20 s est ignorée (mode single)
+          - delay: { seconds: 20 }
+        else:
+          - service: persistent_notification.create
+            data:
+              title: Portail
+              message: >-
+                Commande reçue, mais le Shelly du portail n'est pas encore installé
+                (switch.portail_nice introuvable). Rien n'a été envoyé.
+          - stop: "Shelly du portail absent"
+            error: true
+
   ipx800_relais:
     alias: IPX800 - commander un relais
     mode: queued

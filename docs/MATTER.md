@@ -15,7 +15,8 @@ Config versionnée : [`matter/pont-google.json`](../matter/pont-google.json).
 | Inclus | Exclu |
 |--------|-------|
 | Les lumières (`light.*`), soit 22 appareils | **Porte de garage** (`cover.garage*`, `device_class` garage/gate) : jamais à la voix, faute de code vocal |
-| | Ambilight de Naïm, entités techniques (`config`, `diagnostic`) |
+| TV Philips de Naïm (`media_player.tv_naim`) et Apple TV d'Amel (`media_player.apple_tv_amel`), vues par Google comme des **enceintes** : marche/arrêt, volume, lecture/pause | Ambilight de Naïm, entités techniques (`config`, `diagnostic`) |
+| | TV du salon et boîtier de la chambre parentale : déjà compatibles Google d'origine, on ne les expose pas une 2ᵉ fois |
 
 `scripts/matter-pont.py` **refuse** une config qui n'exclut pas le garage. Les tests le vérifient aussi.
 
@@ -45,10 +46,22 @@ Inutile tant que le volume `matter-hub-data` existe : il contient l'identité Ma
 4. Accepter le message « appareil non certifié ».
 5. Ranger les lumières dans leurs pièces Google.
 
+## TV
+
+| TV | Comment Google la pilote |
+|----|--------------------------|
+| Salon (Xiaomi Google TV) | **D'origine** : appli Google Home → + → Configurer un appareil, même compte Google. Applis, lecture, volume, arrêt. |
+| Chambre parentale (boîtier Xiaomi Android TV) | **D'origine**, comme le salon. « Allume » échoue tant qu'il coupe son Wi-Fi en veille. |
+| Naïm (Philips) | **Via le pont**, comme une enceinte : « Ok Google, éteins la TV de Naïm », « monte le volume de la TV de Naïm ». Pas de choix d'appli ni de chaîne. |
+| Amel (Apple TV) | **Via le pont**, comme une enceinte : marche/arrêt, lecture/pause. Le volume dépend de la TV branchée derrière (HDMI-CEC). |
+
+Après `python3 scripts/matter-pont.py`, Google ajoute les 2 nouveaux appareils au pont « Maison ». Il faut ensuite les renommer dans l'appli Google Home (« TV Naïm », « TV Amel ») et les ranger dans leur pièce.
+> Google affiche parfois les enceintes Matter de façon limitée. Si une commande ne marche pas, me dire laquelle : le pont permet de les présenter autrement (simple interrupteur marche/arrêt).
+
 ## Plus tard : ajouter les volets
 
 Quand ils seront dans HA (ESPSomfy-RTS) :
-1. Ajouter `{ "type": "domain", "value": "cover" }` à `filter.include` dans `matter/pont-google.json` et adapter le test `test_lumieres_seules_incluses`.
+1. Ajouter `{ "type": "domain", "value": "cover" }` à `filter.include` dans `matter/pont-google.json` et adapter le test `test_lumieres_et_deux_tv_incluses`.
 2. Lancer `python3 scripts/matter-pont.py`.
 3. Vérifier que le garage n'apparaît pas dans Google Home.
 

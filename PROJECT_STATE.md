@@ -20,7 +20,7 @@ léger servi par le serveur. Détails : [`docs/PRD.md`](docs/PRD.md).
 | J3 — Garage / volets | 🔄 | Garage ✅ via Broadlink ; volets = Somfy RTS → ESPSomfy-RTS à commander |
 | J4 — TV Xiaomi/Philips, Freebox, Tuya, garage | 🔄 | Broadlink, Freebox, toutes les TV intégrées et renommées ; reste Tuya, garage |
 | J4 bis — Caméras sur la tablette | 🔄 | Onglet Caméras (dernière image de mouvement, cloud) ✅ ; direct local à tester sur les C6N, absent sur la H8c |
-| J4 ter — Voix Google Home Mini (Matter) | ✅ | Lumières testées à la voix le 05/11 ; volets à ajouter ; garage exclu |
+| J4 ter — Voix Google Home Mini (Matter) | ✅ | Lumières testées à la voix le 05/11 ; TV Naïm + Apple TV Amel ajoutées au pont le 08/11 (à tester) ; volets à ajouter ; garage exclu |
 | J5 — Scènes/automatisations réelles, test 7 jours | 📋 | |
 
 ## Achats
@@ -37,6 +37,8 @@ Voir `docs/PRD.md` §10 (référence de la télécommande Came, garage, pièces,
 5. **Caméra garage** : nouveau code de chiffrement d'image à créer par Karim → `EZVIZ_CODES` dans `.env` (Karim l'écrit lui-même).
 
 ## Changelog
+### 2026-11-08 — TV à la voix
+- Pont Matter : TV Philips de Naïm et Apple TV d'Amel exposées (Google les voit comme des enceintes : marche/arrêt, volume, lecture). TV salon et boîtier chambre parentale : Google d'origine, non dupliqués. Reste à appliquer sur le serveur (`python3 scripts/matter-pont.py`) et tester.
 ### 2026-11-05 — Commande vocale Google Home Mini (Matter)
 - Enceinte « Alia » (Google Home Mini, 192.168.1.23) intégrée à HA via Cast (`media_player.alia`) et hub Matter de Google Home.
 - Service `matter-hub` (home-assistant-matter-hub 2.0.59, fork RiDDiX maintenu) dans `docker-compose.yml`, volume `matter-hub-data`, jeton `HA_TOKEN`, annonces limitées à `wlp2s0`.

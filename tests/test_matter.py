@@ -81,8 +81,21 @@ class TestConfig(unittest.TestCase):
     def test_config_versionnee_valide(self):
         self.assertEqual(mp.verifier_config(CONFIG), [])
 
-    def test_lumieres_seules_incluses(self):
-        self.assertEqual(CONFIG["filter"]["include"], [{"type": "domain", "value": "light"}])
+    def test_lumieres_et_deux_tv_incluses(self):
+        self.assertEqual(CONFIG["filter"]["include"], [
+            {"type": "domain", "value": "light"},
+            {"type": "pattern", "value": "media_player.tv_naim"},
+            {"type": "pattern", "value": "media_player.apple_tv_amel"},
+        ])
+
+    def test_tv_deja_google_pas_en_double(self):
+        # TV salon (Google TV) et boîtier Xiaomi (Android TV) sont déjà dans Google Home
+        # d'origine : les exposer aussi via Matter créerait des doublons.
+        motifs = [r["value"] for r in CONFIG["filter"]["include"]]
+        self.assertNotIn({"type": "domain", "value": "media_player"}, CONFIG["filter"]["include"])
+        for entite in ("media_player.tv_salon", "media_player.boitier_chambre_parentale",
+                       "media_player.alia"):  # l'enceinte Google elle-même
+            self.assertFalse(any(mp._motif_couvre(m, entite) for m in motifs), entite)
 
     def test_nom_du_pont_appaire(self):
         # Le script retrouve le pont par son nom : un autre nom en créerait un second

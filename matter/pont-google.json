@@ -3,7 +3,9 @@
   "port": 5540,
   "filter": {
     "include": [
-      { "type": "domain", "value": "light" }
+      { "type": "domain", "value": "light" },
+      { "type": "pattern", "value": "media_player.tv_naim" },
+      { "type": "pattern", "value": "media_player.apple_tv_amel" }
     ],
     "exclude": [
       { "type": "pattern", "value": "light.ambilight_naim" },

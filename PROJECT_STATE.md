@@ -17,7 +17,7 @@ léger servi par le serveur. Détails : [`docs/PRD.md`](docs/PRD.md).
 | J1 — Choix iPad | ✅ | iOS 9 → portail léger (plan B) |
 | J2 — Dépôt unique + config nettoyée | ✅ | betanalyst-pro n'héberge plus la domotique |
 | J2 — Portail tablette (lumières, scènes, TV) | ✅ | Jeton en place, à tester sur l'iPad |
-| J3 — Garage / volets | 🔄 | Garage ✅ via Broadlink ; volets = Somfy RTS → ESPSomfy-RTS à commander |
+| J3 — Garage / volets | 🔄 | Garage ✅ via Broadlink ; volets = Somfy RTS → **module ESPSomfy-RTS commandé le 08/11** (appairage à réception) |
 | J4 — TV Xiaomi/Philips, Freebox, Tuya, garage | 🔄 | Broadlink, Freebox, toutes les TV intégrées et renommées ; reste Tuya, garage |
 | J4 bis — Caméras sur la tablette | 🔄 | Onglet Caméras (dernière image de mouvement, cloud) ✅ ; direct local à tester sur les C6N, absent sur la H8c |
 | J4 ter — Voix Google Home Mini (Matter) | ✅ | Lumières testées à la voix le 05/11 ; TV Naïm + Apple TV Amel ajoutées au pont le 08/11 (à tester) ; volets à ajouter ; garage exclu |

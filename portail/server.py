@@ -57,6 +57,7 @@ ACTIONS = {
     "cover": {"ouvrir": "open_cover", "fermer": "close_cover", "stop": "stop_cover"},
     "scene": {"activer": "turn_on"},
     "script": {"activer": "turn_on"},
+    "vacuum": {"nettoyer": "start", "pause": "pause", "base": "return_to_base"},
     "media_player": {
         "basculer": "toggle",
         "volume_plus": "volume_up",

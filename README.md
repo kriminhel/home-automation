@@ -28,6 +28,7 @@ docs/AUTOMATISATIONS.md     Automatisations (extérieur, alerte garage, annonces
 docs/INTERNET-ENFANTS.md    Couper internet d'un enfant (contrôle parental Freebox)
 docs/AGENDA.md              Brancher Google Agenda ou iCloud
 docs/TELEPHONES.md          Batterie des téléphones (appli Home Assistant)
+docs/ROOMBA.md              Aspirateur Roomba : tablette et voix
 ```
 
 ## Installation sur le serveur

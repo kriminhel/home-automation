@@ -81,11 +81,12 @@ class TestConfig(unittest.TestCase):
     def test_config_versionnee_valide(self):
         self.assertEqual(mp.verifier_config(CONFIG), [])
 
-    def test_lumieres_et_deux_tv_incluses(self):
+    def test_lumieres_deux_tv_et_aspirateur_inclus(self):
         self.assertEqual(CONFIG["filter"]["include"], [
             {"type": "domain", "value": "light"},
             {"type": "pattern", "value": "media_player.tv_naim"},
             {"type": "pattern", "value": "media_player.apple_tv_amel"},
+            {"type": "domain", "value": "vacuum"},
         ])
 
     def test_tv_deja_google_pas_en_double(self):

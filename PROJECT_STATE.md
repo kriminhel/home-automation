@@ -4,7 +4,7 @@
 - **Repo** : github.com/kriminhel/home-automation (dépôt unique ; sorti de betanalyst-pro le 04/11/2026)
 - **Serveur** : pcdomotique (192.168.1.37), `~/home-automation`, `docker compose up -d`
 - **Stack** : Home Assistant (Docker), portail Python standard + HTML/JS ES5, IPX800 V3, Broadlink RM4 Pro
-- **Dernière mise à jour** : 2026-11-05 (tout fusionné dans `main` ; serveur sur `main`)
+- **Dernière mise à jour** : 2026-11-06 (commande vocale Google en service)
 
 ## Objectif
 Piloter toute la maison depuis un iPad sous iOS 9, en 2 touchers maximum, via un portail
@@ -20,6 +20,7 @@ léger servi par le serveur. Détails : [`docs/PRD.md`](docs/PRD.md).
 | J3 — Garage / volets | 🔄 | Garage ✅ via Broadlink ; volets = Somfy RTS → ESPSomfy-RTS à commander |
 | J4 — TV Xiaomi/Philips, Freebox, Tuya, garage | 🔄 | Broadlink, Freebox, toutes les TV intégrées et renommées ; reste Tuya, garage |
 | J4 bis — Caméras sur la tablette | 🔄 | Onglet Caméras (dernière image de mouvement, cloud) ✅ ; direct local à tester sur les C6N, absent sur la H8c |
+| J4 ter — Voix Google Home Mini (Matter) | ✅ | Lumières testées à la voix le 05/11 ; TV Naïm + Apple TV Amel ajoutées au pont le 08/11 (à tester) ; volets à ajouter ; garage exclu |
 | Accès extérieur (VPN WireGuard Freebox) | 📋 | Guide prêt (`docs/ACCES-DISTANT.md`, 08/11) ; à installer à la maison |
 | « Dis Siri, ouvre le portail » | 🔄 | `script.ouvrir_portail` prêt (inactif sans Shelly) + guide raccourci (`docs/PORTAIL-SIRI.md`) ; attend le Shelly sur la carte Nice |
 | J5 — Scènes/automatisations réelles, test 7 jours | 📋 | |
@@ -42,6 +43,15 @@ Voir `docs/PRD.md` §10 (référence de la télécommande Came, garage, pièces,
 - `script.ouvrir_portail` (HA) : impulsion de 1 s sur `switch.portail_nice` (Shelly à venir), anti-rebond 20 s, journalisé ; sans Shelly → simple notification, rien n'est envoyé. Jamais dans une automatisation ni exposé à Google (tests `tests/test_portail_siri.py`).
 - `docs/PORTAIL-SIRI.md` : raccourci iPhone « Ouvre le portail » avec confirmation ; câblage Shelly (entrée OPEN plutôt que « pas à pas », qui ouvre *ou* ferme).
 - `docs/ACCES-DISTANT.md` : VPN WireGuard de la Freebox (activation à la demande sur l'iPhone, IPv4 full-stack si besoin).
+### 2026-11-08 — TV à la voix
+- Pont Matter : TV Philips de Naïm et Apple TV d'Amel exposées (Google les voit comme des enceintes : marche/arrêt, volume, lecture). TV salon et boîtier chambre parentale : Google d'origine, non dupliqués. Reste à appliquer sur le serveur (`python3 scripts/matter-pont.py`) et tester.
+### 2026-11-05 — Commande vocale Google Home Mini (Matter)
+- Enceinte « Alia » (Google Home Mini, 192.168.1.23) intégrée à HA via Cast (`media_player.alia`) et hub Matter de Google Home.
+- Service `matter-hub` (home-assistant-matter-hub 2.0.59, fork RiDDiX maintenu) dans `docker-compose.yml`, volume `matter-hub-data`, jeton `HA_TOKEN`, annonces limitées à `wlp2s0`.
+- Pont « Maison » versionné (`matter/pont-google.json`) : 22 lumières (sans l'Ambilight) ; **garage exclu** (vérifié par le script et les tests).
+- `scripts/matter-pont.py` : crée / met à jour le pont via son API, affiche le code d'appairage Google Home.
+- `tests/test_matter.py`. Fonctionnement et réinstallation : `docs/MATTER.md`.
+- Testé en réel : appairage Google Home et commandes vocales du salon validés par Karim.
 ### 2026-11-05 (matin) — Accueil et plans
 - Accueil : agenda tout en haut, carte « Lumières » retirée, bouton « Tout éteindre » en haut à droite (scène `scene.tout_eteindre`), météo dans le rond de la barre latérale à la place du logo.
 - Niveaux : la liste « Toutes les commandes » est retirée ; les cartes photo des pièces du niveau sont sous le plan 3D (retirées de l'accueil).

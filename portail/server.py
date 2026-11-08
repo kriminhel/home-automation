@@ -193,14 +193,24 @@ def lire_agenda(maison, jours=15):
     debut = datetime.now(timezone.utc) - timedelta(hours=12)
     fin = debut + timedelta(days=jours)
     res = []
+    erreurs = []
     for a in maison.get("agendas", []):
         chemin = "/api/calendars/%s?start=%s&end=%s" % (
             a["entity_id"], urllib.parse.quote(debut.isoformat()), urllib.parse.quote(fin.isoformat()))
-        for e in appel_ha("GET", chemin) or []:
+        try:
+            evenements = appel_ha("GET", chemin) or []
+        except ErreurHA as err:
+            # Un agenda absent ou en panne (Google pas encore relié…) ne masque pas les autres
+            print("⚠️  agenda %s : %s" % (a["entity_id"], err), flush=True)
+            erreurs.append(err)
+            continue
+        for e in evenements:
             d, f = e.get("start", {}), e.get("end", {})
             res.append({"titre": e.get("summary", ""), "debut": d.get("dateTime") or d.get("date"),
                         "fin": f.get("dateTime") or f.get("date"), "journee": "date" in d,
                         "agenda": a.get("nom", ""), "couleur": a.get("couleur", "#C9A45C")})
+    if erreurs and len(erreurs) == len(maison.get("agendas", [])):
+        raise erreurs[0]  # tous en panne : HA probablement injoignable, on le dit
     res.sort(key=lambda e: e["debut"] or "")
     return res
 

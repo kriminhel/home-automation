@@ -42,6 +42,10 @@ class FauxHA(BaseHTTPRequestHandler):
             self.send_response(401)
             self.end_headers()
             return
+        if self.path.startswith("/api/calendars/calendar.absent"):
+            self.send_response(404)
+            self.end_headers()
+            return
         if self.path.startswith("/api/calendars/"):
             self._ok([{"summary": "Dentiste", "start": {"dateTime": "2026-11-06T10:00:00+01:00"},
                        "end": {"dateTime": "2026-11-06T11:00:00+01:00"}},
@@ -219,6 +223,17 @@ class TestPortail(unittest.TestCase):
         for eid in server.infos_de(server.charger_maison()):
             code, _ = self.post({"entity_id": eid, "action": "basculer"})
             self.assertEqual(code, 400)
+
+    def test_agenda_en_panne_ne_masque_pas_les_autres(self):
+        maison = {"agendas": [{"entity_id": "calendar.absent", "nom": "Google"},
+                              {"entity_id": "calendar.famille", "nom": "Famille"}]}
+        evts = server.lire_agenda(maison)
+        self.assertEqual({e["agenda"] for e in evts}, {"Famille"})
+        self.assertEqual(len(evts), 2)
+
+    def test_agenda_tous_en_panne_signale_l_erreur(self):
+        with self.assertRaises(server.ErreurHA):
+            server.lire_agenda({"agendas": [{"entity_id": "calendar.absent", "nom": "Google"}]})
 
     def test_agenda_lu_et_trie(self):
         evts = json.loads(self.get("/api/agenda")[1])

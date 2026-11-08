@@ -1,1 +1,71 @@
-[]
+# ============================================
+# AUTOMATISATIONS (J5) — voir docs/AUTOMATISATIONS.md
+# ============================================
+# Règle de la maison : rien n'OUVRE automatiquement (garage, portail). Les automatisations
+# allument / éteignent la lumière et préviennent ; ouvrir reste une action humaine.
+
+# --- Éclairage extérieur : allumé au coucher du soleil, éteint à l'heure réglée ---
+- id: exterieur_coucher_soleil
+  alias: Extérieur - allumer au coucher du soleil
+  description: Façade côté rue et façade jardin, sauf si la pause est activée.
+  mode: single
+  trigger:
+    - platform: sun
+      event: sunset
+      offset: "00:10:00"
+  condition:
+    - condition: state
+      entity_id: input_boolean.pause_eclairage_exterieur
+      state: "off"
+    # Pas d'allumage si l'heure d'extinction (23 h 30) est déjà passée
+    - condition: time
+      before: "23:30:00"
+  action:
+    - service: light.turn_on
+      target:
+        entity_id: [light.facade_rue, light.facade_jardin]
+
+- id: exterieur_extinction
+  alias: Extérieur - éteindre à 23 h 30
+  mode: single
+  trigger:
+    - platform: time
+      at: "23:30:00"
+  condition:
+    - condition: state
+      entity_id: input_boolean.pause_eclairage_exterieur
+      state: "off"
+  action:
+    - service: light.turn_off
+      target:
+        entity_id: [light.facade_rue, light.facade_jardin]
+
+# --- Garage resté ouvert : on PRÉVIENT, on ne ferme jamais tout seul ---
+# État déduit des ordres envoyés par HA (input_select.garage_dernier_ordre) : une manœuvre
+# faite à la télécommande n'est pas vue tant qu'un capteur d'ouverture n'est pas posé.
+- id: garage_reste_ouvert
+  alias: Garage - prévenir s'il est resté ouvert
+  mode: single
+  trigger:
+    - platform: state
+      entity_id: input_select.garage_dernier_ordre
+      to: [ouvert, entrouvert]
+      for: "00:30:00"
+      id: depuis_30_min
+    - platform: time
+      at: "22:00:00"
+      id: soir
+  condition:
+    - condition: state
+      entity_id: input_boolean.pause_alerte_garage
+      state: "off"
+    - condition: state
+      entity_id: input_select.garage_dernier_ordre
+      state: [ouvert, entrouvert]
+  action:
+    - service: script.annonce_maison
+      data:
+        titre: Garage
+        message: >-
+          {% if trigger.id == 'soir' %}Il est 22 heures et la porte du garage est restée ouverte.
+          {% else %}La porte du garage est ouverte depuis une demi-heure.{% endif %}

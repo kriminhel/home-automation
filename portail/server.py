@@ -8,6 +8,8 @@
 - GET  /api/image/<entity_id> -> image JPEG d'une caméra déclarée dans maison.json ("cameras")
 - GET  /api/agenda  -> événements des 15 prochains jours (agendas de maison.json)
 - POST /api/agenda  -> {"titre", "date": "AAAA-MM-JJ", "heure": "HH:MM" facultative} dans l'agenda « ecriture »
+- GET  /api/internet -> état du contrôle parental Freebox des habitants qui ont un "freebox_profil"
+- POST /api/internet -> {"habitant": "Alia", "action": "couper" | "retablir", "minutes": 60}
 
 Le jeton Home Assistant reste sur le serveur (variable HA_TOKEN) : l'iPad ne le voit
 jamais, et seules les actions de la liste ACTIONS sur les entités déclarées passent.
@@ -27,6 +29,7 @@ from datetime import date, datetime, timedelta, timezone
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 import ezviz_image
+import freebox
 
 ICI = os.path.dirname(os.path.abspath(__file__))
 STATIC = os.path.join(ICI, "static")
@@ -40,6 +43,12 @@ try:
 except ValueError:
     print("⚠️  EZVIZ_CODES illisible (JSON attendu) : images chiffrées non affichées.", flush=True)
     EZVIZ_CODES = {}
+
+# Contrôle parental Freebox (jeton créé par scripts/freebox-autoriser.py, rangé dans .env)
+FREEBOX = freebox.Freebox(os.environ.get("FREEBOX_URL", "http://mafreebox.freebox.fr"),
+                          os.environ.get("FREEBOX_APP_TOKEN", ""),
+                          os.environ.get("FREEBOX_API_BASE", "/api/v8/"))
+MINUTES_COUPURE = (15, 30, 60, 120, 180)  # durées proposées sur la tablette
 
 # Actions autorisées par domaine : action du portail -> service Home Assistant
 ACTIONS = {
@@ -89,6 +98,11 @@ def cameras_de(maison):
 def infos_de(maison):
     """entity_id affichés sur le récapitulatif (Freebox, soleil…) : lecture seule."""
     return list(maison.get("infos", {}).values())
+
+
+def telephones_de(maison):
+    """Capteurs de batterie des téléphones (appli Home Assistant) : lecture seule."""
+    return [h[c] for h in maison.get("habitants", []) for c in ("batterie", "batterie_etat") if h.get(c)]
 
 
 def entites_sensibles(maison):
@@ -184,14 +198,24 @@ def lire_agenda(maison, jours=15):
     debut = datetime.now(timezone.utc) - timedelta(hours=12)
     fin = debut + timedelta(days=jours)
     res = []
+    erreurs = []
     for a in maison.get("agendas", []):
         chemin = "/api/calendars/%s?start=%s&end=%s" % (
             a["entity_id"], urllib.parse.quote(debut.isoformat()), urllib.parse.quote(fin.isoformat()))
-        for e in appel_ha("GET", chemin) or []:
+        try:
+            evenements = appel_ha("GET", chemin) or []
+        except ErreurHA as err:
+            # Un agenda absent ou en panne (Google pas encore relié…) ne masque pas les autres
+            print("⚠️  agenda %s : %s" % (a["entity_id"], err), flush=True)
+            erreurs.append(err)
+            continue
+        for e in evenements:
             d, f = e.get("start", {}), e.get("end", {})
             res.append({"titre": e.get("summary", ""), "debut": d.get("dateTime") or d.get("date"),
                         "fin": f.get("dateTime") or f.get("date"), "journee": "date" in d,
                         "agenda": a.get("nom", ""), "couleur": a.get("couleur", "#C9A45C")})
+    if erreurs and len(erreurs) == len(maison.get("agendas", [])):
+        raise erreurs[0]  # tous en panne : HA probablement injoignable, on le dit
     res.sort(key=lambda e: e["debut"] or "")
     return res
 
@@ -222,6 +246,40 @@ def ajouter_evenement(maison, demande):
     return corps
 
 
+def profils_internet(maison):
+    """Habitants pilotables : nom -> nom du profil Freebox (liste blanche de maison.json)."""
+    return {h["nom"]: h["freebox_profil"] for h in maison.get("habitants", []) if h.get("freebox_profil")}
+
+
+def lire_internet(maison, fbx=None):
+    fbx = fbx or FREEBOX
+    res = []
+    for nom, profil in profils_internet(maison).items():
+        try:
+            res.append(dict(habitant=nom, profil=profil, disponible=True, **fbx.etat(profil)))
+        except freebox.ErreurFreebox as e:
+            res.append({"habitant": nom, "profil": profil, "disponible": False, "erreur": str(e)})
+    return res
+
+
+def commander_internet(maison, demande, fbx=None):
+    fbx = fbx or FREEBOX
+    profil = profils_internet(maison).get(demande.get("habitant"))
+    if not profil:
+        raise ValueError("habitant sans profil Freebox dans maison.json")
+    action = demande.get("action")
+    if action == "retablir":
+        fbx.retablir(profil)
+    elif action == "couper":
+        minutes = demande.get("minutes")
+        if minutes not in MINUTES_COUPURE:
+            raise ValueError("durée non autorisée (%s min)" % ", ".join(map(str, MINUTES_COUPURE)))
+        fbx.couper(profil, minutes)
+    else:
+        raise ValueError("action inconnue (couper ou retablir)")
+    return fbx.etat(profil)
+
+
 class CacheEtats:
     """Un seul appel /api/states par seconde, quel que soit le nombre de tablettes."""
 
@@ -246,7 +304,7 @@ CACHE = CacheEtats()
 def etats(maison):
     tous = CACHE.lire()
     res = {}
-    for eid in entites_de(maison) + cameras_de(maison) + infos_de(maison):
+    for eid in entites_de(maison) + cameras_de(maison) + infos_de(maison) + telephones_de(maison):
         e = tous.get(eid)
         if e is None:
             res[eid] = {"state": "absent"}
@@ -339,6 +397,8 @@ class Handler(BaseHTTPRequestHandler):
                 return self._json(200, etats(charger_maison()))
             if chemin == "/api/agenda":
                 return self._json(200, lire_agenda(charger_maison()))
+            if chemin == "/api/internet":
+                return self._json(200, lire_internet(charger_maison()))
             if chemin.startswith("/api/image/"):
                 return self._image(chemin[len("/api/image/"):])
             return self._json(404, {"erreur": "introuvable"})
@@ -346,7 +406,7 @@ class Handler(BaseHTTPRequestHandler):
             return self._json(502, {"erreur": str(e)})
 
     def do_POST(self):
-        if self.path not in ("/api/action", "/api/agenda"):
+        if self.path not in ("/api/action", "/api/agenda", "/api/internet"):
             return self._json(404, {"erreur": "introuvable"})
         try:
             longueur = min(int(self.headers.get("Content-Length") or 0), 10000)
@@ -354,11 +414,13 @@ class Handler(BaseHTTPRequestHandler):
             if self.path == "/api/agenda":
                 ajouter_evenement(charger_maison(), demande)
                 return self._json(200, {"ok": True})
+            if self.path == "/api/internet":
+                return self._json(200, commander_internet(charger_maison(), demande))
             n = executer(charger_maison(), demande)
             return self._json(200, {"ok": True, "cibles": n})
         except (ValueError, json.JSONDecodeError) as e:
             return self._json(400, {"erreur": str(e)})
-        except ErreurHA as e:
+        except (ErreurHA, freebox.ErreurFreebox) as e:
             return self._json(502, {"erreur": str(e)})
 
 

@@ -67,6 +67,32 @@ script:
           - stop: "Shelly du portail absent"
             error: true
 
+  # Annonce à toute la maison : notification HA (toujours) + voix sur la Google Home Mini
+  # « Alia » si la synthèse vocale Google Translate (français) est installée dans HA.
+  annonce_maison:
+    alias: Annonce maison
+    icon: mdi:bullhorn
+    mode: queued
+    fields:
+      message: { description: "Texte à annoncer" }
+      titre: { description: "Titre de la notification", default: "Maison" }
+    sequence:
+      - service: persistent_notification.create
+        data:
+          title: "{{ titre | default('Maison') }}"
+          message: "{{ message }}"
+      - if:
+          - condition: template
+            value_template: >-
+              {{ states('tts.google_translate_fr_fr') not in ['unknown', 'unavailable']
+                 and states('media_player.alia') not in ['unknown', 'unavailable'] }}
+        then:
+          - service: tts.speak
+            target: { entity_id: tts.google_translate_fr_fr }
+            data:
+              media_player_entity_id: media_player.alia
+              message: "{{ message }}"
+
   ipx800_relais:
     alias: IPX800 - commander un relais
     mode: queued
@@ -518,6 +544,18 @@ scene:
       light.jardin_3: "off"
       light.facade_rue: "off"
       light.jardin_4: "off"
+
+# ============================================
+# RÉGLAGES DES AUTOMATISATIONS (Paramètres > Appareils > Entrées dans HA)
+# ============================================
+# Interrupteurs « pause » : éteints (état par défaut à la création) = l'automatisme tourne.
+input_boolean:
+  pause_eclairage_exterieur:
+    name: Pause de l'éclairage extérieur automatique
+    icon: mdi:outdoor-lamp
+  pause_alerte_garage:
+    name: Pause de l'alerte garage
+    icon: mdi:garage-alert
 
 # Les automatisations sont créées au fur et à mesure des intégrations
 # (J5). Celles du début visaient des volets et un garage inexistants.

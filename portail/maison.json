@@ -52,21 +52,24 @@
       "pieces": [
         "Chambre d'Alia"
       ],
-      "avatar": "prive/alia.jpg"
+      "avatar": "prive/alia.jpg",
+      "freebox_profil": "Alia"
     },
     {
       "nom": "Naïm",
       "pieces": [
         "Chambre de Naïm"
       ],
-      "avatar": "prive/naim.jpg"
+      "avatar": "prive/naim.jpg",
+      "freebox_profil": "Naïm"
     },
     {
       "nom": "Amel",
       "pieces": [
         "Chambre d'Amel"
       ],
-      "avatar": "prive/amel.jpg"
+      "avatar": "prive/amel.jpg",
+      "freebox_profil": "Amel"
     }
   ],
   "cameras": [

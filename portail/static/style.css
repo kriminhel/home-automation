@@ -236,6 +236,8 @@ h2.titre, .piece h2 {
 .infos-profil { margin: 4px 0 16px; }
 .infos-profil .info { font-size: 16px; color: #CFC8BA; padding: 8px 0; }
 .infos-profil .info .picto { margin-right: 10px; }
+.infos-profil .boutons-internet { margin: 8px 0 0 32px; }
+.infos-profil .boutons-internet .rapide { margin: 0 8px 8px 0; }
 
 /* ---------- vues par niveau ---------- */
 .entete {
@@ -359,3 +361,6 @@ h2.titre, .piece h2 {
   .stat:first-child { margin: 0 0 14px; }
   .personne .ou { display: none; }
 }
+
+/* Téléphone presque vide (≤ 20 %, pas en charge) */
+.faible { color: #E57373; font-weight: 700; }

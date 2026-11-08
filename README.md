@@ -19,9 +19,11 @@ homeassistant-config/       Config HA versionnée (les données d'exécution son
 portail/                    Portail tablette : server.py (relais), maison.json, static/ (ES5)
 scripts/scan-network.py     Inventaire des appareils du réseau → docs/scan-report.md
 scripts/broadlink-rf.py     Apprentissage / test des codes RF du Broadlink (volets)
-matter/pont-google.json     Lumières exposées à la Google Home Mini (garage exclu)
+matter/pont-google.json     Lumières et 2 TV exposées à la Google Home Mini (garage exclu)
 scripts/matter-pont.py      Crée / met à jour le pont Matter, affiche le code d'appairage
-tests/                      Tests du portail (faux Home Assistant) et du pont Matter
+tests/                      Tests du portail (faux HA), du pont Matter et garde-fous du script portail
+docs/ACCES-DISTANT.md       VPN WireGuard de la Freebox (accès depuis la 4G)
+docs/PORTAIL-SIRI.md        « Dis Siri, ouvre le portail » (raccourci iPhone + Shelly)
 ```
 
 ## Installation sur le serveur

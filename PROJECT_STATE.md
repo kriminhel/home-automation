@@ -21,6 +21,8 @@ léger servi par le serveur. Détails : [`docs/PRD.md`](docs/PRD.md).
 | J4 — TV Xiaomi/Philips, Freebox, Tuya, garage | 🔄 | Broadlink, Freebox, toutes les TV intégrées et renommées ; reste Tuya, garage |
 | J4 bis — Caméras sur la tablette | 🔄 | Onglet Caméras (dernière image de mouvement, cloud) ✅ ; direct local à tester sur les C6N, absent sur la H8c |
 | J4 ter — Voix Google Home Mini (Matter) | ✅ | Lumières testées à la voix le 05/11 ; TV Naïm + Apple TV Amel ajoutées au pont le 08/11 (à tester) ; volets à ajouter ; garage exclu |
+| Accès extérieur (VPN WireGuard Freebox) | 📋 | Guide prêt (`docs/ACCES-DISTANT.md`, 08/11) ; à installer à la maison |
+| « Dis Siri, ouvre le portail » | 🔄 | `script.ouvrir_portail` prêt (inactif sans Shelly) + guide raccourci (`docs/PORTAIL-SIRI.md`) ; attend le Shelly sur la carte Nice |
 | J5 — Scènes/automatisations réelles, test 7 jours | 📋 | |
 
 ## Achats
@@ -30,13 +32,17 @@ Liste cumulative : [`docs/ACHATS.md`](docs/ACHATS.md) — Karim achète tout qua
 Voir `docs/PRD.md` §10 (référence de la télécommande Came, garage, pièces, Philips, commune).
 
 ## À reprendre (prochaine session)
-1. **Automatismes d'arrivée** : appli Home Assistant sur l'iPhone de Karim ; lumières terrasse si nuit ; portail Nice = Shelly à acheter ; garage par notification/Siri avec confirmation (jamais 100 % auto). Phrase de Karim coupée après « … allume les lumières de la terrasse et » : lui demander la suite.
+1. **Portail / arrivée** : décidé le 08/11 → VPN Freebox + « Dis Siri, ouvre le portail » (confirmation, jamais automatique). Reste : installer le VPN, créer le raccourci, acheter / poser le Shelly (entrée OPEN de préférence). Lumières terrasse à l'arrivée la nuit : à reproposer. Phrase coupée « … allume les lumières de la terrasse et » : toujours à clarifier.
 2. **Contrôle parental Freebox Pop** : relancer `scripts/freebox-autoriser.py` sur le serveur quand Karim dit « go », valider dans Freebox Connect / Freebox OS, cocher « Contrôle parental » + « Paramètres de la Freebox » ; puis profils par enfant et boutons Wi-Fi par pièce (`wifiPiece` = attente).
 3. **Agenda** : brancher iCloud ou Google (au choix de Karim).
 4. **Batterie des téléphones** dans les profils (appli compagnon HA).
 5. **Caméra garage** : nouveau code de chiffrement d'image à créer par Karim → `EZVIZ_CODES` dans `.env` (Karim l'écrit lui-même).
 
 ## Changelog
+### 2026-11-08 — Portail par Siri, accès extérieur
+- `script.ouvrir_portail` (HA) : impulsion de 1 s sur `switch.portail_nice` (Shelly à venir), anti-rebond 20 s, journalisé ; sans Shelly → simple notification, rien n'est envoyé. Jamais dans une automatisation ni exposé à Google (tests `tests/test_portail_siri.py`).
+- `docs/PORTAIL-SIRI.md` : raccourci iPhone « Ouvre le portail » avec confirmation ; câblage Shelly (entrée OPEN plutôt que « pas à pas », qui ouvre *ou* ferme).
+- `docs/ACCES-DISTANT.md` : VPN WireGuard de la Freebox (activation à la demande sur l'iPhone, IPv4 full-stack si besoin).
 ### 2026-11-08 — TV à la voix
 - Pont Matter : TV Philips de Naïm et Apple TV d'Amel exposées (Google les voit comme des enceintes : marche/arrêt, volume, lecture). TV salon et boîtier chambre parentale : Google d'origine, non dupliqués. Reste à appliquer sur le serveur (`python3 scripts/matter-pont.py`) et tester.
 ### 2026-11-05 — Commande vocale Google Home Mini (Matter)

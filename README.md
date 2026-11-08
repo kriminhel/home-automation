@@ -24,6 +24,10 @@ scripts/matter-pont.py      Crée / met à jour le pont Matter, affiche le code 
 tests/                      Tests du portail (faux HA), du pont Matter et garde-fous du script portail
 docs/ACCES-DISTANT.md       VPN WireGuard de la Freebox (accès depuis la 4G)
 docs/PORTAIL-SIRI.md        « Dis Siri, ouvre le portail » (raccourci iPhone + Shelly)
+docs/AUTOMATISATIONS.md     Automatisations (extérieur, alerte garage, annonces vocales)
+docs/INTERNET-ENFANTS.md    Couper internet d'un enfant (contrôle parental Freebox)
+docs/AGENDA.md              Brancher Google Agenda ou iCloud
+docs/TELEPHONES.md          Batterie des téléphones (appli Home Assistant)
 ```
 
 ## Installation sur le serveur

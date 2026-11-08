@@ -224,6 +224,18 @@ class TestPortail(unittest.TestCase):
             code, _ = self.post({"entity_id": eid, "action": "basculer"})
             self.assertEqual(code, 400)
 
+    def test_batterie_telephone_lisible_mais_pas_pilotable(self):
+        maison = server.charger_maison()
+        maison["habitants"][0]["batterie"] = "sensor.iphone_karim_battery_level"
+        maison["habitants"][0]["batterie_etat"] = "sensor.iphone_karim_battery_state"
+        self.assertEqual(server.telephones_de(maison), ["sensor.iphone_karim_battery_level",
+                                                        "sensor.iphone_karim_battery_state"])
+        server.CACHE.invalider()
+        self.assertIn("sensor.iphone_karim_battery_level", server.etats(maison))
+        with self.assertRaises(ValueError):
+            server.executer(maison, {"entity_id": "sensor.iphone_karim_battery_level",
+                                     "action": "basculer"})
+
     def test_agenda_en_panne_ne_masque_pas_les_autres(self):
         maison = {"agendas": [{"entity_id": "calendar.absent", "nom": "Google"},
                               {"entity_id": "calendar.famille", "nom": "Famille"}]}

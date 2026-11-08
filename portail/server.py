@@ -100,6 +100,11 @@ def infos_de(maison):
     return list(maison.get("infos", {}).values())
 
 
+def telephones_de(maison):
+    """Capteurs de batterie des téléphones (appli Home Assistant) : lecture seule."""
+    return [h[c] for h in maison.get("habitants", []) for c in ("batterie", "batterie_etat") if h.get(c)]
+
+
 def entites_sensibles(maison):
     """Équipements marqués "confirmer" (garage…) : exclus des actions groupées."""
     return {e["entity_id"] for n in maison.get("niveaux", []) for p in n.get("pieces", [])
@@ -299,7 +304,7 @@ CACHE = CacheEtats()
 def etats(maison):
     tous = CACHE.lire()
     res = {}
-    for eid in entites_de(maison) + cameras_de(maison) + infos_de(maison):
+    for eid in entites_de(maison) + cameras_de(maison) + infos_de(maison) + telephones_de(maison):
         e = tous.get(eid)
         if e is None:
             res[eid] = {"state": "absent"}

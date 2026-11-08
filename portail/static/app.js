@@ -500,6 +500,30 @@
     }, function (err) { message('Internet de ' + nom + ' : ' + err); });
   }
 
+  /* ---------- téléphones (batterie, appli Home Assistant) ---------- */
+
+  // « 82 % », « 15 % ⚡ » (en charge) ou null si le téléphone n'est pas connecté
+  function batterie(h) {
+    var e = h.batterie ? etats[h.batterie] : null;
+    if (!e || isNaN(parseFloat(e.state))) { return null; }
+    var niveau = Math.round(parseFloat(e.state));
+    var c = h.batterie_etat ? etats[h.batterie_etat] : null;
+    var charge = c && (c.state === 'Charging' || c.state === 'Full' || c.state === 'charging' || c.state === 'full');
+    return { niveau: niveau, charge: !!charge, texte: niveau + ' %' + (charge ? ' ⚡' : '') };
+  }
+
+  function libelleTelephone(h) {
+    var b = batterie(h);
+    if (b) { return 'Téléphone : ' + b.texte; }
+    return h.batterie ? 'Téléphone : pas de nouvelles' : 'Téléphone à connecter (appli Home Assistant)';
+  }
+
+  function majTelephone(span, h) {
+    var b = batterie(h);
+    span.textContent = libelleTelephone(h);
+    span.className = b && b.niveau <= 20 && !b.charge ? 'faible' : '';
+  }
+
   function libelleDuree(m) { return m < 60 ? m + ' min' : (m / 60) + ' h'; }
 
   // Bouton Wi-Fi d'une pièce : l'enfant qui y dort (profil Freebox), 1 h par défaut
@@ -749,7 +773,10 @@
     if (!recap) { return; }
     var i;
     for (i = 0; i < recap.profils.length; i++) {
-      var rp = recap.profils[i], res = resumeEntites(eidsDe(rp.h));
+      var rp = recap.profils[i];
+      if (rp.tel) { majTelephone(rp.tel, rp.h); }
+      if (!rp.statut) { continue; }
+      var res = resumeEntites(eidsDe(rp.h));
       rp.statut.textContent = res.actif ? res.texte : 'Tout éteint';
       rp.statut.className = 'statut' + (res.actif ? ' on' : '');
     }
@@ -889,8 +916,11 @@
       var infos = el('div', 'infos-profil');
       var tel = el('div', 'info');
       tel.appendChild(picto('telephone', 'or'));
-      tel.appendChild(el('span', '', h.telephone ? h.telephone : 'Téléphone : à connecter (appli Home Assistant)'));
+      var telTexte = el('span', '');
+      majTelephone(telTexte, h);
+      tel.appendChild(telTexte);
       infos.appendChild(tel);
+      recap.profils.push({ h: h, tel: telTexte });
       if (h.freebox_profil) { blocInternet(h, infos); }
       panneau.appendChild(infos);
     });
@@ -911,10 +941,12 @@
         carte.appendChild(statut);
         var tel = el('div', 'tel');
         tel.appendChild(picto('telephone'));
-        tel.appendChild(el('span', '', hb.telephone || 'Téléphone à connecter'));
+        var telTexte = el('span', '');
+        majTelephone(telTexte, hb);
+        tel.appendChild(telTexte);
         carte.appendChild(tel);
         carte.addEventListener('click', function () { ouvrirProfil(hb); });
-        recap.profils.push({ h: hb, statut: statut });
+        recap.profils.push({ h: hb, statut: statut, tel: telTexte });
         grille.appendChild(carte);
       })(maison.habitants[i]);
     }

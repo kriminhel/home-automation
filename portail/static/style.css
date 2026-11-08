@@ -361,3 +361,6 @@ h2.titre, .piece h2 {
   .stat:first-child { margin: 0 0 14px; }
   .personne .ou { display: none; }
 }
+
+/* Téléphone presque vide (≤ 20 %, pas en charge) */
+.faible { color: #E57373; font-weight: 700; }

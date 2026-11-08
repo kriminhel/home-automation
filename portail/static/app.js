@@ -467,8 +467,96 @@
     majToutesTuiles();
   }
 
+  /* ---------- internet des enfants (contrôle parental Freebox) ---------- */
+
+  var internet = {};  // habitant -> {coupe, jusqua, disponible, erreur}
+
+  function lireInternet(fn) {
+    requete('GET', '/api/internet', null, function (r) {
+      internet = {};
+      for (var i = 0; r && i < r.length; i++) { internet[r[i].habitant] = r[i]; }
+      if (fn) { fn(); }
+    }, function (err) { message('Contrôle parental : ' + err); });
+  }
+
+  function libelleInternet(nom) {
+    var e = internet[nom];
+    if (!e) { return 'Internet : chargement…'; }
+    if (!e.disponible) { return 'Internet : ' + e.erreur; }
+    if (!e.coupe) { return 'Internet autorisé'; }
+    if (!e.jusqua) { return 'Internet coupé'; }
+    var d = new Date(e.jusqua * 1000);
+    return 'Internet coupé jusqu’à ' + deux(d.getHours()) + ':' + deux(d.getMinutes());
+  }
+
+  function commanderInternet(nom, action, minutes, apres) {
+    var corps = { habitant: nom, action: action };
+    if (minutes) { corps.minutes = minutes; }
+    requete('POST', '/api/internet', corps, function (r) {
+      if (internet[nom] && r) { internet[nom].coupe = r.coupe; internet[nom].jusqua = r.jusqua; }
+      message(action === 'couper' ? 'Internet coupé pour ' + nom + ' (' + libelleDuree(minutes) + ')'
+        : 'Internet rétabli pour ' + nom, true);
+      if (apres) { apres(); }
+    }, function (err) { message('Internet de ' + nom + ' : ' + err); });
+  }
+
+  function libelleDuree(m) { return m < 60 ? m + ' min' : (m / 60) + ' h'; }
+
+  // Bouton Wi-Fi d'une pièce : l'enfant qui y dort (profil Freebox), 1 h par défaut
   function wifiPiece(p) {
-    message('Wi-Fi « ' + p.nom + ' » : bientôt disponible (autorisation Freebox à faire)', true);
+    var i, h = null;
+    for (i = 0; i < (maison.habitants || []).length; i++) {
+      var hb = maison.habitants[i];
+      if (hb.freebox_profil && (hb.pieces || []).indexOf(p.nom) >= 0) { h = hb; break; }
+    }
+    if (!h) { message('Pas de profil internet (Freebox) pour « ' + p.nom + ' »', true); return; }
+    lireInternet(function () {
+      var e = internet[h.nom];
+      if (!e || !e.disponible) { message(libelleInternet(h.nom)); return; }
+      if (e.coupe) {
+        if (window.confirm('Rétablir internet pour ' + h.nom + ' ?')) { commanderInternet(h.nom, 'retablir'); }
+      } else if (window.confirm('Couper internet de ' + h.nom + ' pendant 1 heure ?')) {
+        commanderInternet(h.nom, 'couper', 60);
+      }
+    });
+  }
+
+  // Ligne « internet » du profil d'un enfant : état + boutons 30 min / 1 h / 2 h / rétablir
+  function blocInternet(h, parent) {
+    var bloc = el('div', 'info internet');
+    var texte = el('span', '', libelleInternet(h.nom));
+    bloc.appendChild(picto('wifi', 'or'));
+    bloc.appendChild(texte);
+    var boutons = el('div', 'boutons-internet');
+    bloc.appendChild(boutons);
+    function dessinerBoutons() {
+      texte.textContent = libelleInternet(h.nom);
+      boutons.innerHTML = '';
+      var e = internet[h.nom];
+      if (!e || !e.disponible) { return; }
+      if (e.coupe) {
+        var r = el('button', 'rapide', 'Rétablir');
+        r.addEventListener('click', function () {
+          if (window.confirm('Rétablir internet pour ' + h.nom + ' ?')) { commanderInternet(h.nom, 'retablir', 0, dessinerBoutons); }
+        });
+        boutons.appendChild(r);
+        return;
+      }
+      var durees = [30, 60, 120];
+      for (var i = 0; i < durees.length; i++) {
+        (function (m) {
+          var b = el('button', 'rapide', 'Couper ' + libelleDuree(m));
+          b.addEventListener('click', function () {
+            if (window.confirm('Couper internet de ' + h.nom + ' pendant ' + libelleDuree(m) + ' ?')) {
+              commanderInternet(h.nom, 'couper', m, dessinerBoutons);
+            }
+          });
+          boutons.appendChild(b);
+        })(durees[i]);
+      }
+    }
+    parent.appendChild(bloc);
+    lireInternet(dessinerBoutons);
   }
 
   function avatar(h, grand) {
@@ -803,10 +891,7 @@
       tel.appendChild(picto('telephone', 'or'));
       tel.appendChild(el('span', '', h.telephone ? h.telephone : 'Téléphone : à connecter (appli Home Assistant)'));
       infos.appendChild(tel);
-      var wf = el('div', 'info');
-      wf.appendChild(picto('wifi', 'or'));
-      wf.appendChild(el('span', '', 'Wi-Fi de la chambre : bientôt (autorisation Freebox)'));
-      infos.appendChild(wf);
+      if (h.freebox_profil) { blocInternet(h, infos); }
       panneau.appendChild(infos);
     });
   }

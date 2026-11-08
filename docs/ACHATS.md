@@ -10,7 +10,6 @@
 
 | # | Article | Pour quoi | Qté | Prix unitaire | Où | Statut |
 |---|---------|-----------|-----|---------------|----|--------|
-| 1 | **Module ESPSomfy-RTS tout fait** (ESP32 + CC1101 433 MHz, boîtier) | Piloter les **12 volets Somfy RTS** depuis HA | 1 | 40 € | [Domotech / Lectronz](https://lectronz.com/products/shutter-remote-rts) (France) · alternative [Switch-is](https://www.switch-is.nl/product/espsomfy-rts) 34,50 € + antenne 12,95 € | ✅ |
 | 2 | Câble USB-C + chargeur USB 5 V | Alimenter le module ESPSomfy en permanence | 1 | ~10 € | n'importe où (ou vieux chargeur de téléphone) | ✅ (inutile si déjà à la maison) |
 | 3 | **Shelly 1 Mini Gen3** | Lumière de la **salle de bain de l'étage** (pas de relais IPX800) | 1 | 13,99 € | [Shelly](https://www.shelly.com/fr/products/shop/shelly-1-mini-gen3) · [Domadoo](https://www.domadoo.fr/en/access-control-system/6984-shelly-wi-fi-smart-relay-switch-dry-contacts-shelly-1-mini-gen3-3800235261576.html) | ⚠️ vérifier la présence du **neutre** (fil bleu) dans la boîte de l'interrupteur ; sinon version sans neutre |
 | 4 | Contact d'ouverture filaire (capteur magnétique NF/NO) | Connaître l'**état réel de la porte de garage** (entrée libre de l'IPX800) + alerte « garage ouvert la nuit » | 1 | ~5 € | à préciser | ❓ optionnel |
@@ -18,7 +17,13 @@
 | 6 | **Carte microSD « endurance » 128 Go** (SanDisk High Endurance ou Samsung PRO Endurance), chez un revendeur sérieux | Caméra **garage** H8c : carte actuelle en erreur ; la carte de rechange testée le 04/11 est contrefaite / défectueuse (capacité annoncée 537 Go puis 2,1 To, partitions incohérentes) | 1 | ~15-20 € | Fnac, Darty, boutique officielle | ✅ |
 | 7 | **Tablette murale ~10-11"** : iPad reconditionné récent (iPad 9e/10e génération, avec facture) **ou** tablette Android (Samsung Galaxy Tab A9+ / Lenovo Tab M11) + **support mural** + chargeur avec câble long | Afficher le portail et la **3D complète** en fluide : l'iPad mini actuel (A1432, iOS 9) n'a que la 3D allégée, et l'iPad du marché est bloqué iCloud | 1 | ~150-250 € (tablette) + ~20-30 € (support) | Back Market, Fnac, Darty, Boulanger (avec facture) | ✅ validé le 05/11 — **Android + appli Fully Kiosk Browser** recommandé pour un écran mural (allumage auto, écran toujours actif) |
 
-**Total validé à ce jour : ~250-380 €** (lignes 1, 2, 3, 5, 6 et 7 ; prix à revérifier au moment de commander).
+**Total restant validé : ~210-340 €** (lignes 2, 3, 5, 6 et 7 ; prix à revérifier au moment de commander).
+
+## Commandé
+
+| Date | Article | Pour quoi | Suite |
+|------|---------|-----------|-------|
+| 08/11/2026 | **Module ESPSomfy-RTS tout fait** (ESP32 + CC1101 433 MHz, boîtier, antenne) | 12 volets Somfy RTS | À réception : installer le logiciel ESPSomfy-RTS, l'intégrer à HA, appairer les volets un par un (bouton PROG). Il faut la **pièce de chaque volet** |
 
 ## À jeter / ne pas utiliser
 

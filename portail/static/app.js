@@ -125,6 +125,7 @@
 
   function estActif(eid) {
     var s = (etats[eid] || {}).state;
+    if (domaine(eid) === 'vacuum') { return s === 'cleaning' || s === 'returning'; }
     return s === 'on' || s === 'open' || s === 'opening' || s === 'playing' || s === 'paused' || s === 'idle';
   }
 
@@ -145,6 +146,10 @@
       return { open: 'Ouvert', closed: 'Fermé', opening: 'Ouverture…', closing: 'Fermeture…' }[s] || s;
     }
     if (d === 'media_player') { return s === 'off' ? 'Éteint' : (e.source || 'Allumé'); }
+    if (d === 'vacuum') {
+      return { cleaning: 'En nettoyage', docked: 'Sur sa base', returning: 'Retour à la base',
+        paused: 'En pause', idle: 'À l’arrêt', error: 'Bloqué : à vérifier' }[s] || s;
+    }
     return s;
   }
 
@@ -231,6 +236,12 @@
       bc.appendChild(bouton('■', function () { agir({ entity_id: eid, action: 'stop' }, t); }));
       bc.appendChild(bouton('▼', ordre('fermer', 'Fermer')));
       t.appendChild(bc);
+    } else if (d === 'vacuum') {
+      var bv = el('div', 'boutons');
+      bv.appendChild(bouton('▶', function () { agir({ entity_id: eid, action: 'nettoyer' }, t); message(eq.nom + ' : c’est parti', true); }));
+      bv.appendChild(bouton('⏸', function () { agir({ entity_id: eid, action: 'pause' }, t); }));
+      bv.appendChild(bouton('⌂', function () { agir({ entity_id: eid, action: 'base' }, t); message(eq.nom + ' : retour à la base', true); }));
+      t.appendChild(bv);
     } else if (d === 'media_player') {
       var bm = el('div', 'boutons');
       bm.appendChild(bouton('🔉', function () { agir({ entity_id: eid, action: 'volume_moins' }, t); }));

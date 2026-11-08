@@ -23,6 +23,7 @@ léger servi par le serveur. Détails : [`docs/PRD.md`](docs/PRD.md).
 | J4 ter — Voix Google Home Mini (Matter) | ✅ | Lumières testées à la voix le 05/11 ; TV Naïm + Apple TV Amel ajoutées au pont le 08/11 (à tester) ; volets à ajouter ; garage exclu |
 | Accès extérieur (VPN WireGuard Freebox) | 📋 | Guide prêt (`docs/ACCES-DISTANT.md`, 08/11) ; à installer à la maison |
 | « Dis Siri, ouvre le portail » | 🔄 | `script.ouvrir_portail` prêt (inactif sans Shelly) + guide raccourci (`docs/PORTAIL-SIRI.md`) ; attend le Shelly sur la carte Nice |
+| Aspirateur Roomba (tablette + voix) | 📋 | Code prêt 08/11 (`docs/ROOMBA.md`) : intégration iRobot à ajouter dans HA (bouton HOME), entité `vacuum.roomba`, puis `matter-pont.py` |
 | J5 — Scènes/automatisations réelles, test 7 jours | 🔄 | 08/11 : extérieur au coucher du soleil + extinction 23 h 30, alerte garage resté ouvert (annonce Google Home Mini) — `docs/AUTOMATISATIONS.md` ; test 7 jours à faire |
 | Internet des enfants (contrôle parental Freebox) | 🔄 | Code prêt 08/11 (`docs/INTERNET-ENFANTS.md`) ; à faire : profils Alia/Naïm/Amel dans Freebox Connect, `scripts/freebox-autoriser.py`, permission |
 | Agenda Google | 📋 | **Google retenu** (08/11) pour ajouter des rdv à la voix via la Google Home Mini ; guide `docs/AGENDA.md` (intégration Google Calendar dans HA + Voice Match) |
@@ -43,6 +44,10 @@ Voir `docs/PRD.md` §10 (référence de la télécommande Came, garage, pièces,
 5. **Caméra garage** : nouveau code de chiffrement d'image à créer par Karim → `EZVIZ_CODES` dans `.env` (Karim l'écrit lui-même).
 
 ## Changelog
+### 2026-11-08 (nuit) — Aspirateur Roomba
+- Tablette : tuile `vacuum.roomba` dans le Salon (▶ nettoyer, ⏸ pause, ⌂ base), états en français, « Bloqué » en rouge ; actions limitées à start / pause / return_to_base.
+- Voix : domaine `vacuum` ajouté au pont Matter (Google gère les aspirateurs Matter en mode pont).
+- `docs/ROOMBA.md` : intégration locale iRobot (bouton HOME), ne pas lier aussi l'appli iRobot à Google (doublon).
 ### 2026-11-08 (soir) — J5, internet des enfants, agenda, téléphones
 - Automatisations : extérieur au coucher du soleil / 23 h 30, alerte garage resté ouvert (30 min et 22 h) annoncée via `script.annonce_maison` (notification + Google Home Mini) ; interrupteurs « pause » ; rien ne s'ouvre automatiquement (tests).
 - Contrôle parental Freebox : `portail/freebox.py` (API v8 profils / network_control), `/api/internet`, boutons Couper 30 min / 1 h / 2 h / Rétablir dans les profils, bouton Wi-Fi des chambres ; jeton rangé dans `.env` par `scripts/freebox-autoriser.py`.

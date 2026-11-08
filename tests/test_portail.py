@@ -129,6 +129,18 @@ class TestPortail(unittest.TestCase):
         self.post({"entity_id": "scene.mode_nuit", "action": "activer"})
         self.assertEqual(APPELS[0][0], "/api/services/scene/turn_on")
 
+    def test_aspirateur_nettoyer_pause_base(self):
+        for action, service in (("nettoyer", "start"), ("pause", "pause"), ("base", "return_to_base")):
+            APPELS.clear()
+            code, _ = self.post({"entity_id": "vacuum.roomba", "action": action})
+            self.assertEqual(code, 200)
+            self.assertEqual(APPELS, [("/api/services/vacuum/" + service, {"entity_id": "vacuum.roomba"})])
+
+    def test_aspirateur_actions_limitees(self):
+        for interdite in ("basculer", "set_fan_speed", "send_command"):
+            code, _ = self.post({"entity_id": "vacuum.roomba", "action": interdite})
+            self.assertEqual(code, 400)
+
     def test_refuse_entite_non_declaree(self):
         code, _ = self.post({"entity_id": "light.non_declaree", "action": "basculer"})
         self.assertEqual(code, 400)

@@ -15,6 +15,7 @@ Config versionnée : [`matter/pont-google.json`](../matter/pont-google.json).
 | Inclus | Exclu |
 |--------|-------|
 | Les lumières (`light.*`), soit 22 appareils | **Porte de garage** (`cover.garage*`, `device_class` garage/gate) : jamais à la voix, faute de code vocal |
+| Aspirateur Roomba (`vacuum.*`) : lancer, pause (voir `ROOMBA.md`) | |
 | TV Philips de Naïm (`media_player.tv_naim`) et Apple TV d'Amel (`media_player.apple_tv_amel`), vues par Google comme des **enceintes** : marche/arrêt, volume, lecture/pause | Ambilight de Naïm, entités techniques (`config`, `diagnostic`) |
 | | TV du salon et boîtier de la chambre parentale : déjà compatibles Google d'origine, on ne les expose pas une 2ᵉ fois |
 
@@ -61,7 +62,7 @@ Après `python3 scripts/matter-pont.py`, Google ajoute les 2 nouveaux appareils 
 ## Plus tard : ajouter les volets
 
 Quand ils seront dans HA (ESPSomfy-RTS) :
-1. Ajouter `{ "type": "domain", "value": "cover" }` à `filter.include` dans `matter/pont-google.json` et adapter le test `test_lumieres_et_deux_tv_incluses`.
+1. Ajouter `{ "type": "domain", "value": "cover" }` à `filter.include` dans `matter/pont-google.json` et adapter le test `test_lumieres_deux_tv_et_aspirateur_inclus`.
 2. Lancer `python3 scripts/matter-pont.py`.
 3. Vérifier que le garage n'apparaît pas dans Google Home.
 

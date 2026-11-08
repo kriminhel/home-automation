@@ -115,6 +115,11 @@
               "entity_id": "media_player.tv_salon",
               "nom": "TV Xiaomi",
               "icone": "📺"
+            },
+            {
+              "entity_id": "vacuum.roomba",
+              "nom": "Roomba",
+              "icone": "🧹"
             }
           ]
         },

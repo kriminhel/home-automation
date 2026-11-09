@@ -367,3 +367,15 @@ h2.titre, .piece h2 {
 
 /* Aspirateur bloqué */
 .tuile.vacuum.error .etat { color: #E57373; font-weight: 700; }
+
+/* ---------- liste de courses ---------- */
+.courses-ajout { display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; padding: 14px; margin-bottom: 14px; }
+.courses-ajout input { -webkit-flex: 1; flex: 1; margin-right: 12px; }
+.courses-ajout .valider { width: 160px; margin: 0; }
+.liste-courses { padding: 6px 18px; }
+.article { display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; min-height: 64px; font-size: 20px; border-bottom: 1px solid rgba(201,164,92,.15); }
+.article:last-child { border-bottom: 0; }
+.article .case { width: 32px; height: 32px; line-height: 30px; text-align: center; margin-right: 16px; border-radius: 10px; border: 2px solid rgba(201,164,92,.6); color: #141416; font-weight: 700; -webkit-flex-shrink: 0; flex-shrink: 0; }
+.article.fait .case { background: #C9A45C; border-color: #E6C67E; }
+.article.fait .titre-article { color: #6F6A60; text-decoration: line-through; }
+.liste-courses .vider { margin: 14px 0 8px; }

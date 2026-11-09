@@ -29,6 +29,7 @@ docs/INTERNET-ENFANTS.md    Couper internet d'un enfant (contrôle parental Free
 docs/AGENDA.md              Brancher Google Agenda ou iCloud
 docs/TELEPHONES.md          Batterie des téléphones (appli Home Assistant)
 docs/ROOMBA.md              Aspirateur Roomba : tablette et voix
+docs/COURSES.md             Liste de courses (Ok Google, Siri, tablette)
 ```
 
 ## Installation sur le serveur

@@ -27,6 +27,7 @@ léger servi par le serveur. Détails : [`docs/PRD.md`](docs/PRD.md).
 | J5 — Scènes/automatisations réelles, test 7 jours | 🔄 | 08/11 : extérieur au coucher du soleil + extinction 23 h 30, alerte garage resté ouvert (annonce Google Home Mini) — `docs/AUTOMATISATIONS.md` ; test 7 jours à faire |
 | Internet des enfants (contrôle parental Freebox) | 🔄 | Code prêt 08/11 (`docs/INTERNET-ENFANTS.md`) ; à faire : profils Alia/Naïm/Amel dans Freebox Connect, `scripts/freebox-autoriser.py`, permission |
 | Agenda Google | 📋 | **Google retenu** (08/11) pour ajouter des rdv à la voix via la Google Home Mini ; guide `docs/AGENDA.md` (intégration Google Calendar dans HA + Voice Match) |
+| Liste de courses (Ok Google, Siri, tablette) | 📋 | Code prêt 09/11 (`docs/COURSES.md`) : onglet 🧺 de la tablette, `todo.courses` ; à faire : Google Keep Sync (HACS) ou liste locale, raccourci Siri. Drive : pas d'API publique, pas d'automatisation |
 | Batterie des téléphones | 📋 | Affichage prêt (`docs/TELEPHONES.md`) ; installer l'appli HA sur chaque téléphone |
 
 ## Achats
@@ -44,6 +45,10 @@ Voir `docs/PRD.md` §10 (référence de la télécommande Came, garage, pièces,
 5. **Caméra garage** : nouveau code de chiffrement d'image à créer par Karim → `EZVIZ_CODES` dans `.env` (Karim l'écrit lui-même).
 
 ## Changelog
+### 2026-11-09 — Liste de courses
+- Tablette : onglet 🧺 Courses (ajouter, cocher, retirer les cochés, rafraîchi toutes les 10 s) ; `/api/courses` limité à `todo.add_item`, `update_item`, `remove_completed_items` sur l'entité déclarée (`maison.json` → `courses`).
+- Une seule liste `todo.courses` : Google Keep Sync (HACS, non officiel) pour « Ok Google, ajoute… », raccourci Siri `todo.add_item`. Guide `docs/COURSES.md`.
+- Commande drive automatique écartée : pas d'API publique, robot fragile et contraire aux CGU.
 ### 2026-11-08 (nuit) — Aspirateur Roomba
 - Tablette : tuile `vacuum.roomba` dans le Salon (▶ nettoyer, ⏸ pause, ⌂ base), états en français, « Bloqué » en rouge ; actions limitées à start / pause / return_to_base.
 - Voix : domaine `vacuum` ajouté au pont Matter (Google gère les aspirateurs Matter en mode pont).

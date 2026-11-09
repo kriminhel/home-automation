@@ -32,6 +32,10 @@
       "ecriture": true
     }
   ],
+  "courses": {
+    "entity_id": "todo.courses",
+    "nom": "Courses"
+  },
   "habitants": [
     {
       "nom": "Karim",

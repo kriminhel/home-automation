@@ -10,6 +10,8 @@
 - POST /api/agenda  -> {"titre", "date": "AAAA-MM-JJ", "heure": "HH:MM" facultative} dans l'agenda « ecriture »
 - GET  /api/internet -> état du contrôle parental Freebox des habitants qui ont un "freebox_profil"
 - POST /api/internet -> {"habitant": "Alia", "action": "couper" | "retablir", "minutes": 60}
+- GET  /api/courses  -> articles de la liste de courses (entité todo de maison.json → "courses")
+- POST /api/courses  -> {"action": "ajouter", "titre"} | {"action": "cocher"|"decocher", "uid"} | {"action": "vider_coches"}
 
 Le jeton Home Assistant reste sur le serveur (variable HA_TOKEN) : l'iPad ne le voit
 jamais, et seules les actions de la liste ACTIONS sur les entités déclarées passent.
@@ -247,6 +249,47 @@ def ajouter_evenement(maison, demande):
     return corps
 
 
+def entite_courses(maison):
+    eid = (maison.get("courses") or {}).get("entity_id")
+    if not eid or not str(eid).startswith("todo."):
+        raise ValueError("liste de courses non déclarée dans maison.json")
+    return eid
+
+
+def lire_courses(maison):
+    """Articles de la liste (Google Keep synchronisé ou liste locale HA), à faire d'abord."""
+    eid = entite_courses(maison)
+    r = appel_ha("POST", "/api/services/todo/get_items?return_response",
+                 {"entity_id": eid, "status": ["needs_action", "completed"]})
+    items = (((r or {}).get("service_response") or {}).get(eid) or {}).get("items") or []
+    res = [{"uid": i.get("uid") or i.get("summary", ""), "titre": i.get("summary", ""),
+            "fait": i.get("status") == "completed"} for i in items]
+    res.sort(key=lambda a: a["fait"])  # tri stable : l'ordre de la liste est conservé
+    return res
+
+
+def commander_courses(maison, demande):
+    eid = entite_courses(maison)
+    action = demande.get("action")
+    if action == "ajouter":
+        titre = " ".join(str(demande.get("titre") or "").split())[:100]
+        if not titre:
+            raise ValueError("article vide")
+        appel_ha("POST", "/api/services/todo/add_item", {"entity_id": eid, "item": titre})
+    elif action in ("cocher", "decocher"):
+        uid = str(demande.get("uid") or "")[:200]
+        if not uid:
+            raise ValueError("article inconnu")
+        appel_ha("POST", "/api/services/todo/update_item", {
+            "entity_id": eid, "item": uid,
+            "status": "completed" if action == "cocher" else "needs_action"})
+    elif action == "vider_coches":
+        appel_ha("POST", "/api/services/todo/remove_completed_items", {"entity_id": eid})
+    else:
+        raise ValueError("action inconnue")
+    return lire_courses(maison)
+
+
 def profils_internet(maison):
     """Habitants pilotables : nom -> nom du profil Freebox (liste blanche de maison.json)."""
     return {h["nom"]: h["freebox_profil"] for h in maison.get("habitants", []) if h.get("freebox_profil")}
@@ -400,6 +443,8 @@ class Handler(BaseHTTPRequestHandler):
                 return self._json(200, lire_agenda(charger_maison()))
             if chemin == "/api/internet":
                 return self._json(200, lire_internet(charger_maison()))
+            if chemin == "/api/courses":
+                return self._json(200, lire_courses(charger_maison()))
             if chemin.startswith("/api/image/"):
                 return self._image(chemin[len("/api/image/"):])
             return self._json(404, {"erreur": "introuvable"})
@@ -407,7 +452,7 @@ class Handler(BaseHTTPRequestHandler):
             return self._json(502, {"erreur": str(e)})
 
     def do_POST(self):
-        if self.path not in ("/api/action", "/api/agenda", "/api/internet"):
+        if self.path not in ("/api/action", "/api/agenda", "/api/internet", "/api/courses"):
             return self._json(404, {"erreur": "introuvable"})
         try:
             longueur = min(int(self.headers.get("Content-Length") or 0), 10000)
@@ -417,6 +462,8 @@ class Handler(BaseHTTPRequestHandler):
                 return self._json(200, {"ok": True})
             if self.path == "/api/internet":
                 return self._json(200, commander_internet(charger_maison(), demande))
+            if self.path == "/api/courses":
+                return self._json(200, commander_courses(charger_maison(), demande))
             n = executer(charger_maison(), demande)
             return self._json(200, {"ok": True, "cibles": n})
         except (ValueError, json.JSONDecodeError) as e:

@@ -7,6 +7,7 @@
   var CAMERAS = { id: 'cameras', nom: 'Caméras', svg: 'navCamera' };
   var MAISON3D = { id: 'maison3d', nom: '3D', svg: 'cube' };
   var PROFILS = { id: 'profils', nom: 'Famille', svg: 'navFamille' };
+  var COURSES = { id: 'courses', nom: 'Courses', svg: 'navCourses' };
   var SVG_NIVEAU = { rdc: 'navCanape', etage: 'navEtage' };
 
   // Pictogrammes au trait (24 × 24, couleur du texte)
@@ -17,6 +18,7 @@
     navEtage: '<path fill="currentColor" opacity=".35" stroke="none" d="M4 20.5h16.5V5h-3a1.5 1.5 0 0 0-1.5 1.5V10h-3a1.5 1.5 0 0 0-1.5 1.5V15H8a1.5 1.5 0 0 0-1.5 1.5v4z"/><path d="M3 20.5h4.5v-4.5H12v-4.5h4.5V7H21"/>',
     navCamera: '<rect x="2.5" y="6.5" width="13" height="11" rx="3.6" fill="currentColor" opacity=".35" stroke="none"/><rect x="2.5" y="6.5" width="13" height="11" rx="3.6"/><path d="M15.5 10.4 21 8v8l-5.5-2.4z" fill="currentColor" stroke="none"/><circle cx="9" cy="12" r="2.3" fill="currentColor" stroke="none"/>',
     navFamille: '<circle cx="9" cy="8" r="3.6" fill="currentColor" stroke="none"/><path d="M2.5 20.5a6.5 6.5 0 0 1 13 0z" fill="currentColor" opacity=".4" stroke="none"/><circle cx="17.6" cy="9.4" r="2.6" fill="currentColor" opacity=".7" stroke="none"/><path d="M16 14.6a5 5 0 0 1 5.6 5.9"/>',
+    navCourses: '<path fill="currentColor" opacity=".35" stroke="none" d="M5 9.5h14l-1.4 9a2 2 0 0 1-2 1.7H8.4a2 2 0 0 1-2-1.7z"/><path d="M3.5 9.5h17M8.5 9.5 11 4M15.5 9.5 13 4"/><path d="M9.5 13v4M12 13v4M14.5 13v4"/>',
     navSoleil: '<circle cx="12" cy="12" r="4.6" fill="currentColor" stroke="none"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4"/>',
     agenda: '<rect x="3.5" y="5" width="17" height="15.5" rx="3.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/><circle cx="8.5" cy="14.5" r="1.2" fill="currentColor" stroke="none"/>',
     plus: '<path d="M12 5v14M5 12h14"/>',
@@ -265,6 +267,7 @@
     var l = [ACCUEIL].concat(maison.niveaux);
     if (maison.cameras && maison.cameras.length) { l.push(CAMERAS); }
     if (maison.habitants && maison.habitants.length) { l.push(PROFILS); }
+    if (maison.courses) { l.push(COURSES); }
     return l;
   }
 
@@ -1339,6 +1342,77 @@
     document.body.appendChild(fond);
   }
 
+  /* ---------- liste de courses (Google Keep / Siri / tablette : une seule liste) ---------- */
+
+  var articles = null;     // [{uid, titre, fait}]
+  var zoneCourses = null;  // élément de la liste affichée (null hors de la vue Courses)
+
+  function lireCourses() {
+    requete('GET', '/api/courses', null, function (r) { articles = r || []; afficherCourses(); },
+      function (err) { if (zoneCourses) { message('Courses : ' + err); } });
+  }
+
+  function commanderCourses(corps) {
+    requete('POST', '/api/courses', corps, function (r) { articles = r || []; afficherCourses(); },
+      function (err) { message('Courses : ' + err); lireCourses(); });
+  }
+
+  function afficherCourses() {
+    if (!zoneCourses) { return; }
+    zoneCourses.innerHTML = '';
+    if (articles === null) { zoneCourses.appendChild(el('div', 'vide', 'Chargement…')); return; }
+    if (!articles.length) { zoneCourses.appendChild(el('div', 'vide', 'La liste est vide. « Ok Google, ajoute du lait à ma liste de courses »')); return; }
+    var coches = 0;
+    for (var i = 0; i < articles.length; i++) {
+      (function (a) {
+        if (a.fait) { coches++; }
+        var ligne = el('div', 'article' + (a.fait ? ' fait' : ''));
+        ligne.appendChild(el('span', 'case', a.fait ? '✓' : ''));
+        ligne.appendChild(el('span', 'titre-article', a.titre));
+        ligne.addEventListener('click', function () {
+          a.fait = !a.fait;            // retour visuel immédiat
+          afficherCourses();
+          commanderCourses({ action: a.fait ? 'cocher' : 'decocher', uid: a.uid });
+        });
+        zoneCourses.appendChild(ligne);
+      })(articles[i]);
+    }
+    if (coches) {
+      var vider = el('button', 'rapide vider', 'Retirer les ' + coches + ' article' + (coches > 1 ? 's' : '') + ' coché' + (coches > 1 ? 's' : ''));
+      vider.addEventListener('click', function () {
+        if (window.confirm('Retirer les articles cochés de la liste ?')) { commanderCourses({ action: 'vider_coches' }); }
+      });
+      zoneCourses.appendChild(vider);
+    }
+  }
+
+  function vueCourses(c) {
+    var ent = el('div', 'entete');
+    ent.appendChild(el('h1', '', maison.courses.nom || 'Courses'));
+    c.appendChild(ent);
+    var form = el('div', 'carte formulaire courses-ajout');
+    var champ = el('input', '');
+    champ.type = 'text';
+    champ.placeholder = 'Ajouter un article…';
+    champ.maxLength = 100;
+    var ok = el('button', 'valider', 'Ajouter');
+    function ajouter() {
+      var t = champ.value.replace(/^\s+|\s+$/g, '');
+      if (!t) { return; }
+      champ.value = '';
+      commanderCourses({ action: 'ajouter', titre: t });
+    }
+    ok.addEventListener('click', ajouter);
+    champ.addEventListener('keydown', function (ev) { if (ev.keyCode === 13) { ajouter(); } });
+    form.appendChild(champ);
+    form.appendChild(ok);
+    c.appendChild(form);
+    zoneCourses = el('div', 'carte liste-courses');
+    c.appendChild(zoneCourses);
+    afficherCourses();
+    lireCourses();
+  }
+
   function vueCameras(c) {
     var ent = el('div', 'entete');
     ent.appendChild(el('h1', '', 'Caméras'));
@@ -1402,7 +1476,8 @@
     var c = $('contenu');
     c.innerHTML = '';
     recap = null;
-    if (vue === 'accueil') { vueAccueil(c); } else if (vue === 'cameras') { vueCameras(c); } else if (vue === 'maison3d') { vueMaison3d(c); } else if (vue === 'profils') { recap = { pieces: [], profils: [] }; vueProfils(c); } else {
+    zoneCourses = null;
+    if (vue === 'courses') { vueCourses(c); } else if (vue === 'accueil') { vueAccueil(c); } else if (vue === 'cameras') { vueCameras(c); } else if (vue === 'maison3d') { vueMaison3d(c); } else if (vue === 'profils') { recap = { pieces: [], profils: [] }; vueProfils(c); } else {
       for (var i = 0; i < maison.niveaux.length; i++) {
         if (maison.niveaux[i].id === vue) { vueNiveau(c, maison.niveaux[i]); }
       }
@@ -1452,6 +1527,7 @@
       setInterval(lireEtats, window.PORTAIL_LEGER ? 4000 : 2000);
       setInterval(majHorloge, 10000);
       setInterval(rafraichirImages, 30000);
+      setInterval(function () { if (zoneCourses) { lireCourses(); } }, 10000);  // ajouts par la voix
     }, function (err) {
       $('contenu').innerHTML = '';
       $('contenu').appendChild(el('p', 'attente', 'Serveur injoignable (' + err + '). Nouvel essai…'));
